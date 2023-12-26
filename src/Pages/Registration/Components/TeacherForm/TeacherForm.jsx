@@ -1,41 +1,53 @@
 import { Link } from "react-router-dom";
 import { useForm } from "@mantine/form";
+import { yupResolver } from "mantine-form-yup-resolver";
 import {
   TextInput,
   Button,
   Group,
   Box,
   PasswordInput,
-  NativeSelect,
   Flex,
   Text,
   Grid,
   Anchor,
+  MultiSelect,
+  Select,
 } from "@mantine/core";
 
 import { createNewUser } from "../../Api/RegistrationMethods";
+import TeacherFormSchema from "../Validation/TeacherFormSchema";
 
-const RegistrationForm = () => {
+const TeacherForm = () => {
   const form = useForm({
     initialValues: {
       email: "",
       password: "",
       confirm_password: "",
+      major_subject: "",
+      highest_education_level: "",
+      subjects_to_teach: [],
       gender: "",
       first_name: "",
       last_name: "",
-      phone_number: "",
     },
+    validate: yupResolver(TeacherFormSchema),
   });
 
   const handleSubmit = async (values) => {
-    const response = await createNewUser({ ...values });
+    try {
+      const response = await createNewUser({
+        user: { ...values, role: "teacher" },
+      });
+      console.log("Success!");
+      console.log(response.data);
 
-    if (response) {
-      console.log(response);
+      form.reset();
+    } catch (error) {
+      const { message } = error.data;
+
+      console.log(message);
     }
-
-    form.reset();
   };
 
   return (
@@ -46,14 +58,14 @@ const RegistrationForm = () => {
       style={{ minHeight: "100vh" }}
     >
       <Text my={20} fw={700} tt={"uppercase"} size="xl">
-        Register
+        Register as a Teacher
       </Text>
       <Box maw={700} mx="auto">
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <Grid gutter={"xl"}>
-            <Grid.Col span={6}>
+          <Grid gutter={"md"} grow>
+            <Grid.Col span={4}>
               <TextInput
-                size={"lg"}
+                size={"md"}
                 label="First name"
                 placeholder="Enter your first name"
                 withAsterisk
@@ -61,9 +73,9 @@ const RegistrationForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={6}>
+            <Grid.Col span={4}>
               <TextInput
-                size={"lg"}
+                size={"md"}
                 label="Last name"
                 placeholder="Enter your last name"
                 withAsterisk
@@ -71,30 +83,53 @@ const RegistrationForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={6}>
-              <NativeSelect
-                size="lg"
+            <Grid.Col span={4}>
+              <Select
+                size="md"
                 label="Gender"
-                value={"Male"}
+                placeholder="Select your gender"
                 withAsterisk
                 {...form.getInputProps("gender")}
-                data={["Male", "Female", "Prefer not to say"]}
+                data={["Male", "Female"]}
               />
             </Grid.Col>
 
-            <Grid.Col span={6}>
+            <Grid.Col span={8}>
               <TextInput
-                size={"lg"}
-                label="Phone number"
-                placeholder="Enter your phone number"
+                size={"md"}
+                label="Major Subject"
+                placeholder="Enter your field of specialization"
                 withAsterisk
-                {...form.getInputProps("phone_number")}
+                {...form.getInputProps("major_subject")}
+              />
+            </Grid.Col>
+
+            <Grid.Col span={4}>
+              <Select
+                size="md"
+                label="Highest Education Level"
+                placeholder="Select education level"
+                withAsterisk
+                data={["Bachelors", "Masters", "Diploma", "PhD"]}
+                {...form.getInputProps("highest_education_level")}
+              />
+            </Grid.Col>
+
+            <Grid.Col span={4}>
+              <MultiSelect
+                size="md"
+                label="Subjects to teach"
+                placeholder="Pick your preferred subjects"
+                withAsterisk
+                searchable
+                data={["Physics", "Chemistry", "Math", "Biology", "History"]}
+                {...form.getInputProps("subjects_to_teach")}
               />
             </Grid.Col>
 
             <Grid.Col span={12}>
               <TextInput
-                size={"lg"}
+                size={"md"}
                 label="Email"
                 placeholder="Enter your email"
                 withAsterisk
@@ -104,16 +139,17 @@ const RegistrationForm = () => {
 
             <Grid.Col span={6}>
               <PasswordInput
-                size="lg"
+                size="md"
                 label="Password"
                 placeholder="Enter your password"
                 withAsterisk
                 {...form.getInputProps("password")}
               />
             </Grid.Col>
+
             <Grid.Col span={6}>
               <PasswordInput
-                size="lg"
+                size="md"
                 label="Confirm Password"
                 placeholder="Confirm password"
                 withAsterisk
@@ -122,21 +158,21 @@ const RegistrationForm = () => {
             </Grid.Col>
           </Grid>
 
-          <Group justify="space-evenly" mt="lg" pt={"md"}>
+          <Group justify="space-evenly" mt="lg" pt={"sm"}>
             <Button
-              size="lg"
+              size="md"
               color="sazim-purple.6"
               onClick={() => form.reset()}
             >
               Reset
             </Button>
-            <Button type="submit" size="lg" color="sazim-green.7">
+            <Button type="submit" size="md" color="sazim-green.7">
               Submit
             </Button>
           </Group>
         </form>
 
-        <Text fw={400} c={"sazim-green.4"} ta={"center"} size="lg" mt={"xl"}>
+        <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md" mt={"lg"}>
           Already have an account?{" "}
           <Anchor component={Link} to={"/login"} c="white">
             Login
@@ -147,4 +183,4 @@ const RegistrationForm = () => {
   );
 };
 
-export default RegistrationForm;
+export default TeacherForm;

@@ -5,11 +5,11 @@ import "@mantine/core/styles.css";
 
 import App from "./App.jsx";
 import "./index.css";
-import { lightColors } from "./Shared/Constants/Colors.js";
+import { darkColors } from "./Shared/Constants/Colors.js";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <MantineProvider theme={lightColors}>
+    <MantineProvider theme={darkColors}>
       <App />
     </MantineProvider>
   </React.StrictMode>

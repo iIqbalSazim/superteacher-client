@@ -1,7 +1,17 @@
-import RegistrationForm from "./Components/RegistrationForm/RegistrationForm";
+import { useParams } from "react-router-dom";
+
+import StudentForm from "./Components/StudentForm/StudentForm";
+import TeacherFormContainer from "./Components/TeacherFormContainer/TeacherFormContainer";
 
 const Registration = () => {
-  return <RegistrationForm />;
+  const { role } = useParams();
+
+  return (
+    <>
+      {role === "student" ? <StudentForm /> : null}
+      {role === "teacher" ? <TeacherFormContainer /> : null}
+    </>
+  );
 };
 
 export default Registration;

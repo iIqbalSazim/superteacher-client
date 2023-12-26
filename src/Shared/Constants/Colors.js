@@ -1,4 +1,4 @@
-export const lightColors = {
+export const darkColors = {
   colors: {
     "sazim-green": [
       "#c2e5c9",

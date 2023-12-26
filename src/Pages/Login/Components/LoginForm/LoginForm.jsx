@@ -11,8 +11,10 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { yupResolver } from "mantine-form-yup-resolver";
 
 import { loginUser } from "../../Api/LoginMethods";
+import LoginFormSchema from "../../Validation/LoginFormSchema";
 
 const LoginForm = () => {
   const form = useForm({
@@ -20,16 +22,22 @@ const LoginForm = () => {
       email: "",
       password: "",
     },
+    validate: yupResolver(LoginFormSchema),
   });
 
   const handleSubmit = async (values) => {
-    const response = await loginUser({ ...values });
+    try {
+      const response = await loginUser({ ...values });
 
-    if (response) {
-      console.log(response);
+      console.log("Success!");
+      console.log(response.data);
+
+      form.reset();
+    } catch (error) {
+      const { message } = error.data;
+
+      console.log(message);
     }
-
-    form.reset();
   };
 
   return (
@@ -47,7 +55,7 @@ const LoginForm = () => {
           <Grid gutter={"xl"}>
             <Grid.Col span={12}>
               <TextInput
-                size={"lg"}
+                size={"md"}
                 label="Email"
                 placeholder="Enter your email"
                 withAsterisk
@@ -57,7 +65,7 @@ const LoginForm = () => {
 
             <Grid.Col span={12}>
               <PasswordInput
-                size="lg"
+                size="md"
                 label="Password"
                 placeholder="Enter your password"
                 withAsterisk
@@ -67,13 +75,13 @@ const LoginForm = () => {
           </Grid>
 
           <Group justify="space-evenly" mt="xl" pt={"md"}>
-            <Button type="submit" size="lg" color="sazim-green.7">
+            <Button type="submit" size="md" color="sazim-green.7">
               Submit
             </Button>
           </Group>
         </form>
 
-        <Text fw={400} c={"sazim-green.4"} ta={"center"} size="lg" mt={"xl"}>
+        <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md" mt={"xl"}>
           Don&apos;t have an account?{" "}
           <Anchor component={Link} to={"/"} c="white">
             Register

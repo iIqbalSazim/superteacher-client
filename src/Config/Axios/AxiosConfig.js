@@ -27,24 +27,8 @@ axiosClient.interceptors.response.use(
     const { response } = error;
 
     if (response) {
-      if (response.status === 400) {
-        return Promise.reject({ message: "400 Bad request error" });
-      }
-      if (response.status === 401) {
-        return Promise.reject({ message: "401 Unauthorized" });
-      }
-      if (response.status === 403) {
-        return Promise.reject({
-          message: "403 Forbidden - You are not authorized.",
-        });
-      }
       if (response.status === 404) {
         return Promise.reject({ message: "404 Not Found" });
-      }
-      if (response.status === 422) {
-        return Promise.reject({
-          message: "Unprocessable Entity - Validation failed.",
-        });
       }
 
       return Promise.reject(response);
