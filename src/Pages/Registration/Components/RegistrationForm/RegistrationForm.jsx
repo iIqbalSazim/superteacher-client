@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import {
   TextInput,
@@ -11,7 +12,8 @@ import {
   Grid,
   Anchor,
 } from "@mantine/core";
-import { Link } from "react-router-dom";
+
+import { createNewUser } from "../../Api/RegistrationMethods";
 
 const RegistrationForm = () => {
   const form = useForm({
@@ -26,6 +28,16 @@ const RegistrationForm = () => {
     },
   });
 
+  const handleSubmit = async (values) => {
+    const response = await createNewUser({ ...values });
+
+    if (response) {
+      console.log(response);
+    }
+
+    form.reset();
+  };
+
   return (
     <Flex
       justify="center"
@@ -37,7 +49,7 @@ const RegistrationForm = () => {
         Register
       </Text>
       <Box maw={700} mx="auto">
-        <form onSubmit={form.onSubmit((values) => console.log(values))}>
+        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <Grid gutter={"xl"}>
             <Grid.Col span={6}>
               <TextInput
@@ -63,6 +75,7 @@ const RegistrationForm = () => {
               <NativeSelect
                 size="lg"
                 label="Gender"
+                value={"Male"}
                 withAsterisk
                 {...form.getInputProps("gender")}
                 data={["Male", "Female", "Prefer not to say"]}

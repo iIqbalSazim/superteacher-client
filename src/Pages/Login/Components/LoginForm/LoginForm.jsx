@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Anchor,
   Box,
@@ -10,7 +11,8 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Link } from "react-router-dom";
+
+import { loginUser } from "../../Api/LoginMethods";
 
 const LoginForm = () => {
   const form = useForm({
@@ -19,6 +21,16 @@ const LoginForm = () => {
       password: "",
     },
   });
+
+  const handleSubmit = async (values) => {
+    const response = await loginUser({ ...values });
+
+    if (response) {
+      console.log(response);
+    }
+
+    form.reset();
+  };
 
   return (
     <Flex
@@ -31,7 +43,7 @@ const LoginForm = () => {
         Login
       </Text>
       <Box maw={700} mx="auto">
-        <form onSubmit={form.onSubmit((values) => console.log(values))}>
+        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <Grid gutter={"xl"}>
             <Grid.Col span={12}>
               <TextInput
