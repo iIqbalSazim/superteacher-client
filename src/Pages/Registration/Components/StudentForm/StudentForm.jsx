@@ -13,7 +13,9 @@ import {
   Anchor,
   Select,
 } from "@mantine/core";
+import { useDispatch } from "react-redux";
 
+import { loginSuccess } from "../../../../Stores/Actions/Auth";
 import { createNewUser } from "../../Api/RegistrationMethods";
 import StudentFormSchema from "../Validation/StudentFormSchema";
 
@@ -39,6 +41,8 @@ const StudentForm = () => {
     validate: yupResolver(StudentFormSchema),
   });
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async (values) => {
     try {
       const response = await createNewUser({
@@ -46,6 +50,14 @@ const StudentForm = () => {
       });
       console.log("Success!");
       console.log(response.data);
+
+      const newUser = response.data.user;
+
+      const token = response.data.token.access_token;
+
+      dispatch(loginSuccess(newUser));
+
+      localStorage.setItem("token", token);
 
       form.reset();
     } catch (error) {

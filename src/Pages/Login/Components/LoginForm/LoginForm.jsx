@@ -12,7 +12,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
+import { useDispatch } from "react-redux";
 
+import { loginSuccess } from "../../../../Stores/Actions/Auth";
 import { loginUser } from "../../Api/LoginMethods";
 import LoginFormSchema from "../../Validation/LoginFormSchema";
 
@@ -25,12 +27,22 @@ const LoginForm = () => {
     validate: yupResolver(LoginFormSchema),
   });
 
+  const dispatch = useDispatch();
+
   const handleSubmit = async (values) => {
     try {
       const response = await loginUser({ ...values });
 
       console.log("Success!");
       console.log(response.data);
+
+      const newUser = response.data.user;
+
+      const token = response.data.token.access_token;
+
+      dispatch(loginSuccess(newUser));
+
+      localStorage.setItem("token", token);
 
       form.reset();
     } catch (error) {
