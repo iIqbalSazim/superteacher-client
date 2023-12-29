@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Anchor,
   Box,
@@ -28,6 +28,7 @@ const LoginForm = () => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     try {
@@ -43,6 +44,8 @@ const LoginForm = () => {
       dispatch(loginSuccess(newUser));
 
       localStorage.setItem("token", token);
+
+      navigate("/dashboard");
 
       form.reset();
     } catch (error) {

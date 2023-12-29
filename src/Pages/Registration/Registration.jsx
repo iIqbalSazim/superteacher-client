@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 import StudentForm from "./Components/StudentForm/StudentForm";
 import TeacherFormContainer from "./Components/TeacherFormContainer/TeacherFormContainer";
@@ -6,12 +6,13 @@ import TeacherFormContainer from "./Components/TeacherFormContainer/TeacherFormC
 const Registration = () => {
   const { role } = useParams();
 
-  return (
-    <>
-      {role === "student" ? <StudentForm /> : null}
-      {role === "teacher" ? <TeacherFormContainer /> : null}
-    </>
-  );
+  if (role === "student") {
+    return <StudentForm />;
+  } else if (role === "teacher") {
+    return <TeacherFormContainer />;
+  } else {
+    return <Navigate to="/" />;
+  }
 };
 
 export default Registration;

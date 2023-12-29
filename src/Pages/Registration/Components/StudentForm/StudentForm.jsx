@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import {
@@ -42,6 +42,7 @@ const StudentForm = () => {
   });
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
     try {
@@ -58,6 +59,8 @@ const StudentForm = () => {
       dispatch(loginSuccess(newUser));
 
       localStorage.setItem("token", token);
+
+      navigate("/dashboard");
 
       form.reset();
     } catch (error) {

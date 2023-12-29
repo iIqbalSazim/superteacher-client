@@ -18,7 +18,7 @@ const RoleSelectionModal = ({ open, close }) => {
             variant="outline"
             color={"sazim-blue.7"}
             size="xl"
-            onClick={() => navigate("/student")}
+            onClick={() => navigate("/register/student")}
           >
             <Flex align={"center"} justify={"center"} mih={"inherit"}>
               <IconBooks />
@@ -32,7 +32,7 @@ const RoleSelectionModal = ({ open, close }) => {
             variant="outline"
             color={"sazim-blue.7"}
             size="xl"
-            onClick={() => navigate("/teacher")}
+            onClick={() => navigate("/register/teacher")}
           >
             <Flex align={"center"} justify={"center"} mih={"inherit"}>
               <IconSchool />
