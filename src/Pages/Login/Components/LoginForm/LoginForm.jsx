@@ -34,7 +34,6 @@ const LoginForm = () => {
     try {
       const response = await loginUser({ ...values });
 
-      console.log("Success!");
       console.log(response.data);
 
       const newUser = response.data.user;

@@ -17,7 +17,7 @@ import { useDispatch } from "react-redux";
 
 import { loginSuccess } from "../../../../Stores/Actions/Auth";
 import { createNewUser } from "../../Api/RegistrationMethods";
-import StudentFormSchema from "../Validation/StudentFormSchema";
+import StudentFormSchema from "../../Validation/StudentFormSchema";
 
 const StudentForm = () => {
   const form = useForm({
@@ -49,7 +49,6 @@ const StudentForm = () => {
       const response = await createNewUser({
         user: { ...values, role: "student" },
       });
-      console.log("Success!");
       console.log(response.data);
 
       const newUser = response.data.user;

@@ -17,8 +17,9 @@ import {
 import { useDispatch } from "react-redux";
 
 import { loginSuccess } from "../../../../Stores/Actions/Auth";
+import { Subjects } from "../../../../Data/FormData";
 import { createNewUser } from "../../Api/RegistrationMethods";
-import TeacherFormSchema from "../Validation/TeacherFormSchema";
+import TeacherFormSchema from "../../Validation/TeacherFormSchema";
 
 const TeacherForm = () => {
   const form = useForm({
@@ -44,7 +45,6 @@ const TeacherForm = () => {
       const response = await createNewUser({
         user: { ...values, role: "teacher" },
       });
-      console.log("Success!");
       console.log(response.data);
 
       const newUser = response.data.user;
@@ -137,7 +137,7 @@ const TeacherForm = () => {
                 placeholder="Pick your preferred subjects"
                 withAsterisk
                 searchable
-                data={["Physics", "Chemistry", "Math", "Biology", "History"]}
+                data={Subjects}
                 {...form.getInputProps("subjects_to_teach")}
               />
             </Grid.Col>

@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 import { yupResolver } from "mantine-form-yup-resolver";
 
 import { validateRegistrationCode } from "../../Api/RegistrationMethods";
-import RegistrationCodeFormSchema from "../Validation/RegistrationCodeFormSchema";
+import RegistrationCodeFormSchema from "../../Validation/RegistrationCodeFormSchema";
 
 const RegistrationCodeForm = ({ setIsRegistrationCodeValid }) => {
   const form = useForm({

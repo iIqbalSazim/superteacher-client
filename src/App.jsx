@@ -10,6 +10,8 @@ import Registration from "./Pages/Registration/Registration";
 import Login from "./Pages/Login/Login";
 import Landing from "./Pages/Landing/Landing";
 import Dashboard from "./Pages/Dashboard/Dashboard";
+import Classroom from "./Pages/Classroom/Classroom";
+import Header from "./Shared/Components/Header/Header";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -18,7 +20,12 @@ const ProtectedRoute = ({ children }) => {
   if (!token) {
     return <Navigate to="/" state={{ from: location }} replace />;
   }
-  return children;
+  return (
+    <>
+      <Header />
+      {children}
+    </>
+  );
 };
 
 const NotFound = () => {
@@ -37,6 +44,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/classroom/:id"
+          element={
+            <ProtectedRoute>
+              <Classroom />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register/:role" element={<Registration />} />
         <Route path="/" element={<Landing />} />
