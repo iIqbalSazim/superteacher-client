@@ -7,3 +7,13 @@ export const updateClassrooms = (classroom) => ({
   type: "UPDATE_CLASSROOMS",
   payload: classroom,
 });
+
+export const setClassroomStudents = (classroomStudents) => ({
+  type: "SET_CLASSROOM_STUDENTS",
+  payload: classroomStudents,
+});
+
+export const updateClassroomStudents = (classroomStudent) => ({
+  type: "UPDATE_CLASSROOM_STUDENTS",
+  payload: classroomStudent,
+});

@@ -1,5 +1,6 @@
 const initialState = {
   classrooms: [],
+  classroomStudents: [],
 };
 
 const classroomReducer = (state = initialState, action) => {
@@ -13,6 +14,16 @@ const classroomReducer = (state = initialState, action) => {
       return {
         ...state,
         classrooms: [...state.classrooms, action.payload],
+      };
+    case "SET_CLASSROOM_STUDENTS":
+      return {
+        ...state,
+        classroomStudents: action.payload,
+      };
+    case "UPDATE_CLASSROOM_STUDENTS":
+      return {
+        ...state,
+        classroomStudents: [...state.classroomStudents, action.payload],
       };
     default:
       return state;

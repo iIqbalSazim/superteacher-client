@@ -45,7 +45,7 @@ const Classroom = () => {
             <Classwork />
           </Tabs.Panel>
           <Tabs.Panel value="people">
-            <People />
+            <People classroom={classroom} />
           </Tabs.Panel>
         </Tabs>
       ) : (
