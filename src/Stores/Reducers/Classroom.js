@@ -1,9 +1,9 @@
-const initialState = {
+const INITIAL_STATE = {
   classrooms: [],
   classroomStudents: [],
 };
 
-const classroomReducer = (state = initialState, action) => {
+const classroomReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case "SET_ALL_CLASSROOMS":
       return {
@@ -25,6 +25,8 @@ const classroomReducer = (state = initialState, action) => {
         ...state,
         classroomStudents: [...state.classroomStudents, action.payload],
       };
+    case "RESET":
+      return INITIAL_STATE;
     default:
       return state;
   }

@@ -1,13 +1,39 @@
-import { Badge, Card, Group, Image, Text } from "@mantine/core";
+import { Badge, Button, Card, Flex, Group, Image, Text } from "@mantine/core";
+import { IconPlus } from "@tabler/icons-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import CreateClassroomFormModal from "../../../../Shared/Components/CreateClassroomFormModal/CreateClassroomFormModal";
+
 const TeacherCards = ({ classrooms }) => {
+  const [isClassroomFormModalOpen, setIsClassroomFormModalOpen] =
+    useState(false);
+
+  const closeClassroomFormModal = () => {
+    setIsClassroomFormModalOpen(false);
+  };
+
   const navigate = useNavigate();
 
   return (
     <>
       {classrooms.length === 0 ? (
-        <Text>Create a classroom</Text>
+        <Flex justify={"center"} mt={200} h={"100vh"}>
+          <Button
+            leftSection={<IconPlus />}
+            color={"white"}
+            variant="light"
+            size="lg"
+            radius={"lg"}
+            onClick={() => setIsClassroomFormModalOpen(true)}
+          >
+            Create a classroom
+          </Button>
+          <CreateClassroomFormModal
+            open={isClassroomFormModalOpen}
+            close={closeClassroomFormModal}
+          />
+        </Flex>
       ) : (
         <Group justify="space-evenly" gap={"md"} py={"lg"}>
           {classrooms &&

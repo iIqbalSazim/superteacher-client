@@ -1,20 +1,40 @@
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { ActionIcon, Anchor, Button, Group, Menu, Title } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
 
+import { reset } from "../../../Stores/Actions/Auth";
+import { logoutUser } from "../../../Pages/Login/Api/LoginMethods";
 import CreateClassroomFormModal from "../CreateClassroomFormModal/CreateClassroomFormModal";
 
 const Header = () => {
   const [isClassroomFormModalOpen, setIsClassroomFormModalOpen] =
     useState(false);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const closeClassroomFormModal = () => {
     setIsClassroomFormModalOpen(false);
   };
 
   const currentUser = useSelector((state) => state.auth.user);
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      navigate("/");
+
+      await logoutUser({ token: token });
+
+      localStorage.removeItem("token");
+
+      dispatch(reset());
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Group
@@ -26,7 +46,7 @@ const Header = () => {
     >
       <Group>
         <Anchor component={Link} underline="never" ml={"xs"} to={"/dashboard"}>
-          <Title fw={400} order={4} c={"white"}>
+          <Title fw={400} order={3} c={"white"}>
             Superteacher
           </Title>
         </Anchor>
@@ -34,7 +54,7 @@ const Header = () => {
 
       <Group>
         <Anchor component={Link} underline="never" ml={"xs"} to={"/dashboard"}>
-          <Title fw={400} order={5} c={"white"}>
+          <Title fw={400} order={4} c={"white"}>
             Dashboard
           </Title>
         </Anchor>
@@ -43,6 +63,7 @@ const Header = () => {
             <ActionIcon
               variant="subtle"
               color="white"
+              size={"xl"}
               aria-label="Create classroom"
               onClick={() => setIsClassroomFormModalOpen(true)}
             >
@@ -57,6 +78,7 @@ const Header = () => {
 
         <Menu
           shadow="xl"
+          size="md"
           transitionProps={{ transition: "pop-top-right", duration: 200 }}
           withArrow
           offset={3}
@@ -70,7 +92,7 @@ const Header = () => {
 
           <Menu.Dropdown>
             <Menu.Item>Profile</Menu.Item>
-            <Menu.Item>Logout</Menu.Item>
+            <Menu.Item onClick={handleLogout}>Logout</Menu.Item>
           </Menu.Dropdown>
         </Menu>
       </Group>

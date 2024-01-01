@@ -81,7 +81,7 @@ const People = ({ classroom }) => {
           ))}
         </SimpleGrid>
       ) : (
-        <p>No students found for this classroom.</p>
+        <Text>No students found for this classroom.</Text>
       )}
       <AddStudentModal
         open={isAddStudentModalOpen}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Tabs, Text } from "@mantine/core";
+import { Tabs } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import Stream from "./Components/Stream/Stream";
 import Classwork from "./Components/Classwork/Classwork";
 import People from "./Components/People/People";
+import MyLoader from "../../Shared/Components/MyLoader/MyLoader";
 
 const Classroom = () => {
   const [classroom, setClassroom] = useState(null);
@@ -49,7 +50,7 @@ const Classroom = () => {
           </Tabs.Panel>
         </Tabs>
       ) : (
-        <Text>Loading...</Text>
+        <MyLoader />
       )}
     </>
   );
