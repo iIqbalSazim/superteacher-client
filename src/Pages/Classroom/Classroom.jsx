@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { Tabs } from "@mantine/core";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
+import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 
 import Stream from "./Components/Stream/Stream";
 import Classwork from "./Components/Classwork/Classwork";
 import People from "./Components/People/People";
-import MyLoader from "../../Shared/Components/MyLoader/MyLoader";
 
 const Classroom = () => {
   const [classroom, setClassroom] = useState(null);
+  const navigate = useNavigate();
 
-  const { id } = useParams();
+  const { id, tabValue } = useParams();
 
   const allClassrooms = useSelector((state) => state.classroom.classrooms);
 
@@ -27,7 +29,14 @@ const Classroom = () => {
   return (
     <>
       {classroom ? (
-        <Tabs defaultValue="stream" color="sazim-green" m="md" c={"white"}>
+        <Tabs
+          defaultValue="stream"
+          color="sazim-green"
+          m="md"
+          c={"white"}
+          value={tabValue}
+          onChange={(value) => navigate(`/classroom/${classroom.id}/${value}`)}
+        >
           <Tabs.List>
             <Tabs.Tab bg={"inherit"} value="stream">
               Stream

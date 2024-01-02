@@ -14,11 +14,13 @@ import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { notifications } from "@mantine/notifications";
 
-import { Subjects, DaysOfTheWeek } from "../../../Data/FormData";
+import { createClassroom } from "@/Pages/Dashboard/Api/DashboardMethods";
+import { updateClassrooms } from "@/Stores/Actions/Classroom";
+import { Subjects, DaysOfTheWeek } from "@/Data/FormData";
+
 import CreateClassroomFormSchema from "../../Validation/CreateClassroomFormSchema";
-import { createClassroom } from "../../../Pages/Dashboard/Api/DashboardMethods";
-import { updateClassrooms } from "../../../Stores/Actions/Classroom";
 
 const CreateClassroomFormModal = ({ open, close }) => {
   const form = useForm({
@@ -44,13 +46,31 @@ const CreateClassroomFormModal = ({ open, close }) => {
 
       close();
 
-      navigate(`/classroom/${newClassroom.id}`);
+      navigate(`/classroom/${newClassroom.id}/stream`);
+
+      notifications.show({
+        color: "sazim-green",
+        title: "Success",
+        message: "Successfully added classroom",
+        autoClose: 3000,
+      });
 
       form.reset();
     } catch (error) {
-      const { message } = error.data;
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
 
-      console.log(message);
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
     }
   };
   return (

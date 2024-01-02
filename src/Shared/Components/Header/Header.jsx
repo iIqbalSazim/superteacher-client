@@ -3,9 +3,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { ActionIcon, Anchor, Button, Group, Menu, Title } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
-import { reset } from "../../../Stores/Actions/Auth";
-import { logoutUser } from "../../../Pages/Login/Api/LoginMethods";
+import { reset } from "@/Stores/Actions/Auth";
+import { logoutUser } from "@/Pages/Login/Api/LoginMethods";
+
 import CreateClassroomFormModal from "../CreateClassroomFormModal/CreateClassroomFormModal";
 
 const Header = () => {
@@ -32,7 +34,20 @@ const Header = () => {
 
       dispatch(reset());
     } catch (error) {
-      console.log(error);
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
+
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
     }
   };
 

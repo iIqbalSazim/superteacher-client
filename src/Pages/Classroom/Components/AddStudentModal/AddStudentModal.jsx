@@ -8,6 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 
 import { enrollStudent } from "../../Api/ClassroomMethods";
 
@@ -40,17 +41,34 @@ const AddStudentModal = ({
         )
       );
 
+      notifications.show({
+        color: "sazim-green",
+        title: "Success",
+        message: "Student successfully added",
+      });
+
       close();
 
       form.reset();
     } catch (error) {
-      const { message } = error.data;
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
 
-      console.log(message);
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
     }
   };
   return (
-    <Modal opened={open} onClose={close} size={"md"} centered>
+    <Modal opened={open} onClose={close} size={"md"} centered px={"xl"}>
       <Box mx="xl">
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Enroll a Student

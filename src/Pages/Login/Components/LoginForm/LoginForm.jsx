@@ -13,8 +13,10 @@ import {
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { useDispatch } from "react-redux";
+import { notifications } from "@mantine/notifications";
 
-import { loginSuccess } from "../../../../Stores/Actions/Auth";
+import { loginSuccess } from "@/Stores/Actions/Auth";
+
 import { loginUser } from "../../Api/LoginMethods";
 import LoginFormSchema from "../../Validation/LoginFormSchema";
 
@@ -34,8 +36,6 @@ const LoginForm = () => {
     try {
       const response = await loginUser({ ...values });
 
-      console.log(response.data);
-
       const newUser = response.data.user;
 
       const token = response.data.token.access_token;
@@ -46,11 +46,29 @@ const LoginForm = () => {
 
       navigate("/dashboard");
 
+      notifications.show({
+        color: "sazim-green",
+        title: "Success",
+        message: "Logged in successfully",
+        autoClose: 3000,
+      });
+
       form.reset();
     } catch (error) {
-      const { message } = error.data;
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
 
-      console.log(message);
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
     }
   };
 

@@ -1,9 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { MantineProvider } from "@mantine/core";
-import "@mantine/core/styles.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
+import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
 import App from "./App.jsx";
 import "./index.css";
@@ -15,6 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <MantineProvider theme={darkColors}>
+          <Notifications position="top-center" limit={5} mt={"xl"} />
           <App />
         </MantineProvider>
       </PersistGate>

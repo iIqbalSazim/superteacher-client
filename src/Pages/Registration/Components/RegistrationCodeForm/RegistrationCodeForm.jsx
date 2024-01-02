@@ -10,6 +10,7 @@ import {
 import { useForm } from "@mantine/form";
 import { Link } from "react-router-dom";
 import { yupResolver } from "mantine-form-yup-resolver";
+import { notifications } from "@mantine/notifications";
 
 import { validateRegistrationCode } from "../../Api/RegistrationMethods";
 import RegistrationCodeFormSchema from "../../Validation/RegistrationCodeFormSchema";
@@ -29,8 +30,20 @@ const RegistrationCodeForm = ({ setIsRegistrationCodeValid }) => {
         setIsRegistrationCodeValid(true);
       }
     } catch (error) {
-      const { message } = error.data;
-      console.log(message);
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
+
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
     }
 
     form.reset();

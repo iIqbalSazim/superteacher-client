@@ -3,7 +3,7 @@ import { IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import CreateClassroomFormModal from "../../../../Shared/Components/CreateClassroomFormModal/CreateClassroomFormModal";
+import CreateClassroomFormModal from "@/Shared/Components/CreateClassroomFormModal/CreateClassroomFormModal";
 
 const TeacherCards = ({ classrooms }) => {
   const [isClassroomFormModalOpen, setIsClassroomFormModalOpen] =
@@ -45,7 +45,7 @@ const TeacherCards = ({ classrooms }) => {
                 radius="md"
                 key={classroom.id}
                 h={330}
-                onClick={() => navigate(`/classroom/${classroom.id}`)}
+                onClick={() => navigate(`/classroom/${classroom.id}/stream`)}
               >
                 <Card.Section>
                   <Image

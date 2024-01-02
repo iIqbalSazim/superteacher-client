@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Box, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 
-import { setAllClassrooms } from "../../../../Stores/Actions/Classroom";
+import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
+import { setAllClassrooms } from "@/Stores/Actions/Classroom";
+
 import { getClassroomCards } from "../../Api/DashboardMethods";
 import TeacherCards from "../TeacherCards/TeacherCards";
-import MyLoader from "../../../../Shared/Components/MyLoader/MyLoader";
 
 const ClassroomCardsContainer = () => {
   const [classrooms, setClassrooms] = useState([]);
@@ -29,7 +31,20 @@ const ClassroomCardsContainer = () => {
 
         setLoading(false);
       } catch (error) {
-        console.log("Error fetching classroom data:", error);
+        let message;
+        if (error.data) {
+          message = error.data.message;
+        } else {
+          message = error.message;
+        }
+
+        if (message) {
+          notifications.show({
+            color: "red",
+            title: "Error",
+            message: message,
+          });
+        }
       }
     };
 

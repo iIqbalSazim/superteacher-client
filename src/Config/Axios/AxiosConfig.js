@@ -63,3 +63,9 @@ export async function getRequest(URL) {
 export async function postRequest(URL, payload) {
   return axiosClient.post(`/${URL}`, payload).then((response) => response);
 }
+
+export async function deleteRequest(URL, payload) {
+  return axiosClient
+    .delete(`/${URL}`, { data: payload })
+    .then((response) => response);
+}

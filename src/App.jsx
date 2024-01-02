@@ -29,7 +29,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 const NotFound = () => {
-  return <Navigate to="/" />;
+  return <Navigate to="/dashboard" />;
 };
 
 function App() {
@@ -45,7 +45,7 @@ function App() {
           }
         />
         <Route
-          path="/classroom/:id"
+          path="/classroom/:id/:tabValue"
           element={
             <ProtectedRoute>
               <Classroom />

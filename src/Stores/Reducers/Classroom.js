@@ -20,11 +20,6 @@ const classroomReducer = (state = INITIAL_STATE, action) => {
         ...state,
         classroomStudents: action.payload,
       };
-    case "UPDATE_CLASSROOM_STUDENTS":
-      return {
-        ...state,
-        classroomStudents: [...state.classroomStudents, action.payload],
-      };
     case "RESET":
       return INITIAL_STATE;
     default:

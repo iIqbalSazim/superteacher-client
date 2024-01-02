@@ -5,16 +5,20 @@ import {
   Box,
   Divider,
   Flex,
+  Group,
   SimpleGrid,
   Text,
   Title,
 } from "@mantine/core";
-import { IconSquareRoundedPlus } from "@tabler/icons-react";
+import { IconSquareRoundedPlus, IconTrash } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
-import { setClassroomStudents } from "../../../../Stores/Actions/Classroom";
+import { setClassroomStudents } from "@/Stores/Actions/Classroom";
+
 import {
   getAllNotEnrolledStudents,
   getClassroomStudents,
+  removeStudentFromClassroom,
 } from "../../Api/ClassroomMethods";
 import AddStudentModal from "../AddStudentModal/AddStudentModal";
 
@@ -38,7 +42,20 @@ const People = ({ classroom }) => {
 
         setStudents(response.data.students);
       } catch (error) {
-        console.error("Error fetching classroom students:", error);
+        let message;
+        if (error.data) {
+          message = error.data.message;
+        } else {
+          message = error.message;
+        }
+
+        if (message) {
+          notifications.show({
+            color: "red",
+            title: "Error",
+            message: message,
+          });
+        }
       }
     };
 
@@ -48,7 +65,18 @@ const People = ({ classroom }) => {
 
         setNotEnrolledStudents(response.data.students);
       } catch (error) {
-        console.error("Error fetching students:", error);
+        let message;
+        if (error.data) {
+          message = error.data.message;
+        } else {
+          message = error.message;
+        }
+
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
       }
     };
 
@@ -56,13 +84,55 @@ const People = ({ classroom }) => {
     fetchClassroomStudents();
   }, [classroom.id, dispatch]);
 
+  const handleRemoveStudent = async (studentId) => {
+    try {
+      const response = await removeStudentFromClassroom({
+        classroom_student: {
+          classroom_id: classroom.id,
+          student_id: studentId,
+        },
+      });
+
+      const removedStudent = response.data.removed_student;
+
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student.id !== removedStudent.id)
+      );
+
+      setNotEnrolledStudents([...notEnrolledStudents, removedStudent]);
+
+      dispatch(setClassroomStudents(response.data.students));
+
+      notifications.show({
+        color: "sazim-purple.5",
+        title: "Success",
+        message: "Student successfully removed",
+      });
+    } catch (error) {
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
+
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
+    }
+  };
+
   return (
     <Box mx="auto" py="sm" px="xl" mih={"100vh"} width={"100%"}>
       <Flex align={"center"} justify={"space-between"} mt={"md"}>
         <Title order={2}>Students</Title>
         <ActionIcon
           variant="subtle"
-          color="white"
+          color="sazim-green"
           onClick={() => setIsAddStudentModalOpen(true)}
         >
           <IconSquareRoundedPlus />
@@ -76,7 +146,16 @@ const People = ({ classroom }) => {
               <Text>
                 {student.first_name} {student.last_name}
               </Text>
-              <Text>{student.email}</Text>
+              <Group>
+                <Text>{student.email}</Text>
+                <ActionIcon
+                  variant="subtle"
+                  color="sazim-purple"
+                  onClick={() => handleRemoveStudent(student.id)}
+                >
+                  <IconTrash />
+                </ActionIcon>
+              </Group>
             </Flex>
           ))}
         </SimpleGrid>

@@ -15,9 +15,11 @@ import {
   Select,
 } from "@mantine/core";
 import { useDispatch } from "react-redux";
+import { notifications } from "@mantine/notifications";
 
-import { loginSuccess } from "../../../../Stores/Actions/Auth";
-import { Subjects } from "../../../../Data/FormData";
+import { loginSuccess } from "@/Stores/Actions/Auth";
+import { Subjects } from "@/Data/FormData";
+
 import { createNewUser } from "../../Api/RegistrationMethods";
 import TeacherFormSchema from "../../Validation/TeacherFormSchema";
 
@@ -57,11 +59,29 @@ const TeacherForm = () => {
 
       navigate("/dashboard");
 
+      notifications.show({
+        color: "sazim-green",
+        title: "Success",
+        message: "Registered successfully",
+        autoClose: 3000,
+      });
+
       form.reset();
     } catch (error) {
-      const { message } = error.data;
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
 
-      console.log(message);
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
     }
   };
 
