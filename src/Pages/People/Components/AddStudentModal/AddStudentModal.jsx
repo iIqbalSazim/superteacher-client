@@ -10,7 +10,7 @@ import {
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 
-import { enrollStudent } from "../../Api/ClassroomMethods";
+import { enrollStudent } from "../../Api/PeopleMethods";
 
 const AddStudentModal = ({
   open,
@@ -67,6 +67,7 @@ const AddStudentModal = ({
       }
     }
   };
+
   return (
     <Modal opened={open} onClose={close} size={"md"} centered px={"xl"}>
       <Box mx="xl">
@@ -77,10 +78,10 @@ const AddStudentModal = ({
           <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
             <SimpleGrid gutter={"sm"}>
               <Select
-                label="Type an email"
-                placeholder="Pick student email"
+                label="Type a name"
+                placeholder="Pick student"
                 data={notEnrolledStudents.map((student) => ({
-                  label: student.email,
+                  label: `${student.first_name} ${student.last_name}`,
                   value: String(student.id),
                 }))}
                 searchable

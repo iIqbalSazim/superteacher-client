@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { Tabs } from "@mantine/core";
+import { Tabs, Title } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 
-import Stream from "./Components/Stream/Stream";
-import Classwork from "./Components/Classwork/Classwork";
-import People from "./Components/People/People";
+import Classwork from "../Classwork/Classwork";
+import People from "../People/People";
+import Stream from "../Stream/Stream";
 
 const Classroom = () => {
   const [classroom, setClassroom] = useState(null);
@@ -37,15 +37,15 @@ const Classroom = () => {
           value={tabValue}
           onChange={(value) => navigate(`/classroom/${classroom.id}/${value}`)}
         >
-          <Tabs.List>
+          <Tabs.List mx={"xl"}>
             <Tabs.Tab bg={"inherit"} value="stream">
-              Stream
+              <Title order={4}>Stream</Title>
             </Tabs.Tab>
             <Tabs.Tab bg={"inherit"} value="classwork">
-              Classwork
+              <Title order={4}>Classwork</Title>
             </Tabs.Tab>
             <Tabs.Tab bg={"inherit"} value="people">
-              People
+              <Title order={4}>People</Title>
             </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="stream">

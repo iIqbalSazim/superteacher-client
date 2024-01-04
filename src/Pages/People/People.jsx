@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import {
-  ActionIcon,
-  Box,
-  Divider,
-  Flex,
-  Group,
-  SimpleGrid,
-  Text,
-  Title,
-} from "@mantine/core";
-import { IconSquareRoundedPlus, IconTrash } from "@tabler/icons-react";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Divider, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 import { setClassroomStudents } from "@/Stores/Actions/Classroom";
@@ -19,8 +9,11 @@ import {
   getAllNotEnrolledStudents,
   getClassroomStudents,
   removeStudentFromClassroom,
-} from "../../Api/ClassroomMethods";
-import AddStudentModal from "../AddStudentModal/AddStudentModal";
+} from "./Api/PeopleMethods";
+import AddStudentModal from "./Components/AddStudentModal/AddStudentModal";
+import StudentList from "./Components/StudentList/StudentList";
+import TeacherHeadingAndList from "./Components/TeacherHeadingAndList/TeacherHeadingAndList";
+import StudentHeadingAndAddButton from "./Components/StudentHeadingAndAddButton/StudentHeadingAndAddButton";
 
 const People = ({ classroom }) => {
   const [students, setStudents] = useState([]);
@@ -30,6 +23,8 @@ const People = ({ classroom }) => {
   const closeAddStudentModal = () => {
     setIsAddStudentModalOpen(false);
   };
+
+  const currentUser = useSelector((state) => state.auth.user);
 
   const dispatch = useDispatch();
 
@@ -127,38 +122,18 @@ const People = ({ classroom }) => {
   };
 
   return (
-    <Box mx="auto" py="sm" px="xl" mih={"100vh"} width={"100%"}>
-      <Flex align={"center"} justify={"space-between"} mt={"md"}>
-        <Title order={2}>Students</Title>
-        <ActionIcon
-          variant="subtle"
-          color="sazim-green"
-          onClick={() => setIsAddStudentModalOpen(true)}
-        >
-          <IconSquareRoundedPlus />
-        </ActionIcon>
-      </Flex>
+    <Box mx="xs" py="sm" px="xl" mih={"100vh"} width={"100%"}>
+      <TeacherHeadingAndList classroom={classroom} />
+      <StudentHeadingAndAddButton
+        setIsAddStudentModalOpen={setIsAddStudentModalOpen}
+      />
       <Divider my="sm" />
       {students.length > 0 ? (
-        <SimpleGrid>
-          {students.map((student) => (
-            <Flex key={student.id} justify={"space-between"}>
-              <Text>
-                {student.first_name} {student.last_name}
-              </Text>
-              <Group>
-                <Text>{student.email}</Text>
-                <ActionIcon
-                  variant="subtle"
-                  color="sazim-purple"
-                  onClick={() => handleRemoveStudent(student.id)}
-                >
-                  <IconTrash />
-                </ActionIcon>
-              </Group>
-            </Flex>
-          ))}
-        </SimpleGrid>
+        <StudentList
+          students={students}
+          currentUser={currentUser}
+          handleRemoveStudent={handleRemoveStudent}
+        />
       ) : (
         <Text>No students found for this classroom.</Text>
       )}
