@@ -1,7 +1,7 @@
 import { Badge, Card, Group, Image, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
-const ClassroomCard = ({ classroom }) => {
+const ClassroomCard = ({ classroom, currentUser }) => {
   const navigate = useNavigate();
 
   return (
@@ -13,6 +13,7 @@ const ClassroomCard = ({ classroom }) => {
       key={classroom.id}
       h={330}
       onClick={() => navigate(`/classroom/${classroom.id}/stream`)}
+      withBorder
     >
       <Card.Section>
         <Image
@@ -39,6 +40,12 @@ const ClassroomCard = ({ classroom }) => {
           minute: "2-digit",
         })}
       </Text>
+      {currentUser.role === "student" ? (
+        <Text size="sm">
+          <strong>Teacher:</strong>{" "}
+          {`${classroom.teacher.first_name} ${classroom.teacher.last_name}`}
+        </Text>
+      ) : null}
     </Card>
   );
 };

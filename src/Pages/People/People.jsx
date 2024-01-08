@@ -75,9 +75,11 @@ const People = ({ classroom }) => {
       }
     };
 
-    fetchAllNotEnrolledStudents();
+    if (currentUser.role === "teacher") {
+      fetchAllNotEnrolledStudents();
+    }
     fetchClassroomStudents();
-  }, [classroom.id, dispatch]);
+  }, [classroom.id, dispatch, currentUser]);
 
   const handleRemoveStudent = async (studentId) => {
     try {
@@ -123,9 +125,10 @@ const People = ({ classroom }) => {
 
   return (
     <Box mx="xs" py="sm" px="xl" mih={"100vh"} width={"100%"}>
-      <TeacherHeadingAndList classroom={classroom} />
+      <TeacherHeadingAndList classroom={classroom} currentUser={currentUser} />
       <StudentHeadingAndAddButton
         setIsAddStudentModalOpen={setIsAddStudentModalOpen}
+        currentUser={currentUser}
       />
       <Divider my="sm" />
       {students.length > 0 ? (

@@ -4,7 +4,7 @@ import { notifications } from "@mantine/notifications";
 
 import { createPost } from "../../Api/StreamMethods";
 
-const CreatePostForm = ({ classroom, setPosts }) => {
+const CreatePostForm = ({ classroom }) => {
   const form = useForm({
     initialValues: {
       text: "",
@@ -17,8 +17,6 @@ const CreatePostForm = ({ classroom, setPosts }) => {
         classroom_id: classroom.id,
         text: values.text,
       });
-
-      setPosts((prevState) => [response.data.new_message, ...prevState]);
 
       if (response.data.new_message) {
         notifications.show({

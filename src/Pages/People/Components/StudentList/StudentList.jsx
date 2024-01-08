@@ -7,7 +7,11 @@ const StudentList = ({ students, currentUser, handleRemoveStudent }) => {
       {students.map((student) => (
         <Flex key={student.id} justify={"space-between"}>
           <Text>
-            {student.first_name} {student.last_name}
+            {student.first_name} {student.last_name}{" "}
+            {currentUser.role === "student" &&
+            student.email === currentUser.email
+              ? "(you)"
+              : null}
           </Text>
           <Group>
             <Text>{student.email}</Text>

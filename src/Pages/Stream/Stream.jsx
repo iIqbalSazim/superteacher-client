@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Box, Flex, Grid, Paper, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import ActionCable from "actioncable";
 
 import StreamHeader from "./Components/StreamHeader/StreamHeader";
 import SubjectDetails from "./Components/SubjectDetails/SubjectDetails";
@@ -11,6 +12,8 @@ import { getStreamPosts } from "./Api/StreamMethods";
 
 const Stream = ({ classroom, setClassroom }) => {
   const [posts, setPosts] = useState([]);
+
+  const cable = ActionCable.createConsumer("ws://localhost:3000/cable");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +46,24 @@ const Stream = ({ classroom, setClassroom }) => {
     fetchData();
   }, [classroom.id]);
 
+  useEffect(() => {
+    const subscription = cable.subscriptions.create(
+      {
+        channel: "GlobalChatChannel",
+        classroom_id: classroom.id,
+      },
+      {
+        received: (data) => {
+          setPosts([data, ...posts]);
+        },
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [cable.subscriptions, classroom.id, posts, setPosts]);
+
   return (
     <Box mx={"auto"} py={"sm"} px={"xl"} mih={"100vh"} width={"100%"}>
       <StreamHeader classroom={classroom} setClassroom={setClassroom} />
@@ -54,15 +75,11 @@ const Stream = ({ classroom, setClassroom }) => {
         <Paper pt={"xl"} p={"lg"} w={"100%"} radius={"md"}>
           <Grid h={"100%"}>
             <Grid.Col span={12}>
-              <CreatePostForm classroom={classroom} setPosts={setPosts} />
+              <CreatePostForm classroom={classroom} />
             </Grid.Col>
             <Grid.Col span={12} h={"100%"}>
               {posts.length !== 0 ? (
-                <StreamBody
-                  classroom={classroom}
-                  posts={posts}
-                  setPosts={setPosts}
-                />
+                <StreamBody posts={posts} />
               ) : (
                 <Flex justify={"center"} align={"center"} h={"100%"}>
                   <Title order={2} c={"sazim-blue"} mt={"xl"} pt={"xl"}>
