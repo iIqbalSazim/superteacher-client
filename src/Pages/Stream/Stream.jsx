@@ -9,7 +9,7 @@ import StreamBody from "./Components/StreamBody/StreamBody";
 import CreatePostForm from "./Components/CreatePostForm/CreatePostForm";
 import { getStreamPosts } from "./Api/StreamMethods";
 
-const Stream = ({ classroom }) => {
+const Stream = ({ classroom, setClassroom }) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const Stream = ({ classroom }) => {
 
   return (
     <Box mx={"auto"} py={"sm"} px={"xl"} mih={"100vh"} width={"100%"}>
-      <StreamHeader classroom={classroom} />
+      <StreamHeader classroom={classroom} setClassroom={setClassroom} />
       <Flex mt={"xl"}>
         <Flex direction={"column"} gap={"xl"}>
           <SubjectDetails classroom={classroom} />
@@ -54,11 +54,7 @@ const Stream = ({ classroom }) => {
         <Paper pt={"xl"} p={"lg"} w={"100%"} radius={"md"}>
           <Grid h={"100%"}>
             <Grid.Col span={12}>
-              <CreatePostForm
-                classroom={classroom}
-                posts={posts}
-                setPosts={setPosts}
-              />
+              <CreatePostForm classroom={classroom} setPosts={setPosts} />
             </Grid.Col>
             <Grid.Col span={12} h={"100%"}>
               {posts.length !== 0 ? (

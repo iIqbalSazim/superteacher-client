@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 const INITIAL_STATE = {
   classrooms: [],
   classroomStudents: [],
@@ -19,6 +20,24 @@ const classroomReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         classroomStudents: action.payload,
+      };
+    case "REMOVE_CLASSROOM":
+      const classroomIdToRemove = action.payload;
+      const updatedClassroomsAfterRemoval = state.classrooms.filter(
+        (classroom) => classroom.id !== classroomIdToRemove
+      );
+      return {
+        ...state,
+        classrooms: updatedClassroomsAfterRemoval,
+      };
+    case "UPDATE_CLASSROOM":
+      const updatedClassroom = action.payload;
+      const updatedClassrooms = state.classrooms.map((classroom) =>
+        classroom.id === updatedClassroom.id ? updatedClassroom : classroom
+      );
+      return {
+        ...state,
+        classrooms: updatedClassrooms,
       };
     case "RESET":
       return INITIAL_STATE;

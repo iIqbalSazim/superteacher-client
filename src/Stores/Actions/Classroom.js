@@ -8,6 +8,16 @@ export const updateClassrooms = (classroom) => ({
   payload: classroom,
 });
 
+export const removeClassroom = (classroomId) => ({
+  type: "REMOVE_CLASSROOM",
+  payload: classroomId,
+});
+
+export const updateClassroom = (classroomId) => ({
+  type: "UPDATE_CLASSROOM",
+  payload: classroomId,
+});
+
 export const setClassroomStudents = (classroomStudents) => ({
   type: "SET_CLASSROOM_STUDENTS",
   payload: classroomStudents,
