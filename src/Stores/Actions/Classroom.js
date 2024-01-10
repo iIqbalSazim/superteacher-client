@@ -23,6 +23,11 @@ export const setClassroomStudents = (classroomStudents) => ({
   payload: classroomStudents,
 });
 
+export const setClassroomResources = (classroomResources) => ({
+  type: "SET_CLASSROOM_RESOURCES",
+  payload: classroomResources,
+});
+
 export const updateClassroomStudents = (classroomStudent) => ({
   type: "UPDATE_CLASSROOM_STUDENTS",
   payload: classroomStudent,

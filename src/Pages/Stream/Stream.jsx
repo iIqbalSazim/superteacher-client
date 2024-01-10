@@ -1,19 +1,30 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Box, Flex, Grid, Paper, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import ActionCable from "actioncable";
 
+import { getStreamPosts } from "./Api/StreamMethods";
 import StreamHeader from "./Components/StreamHeader/StreamHeader";
 import SubjectDetails from "./Components/SubjectDetails/SubjectDetails";
-import Upcoming from "./Components/Upcoming/Upcoming";
 import StreamBody from "./Components/StreamBody/StreamBody";
 import CreatePostForm from "./Components/CreatePostForm/CreatePostForm";
-import { getStreamPosts } from "./Api/StreamMethods";
+import ClassMeetLink from "./Components/ClassMeetLink/ClassMeetLink";
+import AddMeetLinkFormModal from "./Components/AddMeetLinkFormModal/AddMeetLinkFormModal";
+import AddMeetLinkButton from "./Components/AddMeetLinkButton/AddMeetLinkButton";
 
 const Stream = ({ classroom, setClassroom }) => {
   const [posts, setPosts] = useState([]);
 
+  const [isAddMeetLinkFormModalOpen, setIsAddMeetLinkFormModalOpen] =
+    useState(false);
+
+  const closeAddMeetLinkFormModal = () => {
+    setIsAddMeetLinkFormModalOpen(false);
+  };
+
   const cable = ActionCable.createConsumer("ws://localhost:3000/cable");
+  const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,8 +80,22 @@ const Stream = ({ classroom, setClassroom }) => {
       <StreamHeader classroom={classroom} setClassroom={setClassroom} />
       <Flex mt={"xl"}>
         <Flex direction={"column"} gap={"xl"}>
+          {classroom.meet_link ? (
+            <ClassMeetLink
+              setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
+              classroom={classroom}
+              currentUser={currentUser}
+            />
+          ) : (
+            <>
+              {currentUser.role === "teacher" ? (
+                <AddMeetLinkButton
+                  setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
+                />
+              ) : null}
+            </>
+          )}
           <SubjectDetails classroom={classroom} />
-          <Upcoming />
         </Flex>
         <Paper pt={"xl"} p={"lg"} w={"100%"} radius={"md"}>
           <Grid h={"100%"}>
@@ -91,6 +116,12 @@ const Stream = ({ classroom, setClassroom }) => {
           </Grid>
         </Paper>
       </Flex>
+      <AddMeetLinkFormModal
+        open={isAddMeetLinkFormModalOpen}
+        close={closeAddMeetLinkFormModal}
+        classroom={classroom}
+        setClassroom={setClassroom}
+      />
     </Box>
   );
 };

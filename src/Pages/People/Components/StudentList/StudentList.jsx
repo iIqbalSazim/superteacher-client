@@ -1,7 +1,73 @@
+import { useDispatch } from "react-redux";
 import { ActionIcon, Flex, Group, SimpleGrid, Text } from "@mantine/core";
 import { IconTrash } from "@tabler/icons-react";
+import { notifications } from "@mantine/notifications";
 
-const StudentList = ({ students, currentUser, handleRemoveStudent }) => {
+import { setClassroomStudents } from "@/Stores/Actions/Classroom";
+
+import { removeStudentFromClassroom } from "../../Api/PeopleMethods";
+import ConfirmRemoveStudentModal from "../ConfirmRemoveStudentModal/ConfirmRemoveStudentModal";
+import { useState } from "react";
+
+const StudentList = ({
+  classroom,
+  students,
+  currentUser,
+  notEnrolledStudents,
+  setNotEnrolledStudents,
+  setStudents,
+}) => {
+  const [isConfirmRemoveStudentModalOpen, setIsConfirmRemoveStudentModalOpen] =
+    useState(false);
+  const [studentToBeRemoved, setStudentToBeRemoved] = useState(null);
+
+  const closeConfirmRemoveStudentModal = () => {
+    setIsConfirmRemoveStudentModalOpen(false);
+  };
+
+  const dispatch = useDispatch();
+
+  const removeStudent = async (studentId) => {
+    try {
+      const response = await removeStudentFromClassroom({
+        classroom_student: {
+          classroom_id: classroom.id,
+          student_id: studentId,
+        },
+      });
+
+      const removedStudent = response.data.removed_student;
+
+      setStudents((prevStudents) =>
+        prevStudents.filter((student) => student.id !== removedStudent.id)
+      );
+
+      setNotEnrolledStudents([...notEnrolledStudents, removedStudent]);
+
+      dispatch(setClassroomStudents(response.data.students));
+
+      notifications.show({
+        color: "sazim-purple.5",
+        title: "Success",
+        message: "Student successfully removed",
+      });
+    } catch (error) {
+      let message;
+      if (error.data) {
+        message = error.data.message;
+      } else {
+        message = error.message;
+      }
+
+      if (message) {
+        notifications.show({
+          color: "red",
+          title: "Error",
+          message: message,
+        });
+      }
+    }
+  };
   return (
     <SimpleGrid>
       {students.map((student) => (
@@ -19,7 +85,10 @@ const StudentList = ({ students, currentUser, handleRemoveStudent }) => {
               <ActionIcon
                 variant="subtle"
                 color="sazim-purple"
-                onClick={() => handleRemoveStudent(student.id)}
+                onClick={() => {
+                  setIsConfirmRemoveStudentModalOpen(true);
+                  setStudentToBeRemoved(student);
+                }}
               >
                 <IconTrash />
               </ActionIcon>
@@ -27,6 +96,14 @@ const StudentList = ({ students, currentUser, handleRemoveStudent }) => {
           </Group>
         </Flex>
       ))}
+      {studentToBeRemoved ? (
+        <ConfirmRemoveStudentModal
+          open={isConfirmRemoveStudentModalOpen !== false}
+          close={closeConfirmRemoveStudentModal}
+          removeStudent={removeStudent}
+          student={studentToBeRemoved}
+        />
+      ) : null}
     </SimpleGrid>
   );
 };

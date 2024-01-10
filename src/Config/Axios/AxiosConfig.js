@@ -64,6 +64,21 @@ export async function postRequest(URL, payload) {
   return axiosClient.post(`/${URL}`, payload).then((response) => response);
 }
 
+export async function postRequestWithCustomHeaders(
+  URL,
+  payload,
+  customHeaders = {}
+) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...customHeaders,
+  };
+
+  return axiosClient
+    .post(`/${URL}`, payload, { headers })
+    .then((response) => response);
+}
+
 export async function putRequest(URL, payload) {
   return axiosClient.put(`/${URL}`, payload).then((response) => response);
 }

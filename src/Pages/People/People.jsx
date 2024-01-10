@@ -8,7 +8,6 @@ import { setClassroomStudents } from "@/Stores/Actions/Classroom";
 import {
   getAllNotEnrolledStudents,
   getClassroomStudents,
-  removeStudentFromClassroom,
 } from "./Api/PeopleMethods";
 import AddStudentModal from "./Components/AddStudentModal/AddStudentModal";
 import StudentList from "./Components/StudentList/StudentList";
@@ -81,48 +80,6 @@ const People = ({ classroom }) => {
     fetchClassroomStudents();
   }, [classroom.id, dispatch, currentUser]);
 
-  const handleRemoveStudent = async (studentId) => {
-    try {
-      const response = await removeStudentFromClassroom({
-        classroom_student: {
-          classroom_id: classroom.id,
-          student_id: studentId,
-        },
-      });
-
-      const removedStudent = response.data.removed_student;
-
-      setStudents((prevStudents) =>
-        prevStudents.filter((student) => student.id !== removedStudent.id)
-      );
-
-      setNotEnrolledStudents([...notEnrolledStudents, removedStudent]);
-
-      dispatch(setClassroomStudents(response.data.students));
-
-      notifications.show({
-        color: "sazim-purple.5",
-        title: "Success",
-        message: "Student successfully removed",
-      });
-    } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
-    }
-  };
-
   return (
     <Box mx="xs" py="sm" px="xl" mih={"100vh"} width={"100%"}>
       <TeacherHeadingAndList classroom={classroom} currentUser={currentUser} />
@@ -133,9 +90,13 @@ const People = ({ classroom }) => {
       <Divider my="sm" />
       {students.length > 0 ? (
         <StudentList
+          classroom={classroom}
           students={students}
           currentUser={currentUser}
-          handleRemoveStudent={handleRemoveStudent}
+          notEnrolledStudents={notEnrolledStudents}
+          setNotEnrolledStudents={setNotEnrolledStudents}
+          setStudents={setStudents}
+          setClassroomStudents={setClassroomStudents}
         />
       ) : (
         <Text>No students found for this classroom.</Text>

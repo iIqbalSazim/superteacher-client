@@ -52,7 +52,7 @@ const Classroom = () => {
             <Stream classroom={classroom} setClassroom={setClassroom} />
           </Tabs.Panel>
           <Tabs.Panel value="classwork">
-            <Classwork />
+            <Classwork classroom={classroom} />
           </Tabs.Panel>
           <Tabs.Panel value="people">
             <People classroom={classroom} />

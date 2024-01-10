@@ -2,6 +2,7 @@
 const INITIAL_STATE = {
   classrooms: [],
   classroomStudents: [],
+  classroomResources: [],
 };
 
 const classroomReducer = (state = INITIAL_STATE, action) => {
@@ -20,6 +21,11 @@ const classroomReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         classroomStudents: action.payload,
+      };
+    case "SET_CLASSROOM_RESOURCES":
+      return {
+        ...state,
+        classroomResources: action.payload,
       };
     case "REMOVE_CLASSROOM":
       const classroomIdToRemove = action.payload;

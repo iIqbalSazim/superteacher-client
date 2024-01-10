@@ -51,7 +51,6 @@ const StudentForm = () => {
       const response = await createNewUser({
         user: { ...values, role: "student" },
       });
-      console.log(response.data);
 
       const newUser = response.data.user;
 
