@@ -26,6 +26,7 @@ import TeacherFormSchema from "../../Validation/TeacherFormSchema";
 const TeacherForm = () => {
   const form = useForm({
     initialValues: {
+      code: "",
       email: "",
       password: "",
       confirm_password: "",
@@ -47,7 +48,6 @@ const TeacherForm = () => {
       const response = await createNewUser({
         user: { ...values, role: "teacher" },
       });
-      console.log(response.data);
 
       const newUser = response.data.user;
 
@@ -98,6 +98,15 @@ const TeacherForm = () => {
       <Box maw={700} mx="auto">
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <Grid gutter={"md"} grow>
+            <Grid.Col span={12}>
+              <TextInput
+                size={"md"}
+                label="Enter registration code"
+                placeholder="Enter unique code, e.g. ceb486"
+                withAsterisk
+                {...form.getInputProps("code")}
+              />
+            </Grid.Col>
             <Grid.Col span={4}>
               <TextInput
                 size={"md"}
