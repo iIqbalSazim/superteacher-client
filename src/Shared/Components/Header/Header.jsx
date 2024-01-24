@@ -23,6 +23,10 @@ const Header = () => {
 
   const currentUser = useSelector((state) => state.auth.user);
 
+  const handleProfileClick = async () => {
+    navigate(`/profile/${currentUser.id}`);
+  };
+
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     try {
@@ -106,7 +110,7 @@ const Header = () => {
           </Menu.Target>
 
           <Menu.Dropdown>
-            <Menu.Item>Profile</Menu.Item>
+            <Menu.Item onClick={handleProfileClick}>Profile</Menu.Item>
             <Menu.Item onClick={handleLogout}>Logout</Menu.Item>
           </Menu.Dropdown>
         </Menu>

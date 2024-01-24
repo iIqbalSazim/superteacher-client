@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Tabs, Title } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { Tabs, Title } from "@mantine/core";
 
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 

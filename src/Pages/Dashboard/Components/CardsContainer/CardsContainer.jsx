@@ -1,5 +1,5 @@
-import { Flex, Group, Title } from "@mantine/core";
 import { useSelector } from "react-redux";
+import { Flex, Group, Title } from "@mantine/core";
 
 import ClassroomCard from "../ClassroomCard/ClassroomCard";
 import CreateClassroomButton from "../CreateClassroomButton/CreateClassroomButton";

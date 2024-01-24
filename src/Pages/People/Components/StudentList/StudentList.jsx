@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { ActionIcon, Flex, Group, SimpleGrid, Text } from "@mantine/core";
-import { IconTrash } from "@tabler/icons-react";
 import { notifications } from "@mantine/notifications";
+import { IconTrash } from "@tabler/icons-react";
 
 import { setClassroomStudents } from "@/Stores/Actions/Classroom";
 

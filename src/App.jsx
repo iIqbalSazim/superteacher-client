@@ -12,6 +12,7 @@ import Landing from "./Pages/Landing/Landing";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Classroom from "./Pages/Classroom/Classroom";
 import Header from "./Shared/Components/Header/Header";
+import Profile from "./Pages/Profile/Profile";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -49,6 +50,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Classroom />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/:id"
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           }
         />
