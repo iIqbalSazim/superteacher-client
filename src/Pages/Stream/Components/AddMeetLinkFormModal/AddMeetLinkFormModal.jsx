@@ -8,7 +8,8 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { useForm } from "@mantine/form";
+import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
 import { updateClassroom } from "@/Stores/Actions/Classroom";

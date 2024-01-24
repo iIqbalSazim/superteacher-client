@@ -1,5 +1,5 @@
-import { Badge, Card, Group, Image, Text } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { Badge, Card, Group, Image, Text } from "@mantine/core";
 
 const ClassroomCard = ({ classroom, currentUser }) => {
   const navigate = useNavigate();

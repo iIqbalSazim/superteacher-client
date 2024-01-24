@@ -1,5 +1,5 @@
-import { Button, Flex, Group, Modal, Title } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { Button, Flex, Group, Modal, Title } from "@mantine/core";
 import { IconBooks, IconSchool } from "@tabler/icons-react";
 
 const RoleSelectionModal = ({ open, close }) => {

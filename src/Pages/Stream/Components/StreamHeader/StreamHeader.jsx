@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   ActionIcon,
   BackgroundImage,
@@ -7,7 +8,6 @@ import {
   Title,
 } from "@mantine/core";
 import { IconDots } from "@tabler/icons-react";
-import { useState } from "react";
 
 import ConfirmDeleteClassroomModal from "../ConfirmDeleteClassroomModal/ConfirmDeleteClassroomModal";
 import EditClassroomFormModal from "../EditClassroomFormModal/EditClassroomFormModal";

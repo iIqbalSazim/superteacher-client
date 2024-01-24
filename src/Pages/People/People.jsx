@@ -66,11 +66,13 @@ const People = ({ classroom }) => {
           message = error.message;
         }
 
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
+        if (message) {
+          notifications.show({
+            color: "red",
+            title: "Error",
+            message: message,
+          });
+        }
       }
     };
 

@@ -1,5 +1,5 @@
-import { Button, Group } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { Button, Group } from "@mantine/core";
 
 const AuthOptions = ({ setIsRoleSelectionModalOpen }) => {
   const navigate = useNavigate();
