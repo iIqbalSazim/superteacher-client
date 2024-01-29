@@ -19,7 +19,7 @@ const ConfirmRemoveStudentModal = ({ open, close, removeStudent, student }) => {
             }}
             color="sazim-purple"
           >
-            Confirm Remove
+            Confirm
           </Button>
         </Group>
       </Box>

@@ -37,15 +37,15 @@ const Classroom = () => {
           value={tabValue}
           onChange={(value) => navigate(`/classroom/${classroom.id}/${value}`)}
         >
-          <Tabs.List mx={"xl"}>
+          <Tabs.List mx={{ base: "", xs: "xs", sm: "md", md: "xl" }} grow>
             <Tabs.Tab bg={"inherit"} value="stream">
-              <Title order={4}>Stream</Title>
+              <Title order={5}>Stream</Title>
             </Tabs.Tab>
             <Tabs.Tab bg={"inherit"} value="classwork">
-              <Title order={4}>Classwork</Title>
+              <Title order={5}>Classwork</Title>
             </Tabs.Tab>
             <Tabs.Tab bg={"inherit"} value="people">
-              <Title order={4}>People</Title>
+              <Title order={5}>People</Title>
             </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="stream">

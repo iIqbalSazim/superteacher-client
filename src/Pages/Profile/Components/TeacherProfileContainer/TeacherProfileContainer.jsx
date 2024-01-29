@@ -2,8 +2,8 @@ import { useState } from "react";
 import { ActionIcon, Flex, SimpleGrid } from "@mantine/core";
 import { IconEdit, IconX } from "@tabler/icons-react";
 
-import TeacherUpdateProfileForm from "../TeacherUpdateProfileForm/TeacherUpdateProfileForm";
 import TeacherProfile from "../TeacherProfile/TeacherProfile";
+import TeacherUpdateProfileForm from "../TeacherUpdateProfileForm/TeacherUpdateProfileForm";
 
 const TeacherProfileContainer = ({ profile, setProfile }) => {
   const [editTeacherProfile, setEditTeacherProfile] = useState(false);
@@ -12,7 +12,6 @@ const TeacherProfileContainer = ({ profile, setProfile }) => {
     <SimpleGrid>
       <Flex justify="flex-end">
         <ActionIcon
-          mx={"xl"}
           onClick={() => setEditTeacherProfile(!editTeacherProfile)}
           color="sazim-green"
           variant="outline"

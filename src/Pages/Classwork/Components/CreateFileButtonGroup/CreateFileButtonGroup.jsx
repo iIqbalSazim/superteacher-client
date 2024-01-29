@@ -26,9 +26,8 @@ const CreateFileButtonGroup = ({ setUploadedResources, classroom }) => {
   };
 
   return (
-    <Group gap={"xl"}>
+    <Group gap={"xl"} my={"xl"}>
       <Button
-        my={"md"}
         size="md"
         radius={"md"}
         leftSection={openCreateButton ? <IconX /> : <IconPlus />}
@@ -39,7 +38,7 @@ const CreateFileButtonGroup = ({ setUploadedResources, classroom }) => {
         <Text fw={500}>Create</Text>
       </Button>
       {openCreateButton ? (
-        <Group gap={"lg"} my={"md"}>
+        <Group gap={"lg"}>
           <Button
             size="md"
             radius={"md"}

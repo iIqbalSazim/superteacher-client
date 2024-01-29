@@ -4,11 +4,10 @@ import { IconPlus } from "@tabler/icons-react";
 const AddMeetLinkButton = ({ setIsAddMeetLinkFormModalOpen }) => {
   return (
     <Button
-      variant="filled"
-      color="sazim-green"
+      variant="outline"
+      color="green"
       onClick={() => setIsAddMeetLinkFormModalOpen(true)}
       leftSection={<IconPlus />}
-      mx={"xl"}
     >
       Add meet link
     </Button>

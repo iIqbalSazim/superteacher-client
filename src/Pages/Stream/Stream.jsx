@@ -4,7 +4,6 @@ import { Box, Flex, Grid, Paper, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import ActionCable from "actioncable";
 
-import { getStreamPosts } from "./Api/StreamMethods";
 import StreamHeader from "./Components/StreamHeader/StreamHeader";
 import SubjectDetails from "./Components/SubjectDetails/SubjectDetails";
 import StreamBody from "./Components/StreamBody/StreamBody";
@@ -12,6 +11,7 @@ import CreatePostForm from "./Components/CreatePostForm/CreatePostForm";
 import ClassMeetLink from "./Components/ClassMeetLink/ClassMeetLink";
 import AddMeetLinkFormModal from "./Components/AddMeetLinkFormModal/AddMeetLinkFormModal";
 import AddMeetLinkButton from "./Components/AddMeetLinkButton/AddMeetLinkButton";
+import { getStreamPosts } from "./Api/StreamMethods";
 
 const Stream = ({ classroom, setClassroom }) => {
   const [posts, setPosts] = useState([]);
@@ -76,10 +76,33 @@ const Stream = ({ classroom, setClassroom }) => {
   }, [cable.subscriptions, classroom.id, posts, setPosts]);
 
   return (
-    <Box mx={"auto"} py={"sm"} px={"xl"} mih={"100vh"} width={"100%"}>
+    <Box
+      mx={"auto"}
+      py={"sm"}
+      px={{ base: "", xs: "xs", sm: "md", md: "xl" }}
+      mih={"100vh"}
+      width={"100%"}
+    >
       <StreamHeader classroom={classroom} setClassroom={setClassroom} />
-      <Flex mt={"xl"}>
-        <Flex direction={"column"} gap={"xl"}>
+      <Flex mt={"lg"} direction={{ base: "column", md: "row" }}>
+        <Box hiddenFrom="md" mb={"md"}>
+          {classroom.meet_link ? (
+            <ClassMeetLink
+              setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
+              classroom={classroom}
+              currentUser={currentUser}
+            />
+          ) : (
+            <>
+              {currentUser.role === "teacher" ? (
+                <AddMeetLinkButton
+                  setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
+                />
+              ) : null}
+            </>
+          )}
+        </Box>
+        <Flex direction={"column"} gap={"lg"} visibleFrom="md" mr={"lg"}>
           {classroom.meet_link ? (
             <ClassMeetLink
               setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
@@ -97,7 +120,7 @@ const Stream = ({ classroom, setClassroom }) => {
           )}
           <SubjectDetails classroom={classroom} />
         </Flex>
-        <Paper pt={"xl"} p={"lg"} w={"100%"} radius={"md"}>
+        <Paper pt={"xl"} p={"lg"} w={"100%"} radius={"md"} mih={"60vh"}>
           <Grid h={"100%"}>
             <Grid.Col span={12}>
               <CreatePostForm classroom={classroom} />
@@ -107,7 +130,7 @@ const Stream = ({ classroom, setClassroom }) => {
                 <StreamBody posts={posts} />
               ) : (
                 <Flex justify={"center"} align={"center"} h={"100%"}>
-                  <Title order={2} c={"sazim-blue"} mt={"xl"} pt={"xl"}>
+                  <Title order={2} c={"sazim-blue"} my={"xl"} py={"xl"}>
                     This is where you share things with the class.
                   </Title>
                 </Flex>

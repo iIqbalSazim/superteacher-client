@@ -90,8 +90,8 @@ const CreateAssignmentFormModal = ({
   };
 
   return (
-    <Modal opened={open} onClose={close} size={"md"} centered px={"xl"}>
-      <Box mx="xl">
+    <Modal opened={open} onClose={close} size={"md"} centered>
+      <Box mx={{ base: "xs", sm: "xl" }}>
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Create Assignment
         </Text>

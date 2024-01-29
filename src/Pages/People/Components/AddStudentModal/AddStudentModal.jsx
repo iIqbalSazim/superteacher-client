@@ -69,14 +69,14 @@ const AddStudentModal = ({
   };
 
   return (
-    <Modal opened={open} onClose={close} size={"md"} centered px={"xl"}>
+    <Modal opened={open} onClose={close} size={"md"} centered>
       <Box mx="xl">
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Enroll a Student
         </Text>
         {notEnrolledStudents.length > 0 ? (
           <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-            <SimpleGrid gutter={"sm"}>
+            <SimpleGrid>
               <Select
                 label="Type a name"
                 placeholder="Pick student"

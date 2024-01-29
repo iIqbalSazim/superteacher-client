@@ -1,11 +1,4 @@
-import {
-  ActionIcon,
-  Anchor,
-  Group,
-  Paper,
-  SimpleGrid,
-  Title,
-} from "@mantine/core";
+import { ActionIcon, Anchor, Flex, Group, Paper, Title } from "@mantine/core";
 import { IconEditCircle } from "@tabler/icons-react";
 
 const ClassMeetLink = ({
@@ -15,16 +8,16 @@ const ClassMeetLink = ({
 }) => {
   return (
     <Paper
-      w={"300"}
-      py={"xl"}
+      w={{ base: "auto" }}
+      py={{ base: "xs", md: "xl" }}
+      px={{ base: "md" }}
       ta={"center"}
       radius={"md"}
       withBorder
-      mr={"xl"}
       shadow="xl"
     >
-      <SimpleGrid>
-        <Title order={3} c={"sazim-blue"}>
+      <Flex direction={"column"} gap="sm" justify={"center"}>
+        <Title order={3} c={"sazim-blue"} visibleFrom="md">
           Meet link
         </Title>
         <Group justify="center">
@@ -47,7 +40,7 @@ const ClassMeetLink = ({
             </ActionIcon>
           ) : null}
         </Group>
-      </SimpleGrid>
+      </Flex>
     </Paper>
   );
 };

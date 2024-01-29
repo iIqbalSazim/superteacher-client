@@ -15,7 +15,7 @@ import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
-import { loginSuccess } from "@/Stores/Actions/Auth";
+import { setUser } from "@/Stores/Actions/Auth";
 
 import { loginUser } from "../../Api/LoginMethods";
 import LoginFormSchema from "../../Validation/LoginFormSchema";
@@ -40,7 +40,7 @@ const LoginForm = () => {
 
       const token = response.data.token.access_token;
 
-      dispatch(loginSuccess(newUser));
+      dispatch(setUser(newUser));
 
       localStorage.setItem("token", token);
 
@@ -78,6 +78,7 @@ const LoginForm = () => {
       align="center"
       direction="column"
       style={{ minHeight: "100vh" }}
+      m={"lg"}
     >
       <Text my={20} fw={700} tt={"uppercase"} size="xl">
         Login

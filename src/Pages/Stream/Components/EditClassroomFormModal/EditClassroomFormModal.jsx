@@ -78,12 +78,12 @@ const EditClassroomFormModal = ({ open, close, classroom, setClassroom }) => {
 
   return (
     <Modal opened={open} onClose={close} size={"md"} centered>
-      <Box mx="xl">
+      <Box mx={{ base: "xs", sm: "lg" }}>
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Edit Classroom
         </Text>
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <SimpleGrid gutter={"sm"}>
+          <SimpleGrid>
             <TextInput
               size="sm"
               label="Title"

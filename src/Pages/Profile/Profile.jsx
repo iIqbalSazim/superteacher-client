@@ -6,9 +6,9 @@ import { notifications } from "@mantine/notifications";
 
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 
-import { getStudentProfile, getTeacherProfile } from "./Api/ProfileMethods";
 import TeacherProfileContainer from "./Components/TeacherProfileContainer/TeacherProfileContainer";
 import StudentProfileContainer from "./Components/StudentProfileContainer/StudentProfileContainer";
+import { getStudentProfile, getTeacherProfile } from "./Api/ProfileMethods";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);

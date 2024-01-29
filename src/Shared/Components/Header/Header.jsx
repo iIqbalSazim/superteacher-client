@@ -63,17 +63,21 @@ const Header = () => {
       shadow={"xl"}
       bg={"sazim-blue.8"}
     >
-      <Group>
-        <Anchor component={Link} underline="never" ml={"xs"} to={"/dashboard"}>
-          <Title fw={400} order={3} c={"white"}>
-            Superteacher
-          </Title>
-        </Anchor>
-      </Group>
+      <Anchor component={Link} underline="never" ml={"xs"} to={"/dashboard"}>
+        <Title fw={400} order={4} c={"white"}>
+          Superteacher
+        </Title>
+      </Anchor>
 
       <Group>
-        <Anchor component={Link} underline="never" ml={"xs"} to={"/dashboard"}>
-          <Title fw={400} order={4} c={"white"}>
+        <Anchor
+          component={Link}
+          underline="never"
+          ml={"xs"}
+          to={"/dashboard"}
+          visibleFrom="xs"
+        >
+          <Title fw={400} order={5} c={"white"}>
             Dashboard
           </Title>
         </Anchor>
@@ -82,7 +86,6 @@ const Header = () => {
             <ActionIcon
               variant="subtle"
               color="white"
-              size={"xl"}
               aria-label="Create classroom"
               onClick={() => setIsClassroomFormModalOpen(true)}
             >
@@ -97,15 +100,14 @@ const Header = () => {
 
         <Menu
           shadow="xl"
-          size="md"
           transitionProps={{ transition: "pop-top-right", duration: 200 }}
           withArrow
           offset={3}
           position="bottom-end"
         >
           <Menu.Target>
-            <Button size="sm" color="white" variant={"outline"}>
-              {currentUser.first_name}
+            <Button color="white" variant={"outline"}>
+              {currentUser.first_name.slice(0, 12)}
             </Button>
           </Menu.Target>
 

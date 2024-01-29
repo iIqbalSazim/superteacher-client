@@ -17,50 +17,50 @@ const TeacherProfile = ({ profile }) => {
   ));
 
   return (
-    <Grid gutter={"xl"} grow mx={"xl"} px={"lg"}>
-      <Grid.Col span={6}>
+    <Grid gutter={"xl"} grow mx={"lg"} px={"lg"}>
+      <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Email
         </Title>
         <Title order={3}>{profile.teacher.email}</Title>
       </Grid.Col>
 
-      <Grid.Col span={6}>
+      <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Gender
         </Title>
         <Title order={3}>{profile.teacher.gender}</Title>
       </Grid.Col>
 
-      <Grid.Col span={6}>
+      <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           First name
         </Title>
         <Title order={3}>{profile.teacher.first_name}</Title>
       </Grid.Col>
 
-      <Grid.Col span={6}>
+      <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Last name
         </Title>
         <Title order={3}>{profile.teacher.last_name}</Title>
       </Grid.Col>
 
-      <Grid.Col span={6}>
+      <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Major Subject
         </Title>
         <Title order={3}>{profile.major_subject}</Title>
       </Grid.Col>
 
-      <Grid.Col span={6}>
+      <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Highest education level
         </Title>
         <Title order={3}>{profile.highest_education_level}</Title>
       </Grid.Col>
 
-      <Grid.Col span={12}>
+      <Grid.Col>
         <Title order={4} c={"white"}>
           Subjects to teach
         </Title>

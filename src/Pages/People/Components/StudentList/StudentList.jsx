@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { ActionIcon, Flex, Group, SimpleGrid, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -5,9 +6,8 @@ import { IconTrash } from "@tabler/icons-react";
 
 import { setClassroomStudents } from "@/Stores/Actions/Classroom";
 
-import { removeStudentFromClassroom } from "../../Api/PeopleMethods";
 import ConfirmRemoveStudentModal from "../ConfirmRemoveStudentModal/ConfirmRemoveStudentModal";
-import { useState } from "react";
+import { removeStudentFromClassroom } from "../../Api/PeopleMethods";
 
 const StudentList = ({
   classroom,
@@ -80,7 +80,7 @@ const StudentList = ({
               : null}
           </Text>
           <Group>
-            <Text>{student.email}</Text>
+            <Text visibleFrom="xs">{student.email}</Text>
             {currentUser.role === "teacher" ? (
               <ActionIcon
                 variant="subtle"

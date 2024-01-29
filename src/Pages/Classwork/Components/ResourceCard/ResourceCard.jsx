@@ -1,4 +1,12 @@
-import { Button, Card, Group, Text, ThemeIcon, Title } from "@mantine/core";
+import {
+  Button,
+  Card,
+  Flex,
+  Group,
+  Text,
+  ThemeIcon,
+  Title,
+} from "@mantine/core";
 import {
   IconBook2,
   IconClipboardText,
@@ -30,8 +38,8 @@ const ResourceCard = ({ resource }) => {
   };
 
   return (
-    <Card key={resource.title} my={"md"} padding={"md"} withBorder>
-      <Group justify="flex-start">
+    <Card key={resource.title} my={"md"} px={"sm"} withBorder>
+      <Flex justify="flex-start" wrap="wrap" gap={"sm"}>
         {resource.resource_type === "assignment" ? (
           <ThemeIcon
             radius={"xl"}
@@ -51,17 +59,17 @@ const ResourceCard = ({ resource }) => {
             <IconBook2 />
           </ThemeIcon>
         )}
-        <Title order={3}>{resource.title}</Title>
-      </Group>
-      <Group justify="space-between">
-        <Text c={"sazim-purple"} mt={"lg"} mb={"sm"}>
+        <Title order={4}>{resource.title}</Title>
+      </Flex>
+      <Group justify="space-between" mt={"lg"}>
+        <Text c={"sazim-blue"} mb={"sm"}>
           {resource.description}
         </Text>
         <Button
           onClick={() => onDownloadButtonClick(resource)}
           rightSection={<IconFileDownload />}
           color="sazim-blue"
-          size="md"
+          size="compact-sm"
         >
           Download File
         </Button>

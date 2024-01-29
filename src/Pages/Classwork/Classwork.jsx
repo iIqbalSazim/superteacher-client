@@ -43,7 +43,12 @@ const Classwork = ({ classroom }) => {
 
   const currentUser = useSelector((state) => state.auth.user);
   return (
-    <Box mx={"xl"} py={"sm"} px={"xl"} mih={"100vh"} width={"100%"}>
+    <Box
+      mx={{ base: "xs", sm: "xl" }}
+      py={"sm"}
+      px={{ base: "", sm: "md" }}
+      mih={"100vh"}
+    >
       {currentUser.role === "teacher" ? (
         <CreateFileButtonGroup
           setUploadedResources={setUploadedResources}

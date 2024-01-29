@@ -1,21 +1,18 @@
 import { useState } from "react";
-import {
-  ActionIcon,
-  BackgroundImage,
-  Flex,
-  Group,
-  Menu,
-  Title,
-} from "@mantine/core";
-import { IconDots } from "@tabler/icons-react";
+import { useSelector } from "react-redux";
+import { BackgroundImage, Box, Flex, Title } from "@mantine/core";
 
 import ConfirmDeleteClassroomModal from "../ConfirmDeleteClassroomModal/ConfirmDeleteClassroomModal";
 import EditClassroomFormModal from "../EditClassroomFormModal/EditClassroomFormModal";
+import EditClassroomMenu from "../EditClassroomMenu/EditClassroomMenu";
+import ClassroomInformationMenu from "../ClassroomInformationMenu/ClassroomInformationMenu";
 
 const StreamHeader = ({ classroom, setClassroom }) => {
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] =
     useState(false);
   const [isEditFormModalOpen, setIsEditFormModalOpen] = useState(false);
+
+  const currentUser = useSelector((state) => state.auth.user);
 
   const closeDeleteModal = () => {
     setIsConfirmDeleteModalOpen(false);
@@ -26,42 +23,39 @@ const StreamHeader = ({ classroom, setClassroom }) => {
   };
 
   return (
-    <Flex mx="auto" mih={"300"}>
+    <Box mx="auto" mih={"300"}>
       <BackgroundImage
         src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
         radius={"md"}
       >
-        <Group justify="space-between" align="flex-start">
+        <Flex justify="space-between" mih={"300"}>
           <Flex
             justify={"flex-end"}
             direction={"column"}
-            mih="300"
-            ml="xl"
+            ml={{ base: "md", sm: "xl" }}
             mb={"sm"}
           >
-            <Title fw={700} mb={10} tt={"uppercase"}>
+            <Title fw={700} tt={"uppercase"} visibleFrom="xs">
+              {classroom.title}
+            </Title>
+            <Title fw={700} tt={"uppercase"} order={2} hiddenFrom="xs">
               {classroom.title}
             </Title>
           </Flex>
 
-          <Menu shadow="xl" withArrow offset={-3} position="bottom-end">
-            <Menu.Target>
-              <ActionIcon m={"lg"} variant="transparent" color="white">
-                <IconDots />
-              </ActionIcon>
-            </Menu.Target>
+          <Flex direction={"column"} justify={"space-between"}>
+            {currentUser.role === "teacher" ? (
+              <EditClassroomMenu
+                setIsConfirmDeleteModalOpen={setIsConfirmDeleteModalOpen}
+                setIsEditFormModalOpen={setIsEditFormModalOpen}
+              />
+            ) : null}
 
-            <Menu.Dropdown>
-              <Menu.Item onClick={() => setIsEditFormModalOpen(true)}>
-                Edit
-              </Menu.Item>
-              <Menu.Item onClick={() => setIsConfirmDeleteModalOpen(true)}>
-                Delete
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
+            <ClassroomInformationMenu classroom={classroom} />
+          </Flex>
+        </Flex>
       </BackgroundImage>
+
       <ConfirmDeleteClassroomModal
         open={isConfirmDeleteModalOpen}
         close={closeDeleteModal}
@@ -74,7 +68,7 @@ const StreamHeader = ({ classroom, setClassroom }) => {
         classroom={classroom}
         setClassroom={setClassroom}
       />
-    </Flex>
+    </Box>
   );
 };
 

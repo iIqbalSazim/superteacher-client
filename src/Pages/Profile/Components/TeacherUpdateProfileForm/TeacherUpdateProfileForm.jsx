@@ -1,3 +1,4 @@
+import { useDispatch } from "react-redux";
 import {
   Button,
   Grid,
@@ -11,11 +12,13 @@ import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
 import { Subjects } from "@/Data/FormData";
+import { updateUser } from "@/Stores/Actions/Auth";
 
 import { updateTeacherProfile } from "../../Api/ProfileMethods";
 import TeacherUpdateProfileFormSchema from "../../Validation/TeacherUpdateProfileFormSchema";
 
 const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
+  const dispatch = useDispatch();
   const form = useForm({
     initialValues: {
       email: profile.teacher.email,
@@ -40,6 +43,15 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
       );
 
       setProfile(response.data.profile);
+
+      dispatch(
+        updateUser({
+          email: values.email,
+          first_name: values.first_name,
+          last_name: values.last_name,
+          gender: values.gender,
+        })
+      );
 
       notifications.show({
         color: "sazim-green",
@@ -67,8 +79,8 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
 
   return (
     <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-      <Grid gutter={"sm"} grow mx={"xl"} px={"lg"}>
-        <Grid.Col span={6}>
+      <Grid gutter={"sm"} grow mx={"lg"} px={"lg"}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Email"
@@ -78,7 +90,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <Select
             size="lg"
             label="Gender"
@@ -89,7 +101,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="First name"
@@ -99,7 +111,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Last name"
@@ -109,7 +121,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Major Subject"
@@ -119,7 +131,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <Select
             size={"lg"}
             label="Highest Education Level"

@@ -75,12 +75,12 @@ const CreateClassroomFormModal = ({ open, close }) => {
   };
   return (
     <Modal opened={open} onClose={close} size={"md"} centered>
-      <Box mx="xl">
+      <Box mx="lg">
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Create a Classroom
         </Text>
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <SimpleGrid gutter={"sm"}>
+          <SimpleGrid>
             <TextInput
               size="sm"
               label="Title"
@@ -116,7 +116,7 @@ const CreateClassroomFormModal = ({ open, close }) => {
             />
           </SimpleGrid>
 
-          <Group justify="flex-end" mt="xl" mb={"sm"}>
+          <Group justify="flex-end" mt="xl" mb="sm">
             <Button size="sm" color="sazim-green.7" onClick={close}>
               Cancel
             </Button>

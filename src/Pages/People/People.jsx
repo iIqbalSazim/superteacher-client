@@ -5,14 +5,14 @@ import { notifications } from "@mantine/notifications";
 
 import { setClassroomStudents } from "@/Stores/Actions/Classroom";
 
-import {
-  getAllNotEnrolledStudents,
-  getClassroomStudents,
-} from "./Api/PeopleMethods";
 import AddStudentModal from "./Components/AddStudentModal/AddStudentModal";
 import StudentList from "./Components/StudentList/StudentList";
 import TeacherHeadingAndList from "./Components/TeacherHeadingAndList/TeacherHeadingAndList";
 import StudentHeadingAndAddButton from "./Components/StudentHeadingAndAddButton/StudentHeadingAndAddButton";
+import {
+  getAllNotEnrolledStudents,
+  getClassroomStudents,
+} from "./Api/PeopleMethods";
 
 const People = ({ classroom }) => {
   const [students, setStudents] = useState([]);
@@ -83,26 +83,31 @@ const People = ({ classroom }) => {
   }, [classroom.id, dispatch, currentUser]);
 
   return (
-    <Box mx="xs" py="sm" px="xl" mih={"100vh"} width={"100%"}>
-      <TeacherHeadingAndList classroom={classroom} currentUser={currentUser} />
-      <StudentHeadingAndAddButton
-        setIsAddStudentModalOpen={setIsAddStudentModalOpen}
-        currentUser={currentUser}
-      />
-      <Divider my="sm" />
-      {students.length > 0 ? (
-        <StudentList
+    <>
+      <Box mx="xs" py="sm" px="xl" mih={"100vh"} width={"100%"}>
+        <TeacherHeadingAndList
           classroom={classroom}
-          students={students}
           currentUser={currentUser}
-          notEnrolledStudents={notEnrolledStudents}
-          setNotEnrolledStudents={setNotEnrolledStudents}
-          setStudents={setStudents}
-          setClassroomStudents={setClassroomStudents}
         />
-      ) : (
-        <Text>No students found for this classroom.</Text>
-      )}
+        <StudentHeadingAndAddButton
+          setIsAddStudentModalOpen={setIsAddStudentModalOpen}
+          currentUser={currentUser}
+        />
+        <Divider my="sm" />
+        {students.length > 0 ? (
+          <StudentList
+            classroom={classroom}
+            students={students}
+            currentUser={currentUser}
+            notEnrolledStudents={notEnrolledStudents}
+            setNotEnrolledStudents={setNotEnrolledStudents}
+            setStudents={setStudents}
+            setClassroomStudents={setClassroomStudents}
+          />
+        ) : (
+          <Text>No students found for this classroom.</Text>
+        )}
+      </Box>
       <AddStudentModal
         open={isAddStudentModalOpen}
         close={closeAddStudentModal}
@@ -112,7 +117,7 @@ const People = ({ classroom }) => {
         classroom={classroom}
         setStudents={setStudents}
       />
-    </Box>
+    </>
   );
 };
 

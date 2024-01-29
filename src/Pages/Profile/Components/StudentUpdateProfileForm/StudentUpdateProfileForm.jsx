@@ -1,12 +1,16 @@
+import { useDispatch } from "react-redux";
 import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
+import { updateUser } from "@/Stores/Actions/Auth";
+
 import { updateStudentProfile } from "../../Api/ProfileMethods";
 import StudentUpdateProfileFormSchema from "../../Validation/StudentUpdateProfileFormSchema";
 
 const StudentUpdateProfileForm = ({ profile, setProfile }) => {
+  const dispatch = useDispatch();
   const form = useForm({
     initialValues: {
       email: profile.student.email,
@@ -32,6 +36,16 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
       );
 
       setProfile(response.data.profile);
+
+      dispatch(
+        updateUser({
+          email: values.email,
+          first_name: values.first_name,
+          last_name: values.last_name,
+          gender: values.gender,
+          phone_number: values.phone_number,
+        })
+      );
 
       notifications.show({
         color: "sazim-green",
@@ -63,7 +77,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
     if (level === "School") {
       return (
         <>
-          <Grid.Col span={6}>
+          <Grid.Col span={{ xs: 6 }}>
             <Select
               size="lg"
               label="English/Bangla Medium"
@@ -73,7 +87,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
               data={["English", "Bangla"]}
             />
           </Grid.Col>
-          <Grid.Col span={6}>
+          <Grid.Col span={{ xs: 6 }}>
             <Select
               size="lg"
               label="Class"
@@ -90,7 +104,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
     if (level === "College") {
       return (
         <>
-          <Grid.Col span={6}>
+          <Grid.Col span={{ xs: 6 }}>
             <Select
               size="lg"
               label="English/Bangla Medium"
@@ -100,7 +114,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
               data={["English", "Bangla"]}
             />
           </Grid.Col>
-          <Grid.Col span={6}>
+          <Grid.Col span={{ xs: 6 }}>
             <Select
               size="lg"
               label="Class"
@@ -117,7 +131,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
     if (level === "University") {
       return (
         <>
-          <Grid.Col span={6}>
+          <Grid.Col span={{ xs: 6 }}>
             <Select
               size="lg"
               label="Bachelors/Masters"
@@ -127,7 +141,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
               data={["Bachelors", "Masters"]}
             />
           </Grid.Col>
-          <Grid.Col span={6}>
+          <Grid.Col span={{ xs: 6 }}>
             <TextInput
               size={"lg"}
               label="Semester/Year"
@@ -145,8 +159,8 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
 
   return (
     <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-      <Grid gutter={"sm"} grow mx={"xl"} px={"lg"}>
-        <Grid.Col span={6}>
+      <Grid gutter={"sm"} grow mx={"lg"} px={"lg"}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Email"
@@ -156,7 +170,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <Select
             size="lg"
             label="Gender"
@@ -167,7 +181,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="First name"
@@ -177,7 +191,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Last name"
@@ -187,7 +201,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Address"
@@ -197,7 +211,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <TextInput
             size={"lg"}
             label="Phone number"
@@ -207,7 +221,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           />
         </Grid.Col>
 
-        <Grid.Col span={6}>
+        <Grid.Col span={{ xs: 6 }}>
           <Select
             size="lg"
             placeholder="Select your education level"

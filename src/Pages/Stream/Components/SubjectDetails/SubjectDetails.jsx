@@ -3,12 +3,11 @@ import { Paper, SimpleGrid, Text, Title } from "@mantine/core";
 const SubjectDetails = ({ classroom }) => {
   return (
     <Paper
-      w={"300"}
-      py={"xl"}
+      w={{ base: "300" }}
+      py={{ base: "xl" }}
       ta={"center"}
       radius={"md"}
       withBorder
-      mr={"xl"}
       shadow="xl"
     >
       <SimpleGrid>

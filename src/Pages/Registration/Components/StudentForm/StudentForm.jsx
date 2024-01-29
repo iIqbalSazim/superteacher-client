@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
-import { loginSuccess } from "@/Stores/Actions/Auth";
+import { setUser } from "@/Stores/Actions/Auth";
 
 import { createNewUser } from "../../Api/RegistrationMethods";
 import StudentFormSchema from "../../Validation/StudentFormSchema";
@@ -56,7 +56,7 @@ const StudentForm = () => {
 
       const token = response.data.token.access_token;
 
-      dispatch(loginSuccess(newUser));
+      dispatch(setUser(newUser));
 
       localStorage.setItem("token", token);
 
@@ -180,14 +180,15 @@ const StudentForm = () => {
       align="center"
       direction="column"
       style={{ minHeight: "100vh" }}
+      m={"lg"}
     >
       <Text my={20} fw={700} tt={"uppercase"} size="xl">
         Register as a Student
       </Text>
-      <Box maw={700} mx="auto">
+      <Box maw={700}>
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <Grid gutter={"md"} grow>
-            <Grid.Col span={4}>
+            <Grid.Col span={{ xs: 6, md: 4 }}>
               <TextInput
                 size={"md"}
                 label="First name"
@@ -197,7 +198,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={4}>
+            <Grid.Col span={{ xs: 6, md: 4 }}>
               <TextInput
                 size={"md"}
                 label="Last name"
@@ -207,7 +208,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={4}>
+            <Grid.Col span={{ md: 4 }}>
               <Select
                 size="md"
                 label="Gender"
@@ -218,7 +219,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={8}>
+            <Grid.Col span={{ xs: 7 }}>
               <TextInput
                 size={"md"}
                 label="Address"
@@ -228,7 +229,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={4}>
+            <Grid.Col span={{ xs: 5 }}>
               <TextInput
                 size="md"
                 label="Phone number"
@@ -238,7 +239,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={4}>
+            <Grid.Col span={{ base: 4 }}>
               <Select
                 size="md"
                 placeholder="Select your education level"
@@ -261,7 +262,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={6}>
+            <Grid.Col span={{ xs: 6 }}>
               <PasswordInput
                 size="md"
                 label="Password"
@@ -271,7 +272,7 @@ const StudentForm = () => {
               />
             </Grid.Col>
 
-            <Grid.Col span={6}>
+            <Grid.Col span={{ xs: 6 }}>
               <PasswordInput
                 size="md"
                 label="Confirm Password"

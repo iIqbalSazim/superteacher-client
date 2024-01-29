@@ -4,7 +4,7 @@ import ResourceCard from "../ResourceCard/ResourceCard";
 
 const Resources = ({ uploadedResources }) => {
   return (
-    <SimpleGrid mx={"xl"} px={"xl"}>
+    <SimpleGrid px={{ base: "", xs: "sm" }}>
       {uploadedResources.map((resource) => (
         <ResourceCard resource={resource} key={resource.id} />
       ))}

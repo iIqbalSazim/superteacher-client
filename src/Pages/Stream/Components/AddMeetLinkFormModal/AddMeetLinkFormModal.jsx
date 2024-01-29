@@ -67,8 +67,8 @@ const AddMeetLinkFormModal = ({ open, close, classroom, setClassroom }) => {
   };
 
   return (
-    <Modal opened={open} onClose={close} size={"md"} centered>
-      <Box mx="xl">
+    <Modal opened={open} onClose={close} centered>
+      <Box mx={{ base: "xs", sm: "xl" }}>
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Add Meet Link
         </Text>

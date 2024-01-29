@@ -53,10 +53,10 @@ const CreatePostForm = ({ classroom }) => {
         {...form.getInputProps("text")}
       />
       <Group justify="flex-end" mt={"md"}>
-        <Button size="md" color="sazim-blue" onClick={form.reset}>
+        <Button size="sm" color="sazim-blue" onClick={form.reset}>
           Reset
         </Button>
-        <Button size="md" color="sazim-blue" type="submit">
+        <Button size="sm" color="sazim-blue" type="submit">
           Post
         </Button>
       </Group>
