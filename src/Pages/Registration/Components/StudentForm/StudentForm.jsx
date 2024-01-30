@@ -13,6 +13,7 @@ import {
   Grid,
   Anchor,
   Select,
+  NumberInput,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
@@ -230,11 +231,14 @@ const StudentForm = () => {
             </Grid.Col>
 
             <Grid.Col span={{ xs: 5 }}>
-              <TextInput
-                size="md"
+              <NumberInput
+                leftSection={<Text>+880</Text>}
+                allowNegative={false}
+                size={"lg"}
                 label="Phone number"
                 placeholder="Enter your phone number"
                 withAsterisk
+                allowLeadingZeros
                 {...form.getInputProps("phone_number")}
               />
             </Grid.Col>
@@ -305,8 +309,8 @@ const StudentForm = () => {
         </Text>
 
         <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md">
-          <Anchor component={Link} to={"/teacher"} c="white">
-            Register as a teacher
+          <Anchor component={Link} to={"/"} c="white">
+            Register
           </Anchor>
         </Text>
       </Box>

@@ -18,6 +18,7 @@ const authReducer = (state = INITIAL_STATE, action) => {
         last_name: action.payload.last_name,
         gender: action.payload.gender,
         phone_number: action.payload.phone_number,
+        profile: action.payload.profile,
       };
       return {
         ...state,

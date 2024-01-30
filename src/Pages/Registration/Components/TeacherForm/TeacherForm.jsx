@@ -224,6 +224,12 @@ const TeacherForm = () => {
             Login
           </Anchor>
         </Text>
+
+        <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md">
+          <Anchor component={Link} to={"/"} c="white">
+            Register
+          </Anchor>
+        </Text>
       </Box>
     </Flex>
   );

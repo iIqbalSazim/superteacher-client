@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Grid,
@@ -17,17 +17,20 @@ import { updateUser } from "@/Stores/Actions/Auth";
 import { updateTeacherProfile } from "../../Api/ProfileMethods";
 import TeacherUpdateProfileFormSchema from "../../Validation/TeacherUpdateProfileFormSchema";
 
-const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
+const TeacherUpdateProfileForm = () => {
+  const currentUser = useSelector((state) => state.auth.user);
+
   const dispatch = useDispatch();
+
   const form = useForm({
     initialValues: {
-      email: profile.teacher.email,
-      gender: profile.teacher.gender,
-      first_name: profile.teacher.first_name,
-      last_name: profile.teacher.last_name,
-      major_subject: profile.major_subject,
-      highest_education_level: profile.highest_education_level,
-      subjects_to_teach: profile.subjects_to_teach,
+      email: currentUser.email,
+      gender: currentUser.gender,
+      first_name: currentUser.first_name,
+      last_name: currentUser.last_name,
+      major_subject: currentUser.profile.major_subject,
+      highest_education_level: currentUser.profile.highest_education_level,
+      subjects_to_teach: currentUser.profile.subjects_to_teach,
     },
     validate: yupResolver(TeacherUpdateProfileFormSchema),
   });
@@ -37,12 +40,11 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
       const teacherProfile = {
         teacher_profile: values,
       };
+
       const response = await updateTeacherProfile(
-        profile.teacher.id,
+        currentUser.id,
         teacherProfile
       );
-
-      setProfile(response.data.profile);
 
       dispatch(
         updateUser({
@@ -50,6 +52,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
           first_name: values.first_name,
           last_name: values.last_name,
           gender: values.gender,
+          profile: response.data.profile,
         })
       );
 
@@ -82,6 +85,7 @@ const TeacherUpdateProfileForm = ({ profile, setProfile }) => {
       <Grid gutter={"sm"} grow mx={"lg"} px={"lg"}>
         <Grid.Col span={{ xs: 6 }}>
           <TextInput
+            disabled
             size={"lg"}
             label="Email"
             placeholder="Enter your email"

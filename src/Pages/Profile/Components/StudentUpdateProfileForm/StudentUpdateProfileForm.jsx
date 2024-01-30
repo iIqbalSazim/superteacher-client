@@ -1,5 +1,13 @@
-import { useDispatch } from "react-redux";
-import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Button,
+  Grid,
+  Group,
+  NumberInput,
+  Select,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
@@ -9,33 +17,35 @@ import { updateUser } from "@/Stores/Actions/Auth";
 import { updateStudentProfile } from "../../Api/ProfileMethods";
 import StudentUpdateProfileFormSchema from "../../Validation/StudentUpdateProfileFormSchema";
 
-const StudentUpdateProfileForm = ({ profile, setProfile }) => {
+const StudentUpdateProfileForm = () => {
+  const currentUser = useSelector((state) => state.auth.user);
+
   const dispatch = useDispatch();
+
   const form = useForm({
     initialValues: {
-      email: profile.student.email,
-      gender: profile.student.gender,
-      first_name: profile.student.first_name,
-      last_name: profile.student.last_name,
-      address: profile.address,
-      phone_number: profile.student.phone_number,
-      education: profile.education,
+      email: currentUser.email,
+      gender: currentUser.gender,
+      first_name: currentUser.first_name,
+      last_name: currentUser.last_name,
+      address: currentUser.profile.address,
+      phone_number: currentUser.phone_number,
+      education: currentUser.profile.education,
     },
     validate: yupResolver(StudentUpdateProfileFormSchema),
   });
 
   const handleSubmit = async (values) => {
     try {
+      console.log(values);
       const studentProfile = {
         student_profile: values,
       };
 
       const response = await updateStudentProfile(
-        profile.student.id,
+        currentUser.id,
         studentProfile
       );
-
-      setProfile(response.data.profile);
 
       dispatch(
         updateUser({
@@ -44,6 +54,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
           last_name: values.last_name,
           gender: values.gender,
           phone_number: values.phone_number,
+          profile: response.data.profile,
         })
       );
 
@@ -162,6 +173,7 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
       <Grid gutter={"sm"} grow mx={"lg"} px={"lg"}>
         <Grid.Col span={{ xs: 6 }}>
           <TextInput
+            disabled
             size={"lg"}
             label="Email"
             placeholder="Enter your email"
@@ -212,11 +224,14 @@ const StudentUpdateProfileForm = ({ profile, setProfile }) => {
         </Grid.Col>
 
         <Grid.Col span={{ xs: 6 }}>
-          <TextInput
+          <NumberInput
+            leftSection={<Text>+880</Text>}
+            allowNegative={false}
             size={"lg"}
             label="Phone number"
             placeholder="Enter your phone number"
             withAsterisk
+            allowLeadingZeros
             {...form.getInputProps("phone_number")}
           />
         </Grid.Col>

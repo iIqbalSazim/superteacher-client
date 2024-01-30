@@ -16,7 +16,8 @@ const StudentUpdateProfileFormSchema = yup.object().shape({
     .required("Address is required"),
   phone_number: yup
     .string()
-    .max(15, "Phone number must be at most 15 characters")
+    .max(10, "Phone number must be at most 11 characters")
+    .min(10, "Phone number must be at least 11 characters")
     .required("Phone number is required"),
   education: yup.object().shape({
     level: yup.string().required("Education level is required"),

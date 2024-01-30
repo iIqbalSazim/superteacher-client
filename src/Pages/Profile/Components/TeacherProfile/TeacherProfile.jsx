@@ -1,20 +1,25 @@
 import { Grid, Table, Title } from "@mantine/core";
+import { useSelector } from "react-redux";
 
-const TeacherProfile = ({ profile }) => {
-  const subjectToTeachRows = profile.subjects_to_teach.map((subject, index) => (
-    <Table.Tr key={subject}>
-      <Table.Td>
-        <Title order={4} ta={"center"}>
-          {index + 1}
-        </Title>
-      </Table.Td>
-      <Table.Td>
-        <Title order={4} ta={"center"}>
-          {subject}
-        </Title>
-      </Table.Td>
-    </Table.Tr>
-  ));
+const TeacherProfile = () => {
+  const currentUser = useSelector((state) => state.auth.user);
+
+  const subjectToTeachRows = currentUser.profile.subjects_to_teach.map(
+    (subject, index) => (
+      <Table.Tr key={subject}>
+        <Table.Td>
+          <Title order={4} ta={"center"}>
+            {index + 1}
+          </Title>
+        </Table.Td>
+        <Table.Td>
+          <Title order={4} ta={"center"}>
+            {subject}
+          </Title>
+        </Table.Td>
+      </Table.Tr>
+    )
+  );
 
   return (
     <Grid gutter={"xl"} grow mx={"lg"} px={"lg"}>
@@ -22,42 +27,42 @@ const TeacherProfile = ({ profile }) => {
         <Title order={4} c={"white"}>
           Email
         </Title>
-        <Title order={3}>{profile.teacher.email}</Title>
+        <Title order={3}>{currentUser.email}</Title>
       </Grid.Col>
 
       <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Gender
         </Title>
-        <Title order={3}>{profile.teacher.gender}</Title>
+        <Title order={3}>{currentUser.gender}</Title>
       </Grid.Col>
 
       <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           First name
         </Title>
-        <Title order={3}>{profile.teacher.first_name}</Title>
+        <Title order={3}>{currentUser.first_name}</Title>
       </Grid.Col>
 
       <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Last name
         </Title>
-        <Title order={3}>{profile.teacher.last_name}</Title>
+        <Title order={3}>{currentUser.last_name}</Title>
       </Grid.Col>
 
       <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Major Subject
         </Title>
-        <Title order={3}>{profile.major_subject}</Title>
+        <Title order={3}>{currentUser.profile.major_subject}</Title>
       </Grid.Col>
 
       <Grid.Col span={{ xs: 6 }}>
         <Title order={4} c={"white"}>
           Highest education level
         </Title>
-        <Title order={3}>{profile.highest_education_level}</Title>
+        <Title order={3}>{currentUser.profile.highest_education_level}</Title>
       </Grid.Col>
 
       <Grid.Col>
