@@ -10,7 +10,11 @@ import {
 import CreateAssignmentFormModal from "../CreateAssignmentFormModal/CreateAssignmentFormModal";
 import CreateMaterialFormModal from "../CreateMaterialFormModal/CreateMaterialFormModal";
 
-const CreateFileButtonGroup = ({ setUploadedResources, classroom }) => {
+const CreateFileButtonGroup = ({
+  setUploadedAssignments,
+  setUploadedMaterials,
+  classroom,
+}) => {
   const [openCreateButton, setOpenCreateButton] = useState(false);
   const [isCreateAssignmentFormModalOpen, setIsCreateAssignmentFormModalOpen] =
     useState(false);
@@ -63,13 +67,13 @@ const CreateFileButtonGroup = ({ setUploadedResources, classroom }) => {
       <CreateAssignmentFormModal
         open={isCreateAssignmentFormModalOpen}
         close={closeCreateAssignmentFormModal}
-        setUploadedResources={setUploadedResources}
+        setUploadedAssignments={setUploadedAssignments}
         classroom={classroom}
       />
       <CreateMaterialFormModal
         open={isCreateMaterialFormModalOpen}
         close={closeCreateMaterialFormModal}
-        setUploadedResources={setUploadedResources}
+        setUploadedMaterials={setUploadedMaterials}
         classroom={classroom}
       />
     </Group>

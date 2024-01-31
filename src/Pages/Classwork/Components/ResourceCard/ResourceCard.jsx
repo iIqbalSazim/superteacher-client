@@ -38,7 +38,12 @@ const ResourceCard = ({ resource }) => {
   };
 
   return (
-    <Card key={resource.title} my={"md"} px={"sm"} withBorder>
+    <Card
+      key={resource.title}
+      my={"md"}
+      px={{ base: "xs", sm: "md", md: "lg" }}
+      withBorder
+    >
       <Flex justify="flex-start" wrap="wrap" gap={"sm"}>
         {resource.resource_type === "assignment" ? (
           <ThemeIcon
@@ -61,10 +66,10 @@ const ResourceCard = ({ resource }) => {
         )}
         <Title order={4}>{resource.title}</Title>
       </Flex>
-      <Group justify="space-between" mt={"lg"}>
-        <Text c={"sazim-blue"} mb={"sm"}>
-          {resource.description}
-        </Text>
+      <Text c={"sazim-blue"} my={"md"}>
+        {resource.description}
+      </Text>
+      <Group justify="flex-end">
         <Button
           onClick={() => onDownloadButtonClick(resource)}
           rightSection={<IconFileDownload />}

@@ -18,7 +18,7 @@ import { createNewResource, uploadFile } from "../../Api/ClassworkMethods";
 const CreateMaterialFormModal = ({
   open,
   close,
-  setUploadedResources,
+  setUploadedMaterials,
   classroom,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +55,7 @@ const CreateMaterialFormModal = ({
         resource: { ...newMaterial },
       });
 
-      setUploadedResources((prevState) => [
+      setUploadedMaterials((prevState) => [
         response.data.resource,
         ...prevState,
       ]);

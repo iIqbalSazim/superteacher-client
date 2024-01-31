@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Box, Divider, Title } from "@mantine/core";
+import { Box, Divider, SimpleGrid } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
-import CreateFileButtonGroup from "./Components/CreateFileButtonGroup/CreateFileButtonGroup";
-import Resources from "./Components/Resources/Resources";
+import HeaderSection from "./Components/HeaderSection/HeaderSection";
+import Materials from "./Components/Materials/Materials";
+import Assignments from "./Components/Assignments/Assignments";
 import { getClassroomResources } from "./Api/ClassworkMethods";
 
 const Classwork = ({ classroom }) => {
-  const [uploadedResources, setUploadedResources] = useState([]);
+  const [uploadedMaterials, setUploadedMaterials] = useState([]);
+  const [uploadedAssignments, setUploadedAssignments] = useState([]);
 
   useEffect(() => {
     const fetchClassroomResources = async () => {
@@ -19,7 +20,15 @@ const Classwork = ({ classroom }) => {
           ? response.data.resources.reverse()
           : [];
 
-        setUploadedResources(resourcesInLatestFirstOrder);
+        const assignments = resourcesInLatestFirstOrder.filter(
+          (resource) => resource.resource_type === "assignment"
+        );
+        const materials = resourcesInLatestFirstOrder.filter(
+          (resource) => resource.resource_type === "material"
+        );
+
+        setUploadedMaterials(materials);
+        setUploadedAssignments(assignments);
       } catch (error) {
         let message;
         if (error.data) {
@@ -41,7 +50,6 @@ const Classwork = ({ classroom }) => {
     fetchClassroomResources();
   }, [classroom.id]);
 
-  const currentUser = useSelector((state) => state.auth.user);
   return (
     <Box
       mx={{ base: "xs", sm: "xl" }}
@@ -49,24 +57,16 @@ const Classwork = ({ classroom }) => {
       px={{ base: "", sm: "md" }}
       mih={"100vh"}
     >
-      {currentUser.role === "teacher" ? (
-        <CreateFileButtonGroup
-          setUploadedResources={setUploadedResources}
-          classroom={classroom}
-        />
-      ) : null}
-
-      <Title my={"md"}>Uploaded Resources</Title>
-
-      <Divider my="lg" />
-
-      {uploadedResources && uploadedResources.length !== 0 ? (
-        <Resources uploadedResources={uploadedResources} />
-      ) : (
-        <Title order={2} mx={"xl"}>
-          No resources available
-        </Title>
-      )}
+      <HeaderSection
+        classroom={classroom}
+        setUploadedAssignments={setUploadedAssignments}
+        setUploadedMaterials={setUploadedMaterials}
+      />
+      <SimpleGrid>
+        <Divider my="lg" />
+        <Materials uploadedMaterials={uploadedMaterials} />
+        <Assignments uploadedAssignments={uploadedAssignments} />
+      </SimpleGrid>
     </Box>
   );
 };

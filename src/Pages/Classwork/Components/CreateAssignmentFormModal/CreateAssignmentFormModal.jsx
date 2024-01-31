@@ -18,7 +18,7 @@ import { createNewResource, uploadFile } from "../../Api/ClassworkMethods";
 const CreateAssignmentFormModal = ({
   open,
   close,
-  setUploadedResources,
+  setUploadedAssignments,
   classroom,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +54,7 @@ const CreateAssignmentFormModal = ({
         resource: { ...newAssignment },
       });
 
-      setUploadedResources((prevState) => [
+      setUploadedAssignments((prevState) => [
         response.data.resource,
         ...prevState,
       ]);
