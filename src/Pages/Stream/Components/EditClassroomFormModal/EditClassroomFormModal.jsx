@@ -56,8 +56,6 @@ const EditClassroomFormModal = ({ open, close, classroom, setClassroom }) => {
         message: "Successfully updated classroom",
         autoClose: 3000,
       });
-
-      form.reset();
     } catch (error) {
       let message;
       if (error.data) {

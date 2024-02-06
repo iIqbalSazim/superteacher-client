@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -36,9 +36,13 @@ const CreateClassroomFormModal = ({ open, close }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const currentUser = useSelector((state) => state.auth.user);
+
   const handleSubmit = async (values) => {
     try {
-      const response = await createClassroom({ classroom: { ...values } });
+      const response = await createClassroom({
+        classroom: { teacher_id: currentUser.id, ...values },
+      });
 
       const newClassroom = response.data.classroom;
 

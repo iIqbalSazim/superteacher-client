@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Flex, Grid, Paper, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import ActionCable from "actioncable";
 
 import StreamHeader from "./Components/StreamHeader/StreamHeader";
 import SubjectDetails from "./Components/SubjectDetails/SubjectDetails";
@@ -13,7 +12,7 @@ import AddMeetLinkFormModal from "./Components/AddMeetLinkFormModal/AddMeetLinkF
 import AddMeetLinkButton from "./Components/AddMeetLinkButton/AddMeetLinkButton";
 import { getStreamPosts } from "./Api/StreamMethods";
 
-const Stream = ({ classroom, setClassroom }) => {
+const Stream = ({ classroom, setClassroom, cable }) => {
   const [posts, setPosts] = useState([]);
 
   const [isAddMeetLinkFormModalOpen, setIsAddMeetLinkFormModalOpen] =
@@ -23,7 +22,6 @@ const Stream = ({ classroom, setClassroom }) => {
     setIsAddMeetLinkFormModalOpen(false);
   };
 
-  const cable = ActionCable.createConsumer("ws://localhost:3000/cable");
   const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -65,7 +63,7 @@ const Stream = ({ classroom, setClassroom }) => {
       },
       {
         received: (data) => {
-          setPosts([data, ...posts]);
+          setPosts((prevState) => [data, ...prevState]);
         },
       }
     );
@@ -73,7 +71,7 @@ const Stream = ({ classroom, setClassroom }) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [cable.subscriptions, classroom.id, posts, setPosts]);
+  }, [cable.subscriptions, classroom.id]);
 
   return (
     <Box
@@ -126,7 +124,7 @@ const Stream = ({ classroom, setClassroom }) => {
               <CreatePostForm classroom={classroom} />
             </Grid.Col>
             <Grid.Col span={12} h={"100%"}>
-              {posts.length !== 0 ? (
+              {posts.length > 0 ? (
                 <StreamBody posts={posts} />
               ) : (
                 <Flex justify={"center"} align={"center"} h={"100%"}>

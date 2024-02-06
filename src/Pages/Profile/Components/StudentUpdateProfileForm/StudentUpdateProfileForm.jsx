@@ -14,7 +14,7 @@ import { notifications } from "@mantine/notifications";
 
 import { updateUser } from "@/Stores/Actions/Auth";
 
-import { updateStudentProfile } from "../../Api/ProfileMethods";
+import { updateUserProfile } from "../../Api/ProfileMethods";
 import StudentUpdateProfileFormSchema from "../../Validation/StudentUpdateProfileFormSchema";
 
 const StudentUpdateProfileForm = () => {
@@ -37,24 +37,18 @@ const StudentUpdateProfileForm = () => {
 
   const handleSubmit = async (values) => {
     try {
-      console.log(values);
-      const studentProfile = {
-        student_profile: values,
-      };
+      const response = await updateUserProfile(currentUser.id, values);
 
-      const response = await updateStudentProfile(
-        currentUser.id,
-        studentProfile
-      );
+      const { user } = response.data;
 
       dispatch(
         updateUser({
-          email: values.email,
-          first_name: values.first_name,
-          last_name: values.last_name,
-          gender: values.gender,
-          phone_number: values.phone_number,
-          profile: response.data.profile,
+          email: user.email,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          gender: user.gender,
+          phone_number: user.phone_number,
+          profile: user.profile,
         })
       );
 

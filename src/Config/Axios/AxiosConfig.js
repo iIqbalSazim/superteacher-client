@@ -31,6 +31,10 @@ axiosClient.interceptors.response.use(
         return Promise.reject({ message: "404 Not Found" });
       }
 
+      if (response.status === 500) {
+        return Promise.reject({ message: "Something went wrong" });
+      }
+
       return Promise.reject(response);
     }
 

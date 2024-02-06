@@ -1,21 +1,28 @@
 import {
-  deleteRequest,
+  putRequest,
   getRequest,
   postRequest,
 } from "@/Config/Axios/AxiosConfig";
 
-export const getClassroomStudents = async (classroom_id) => {
-  return await getRequest(`students?classroom_id=${classroom_id}`);
+export const getStudents = async (classroom_id, filter) => {
+  return await getRequest(
+    `classrooms/${classroom_id}/students?filter=${filter}`
+  );
 };
 
-export const enrollStudent = async (ids) => {
-  return await postRequest("enroll", ids);
+export const enrollStudent = async (classroom_id, classroom_student) => {
+  return await postRequest(
+    `classrooms/${classroom_id}/students/enroll`,
+    classroom_student
+  );
 };
 
-export const getAllNotEnrolledStudents = async (classroom_id) => {
-  return await getRequest(`users/students?classroom_id=${classroom_id}`);
-};
-
-export const removeStudentFromClassroom = async (classroom_student) => {
-  return await deleteRequest("classrooms/students", classroom_student);
+export const removeStudentFromClassroom = async (
+  classroom_id,
+  classroom_student
+) => {
+  return await putRequest(
+    `classrooms/${classroom_id}/students/remove`,
+    classroom_student
+  );
 };

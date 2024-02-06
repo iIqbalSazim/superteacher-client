@@ -1,30 +1,50 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Tabs, Title } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import ActionCable from "actioncable";
 
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 
 import Classwork from "../Classwork/Classwork";
 import People from "../People/People";
 import Stream from "../Stream/Stream";
+import { fetchClassroom } from "./Api/ClassroomMethods";
 
 const Classroom = () => {
   const [classroom, setClassroom] = useState(null);
-  const navigate = useNavigate();
-
   const { id, tabValue } = useParams();
 
-  const allClassrooms = useSelector((state) => state.classroom.classrooms);
+  const navigate = useNavigate();
+
+  const cable = ActionCable.createConsumer("ws://localhost:3000/cable");
 
   useEffect(() => {
-    if (allClassrooms && allClassrooms.length > 0) {
-      const foundClassroom = allClassrooms.find(
-        (classroom) => classroom.id === parseInt(id)
-      );
-      setClassroom(foundClassroom || null);
+    async function fetchData() {
+      try {
+        const response = await fetchClassroom(id);
+
+        setClassroom(response.data.classroom || null);
+      } catch (error) {
+        let message;
+        if (error.data) {
+          message = error.data.message;
+        } else {
+          message = error.message;
+        }
+
+        if (message) {
+          notifications.show({
+            color: "red",
+            title: "Error",
+            message: message,
+          });
+        }
+      }
     }
-  }, [id, allClassrooms]);
+
+    fetchData();
+  }, [id]);
 
   return (
     <>
@@ -49,7 +69,11 @@ const Classroom = () => {
             </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value="stream">
-            <Stream classroom={classroom} setClassroom={setClassroom} />
+            <Stream
+              classroom={classroom}
+              setClassroom={setClassroom}
+              cable={cable}
+            />
           </Tabs.Panel>
           <Tabs.Panel value="classwork">
             <Classwork classroom={classroom} />

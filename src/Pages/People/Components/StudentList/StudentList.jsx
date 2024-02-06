@@ -29,9 +29,8 @@ const StudentList = ({
 
   const removeStudent = async (studentId) => {
     try {
-      const response = await removeStudentFromClassroom({
+      const response = await removeStudentFromClassroom(classroom.id, {
         classroom_student: {
-          classroom_id: classroom.id,
           student_id: studentId,
         },
       });

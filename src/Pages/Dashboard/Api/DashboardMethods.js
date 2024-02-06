@@ -1,6 +1,6 @@
 import { getRequest, postRequest } from "@/Config/Axios/AxiosConfig";
 
-export const getClassroomCards = async () => {
+export const fetchClassrooms = async () => {
   return await getRequest("classrooms");
 };
 

@@ -9,10 +9,7 @@ import AddStudentModal from "./Components/AddStudentModal/AddStudentModal";
 import StudentList from "./Components/StudentList/StudentList";
 import TeacherHeadingAndList from "./Components/TeacherHeadingAndList/TeacherHeadingAndList";
 import StudentHeadingAndAddButton from "./Components/StudentHeadingAndAddButton/StudentHeadingAndAddButton";
-import {
-  getAllNotEnrolledStudents,
-  getClassroomStudents,
-} from "./Api/PeopleMethods";
+import { getStudents } from "./Api/PeopleMethods";
 
 const People = ({ classroom }) => {
   const [students, setStudents] = useState([]);
@@ -30,7 +27,7 @@ const People = ({ classroom }) => {
   useEffect(() => {
     const fetchClassroomStudents = async () => {
       try {
-        const response = await getClassroomStudents(classroom.id);
+        const response = await getStudents(classroom.id, "enrolled");
 
         dispatch(setClassroomStudents(response.data.students));
 
@@ -55,7 +52,7 @@ const People = ({ classroom }) => {
 
     const fetchAllNotEnrolledStudents = async () => {
       try {
-        const response = await getAllNotEnrolledStudents(classroom.id);
+        const response = await getStudents(classroom.id, "unenrolled");
 
         setNotEnrolledStudents(response.data.students);
       } catch (error) {

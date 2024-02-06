@@ -19,6 +19,7 @@ import { notifications } from "@mantine/notifications";
 
 import { setUser } from "@/Stores/Actions/Auth";
 
+import { generateToken } from "../../../Login/Api/LoginMethods";
 import { createNewUser } from "../../Api/RegistrationMethods";
 import StudentFormSchema from "../../Validation/StudentFormSchema";
 
@@ -55,7 +56,13 @@ const StudentForm = () => {
 
       const newUser = response.data.user;
 
-      const token = response.data.token.access_token;
+      const tokenRequest = await generateToken({
+        grant_type: "password",
+        email: values.email,
+        password: values.password,
+      });
+
+      const token = tokenRequest.data.access_token;
 
       dispatch(setUser(newUser));
 

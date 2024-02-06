@@ -51,7 +51,7 @@ const CreateMaterialFormModal = ({
         classroom_id: classroom.id,
       };
 
-      const response = await createNewResource({
+      const response = await createNewResource(classroom.id, {
         resource: { ...newMaterial },
       });
 

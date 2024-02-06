@@ -1,3 +1,4 @@
+import { useSelector } from "react-redux";
 import { Button, Group, Textarea } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
@@ -11,11 +12,16 @@ const CreatePostForm = ({ classroom }) => {
     },
   });
 
+  const currentUser = useSelector((state) => state.auth.user);
+
   const handleSubmit = async (values) => {
     try {
-      const response = await createPost({
-        classroom_id: classroom.id,
-        text: values.text,
+      const response = await createPost(classroom.id, {
+        global_message: {
+          user_id: currentUser.id,
+          classroom_id: classroom.id,
+          text: values.text,
+        },
       });
 
       if (response.data.new_message) {

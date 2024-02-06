@@ -29,9 +29,10 @@ const AddStudentModal = ({
 
   const handleSubmit = async (values) => {
     try {
-      const response = await enrollStudent({
-        classroom_id: classroom.id,
-        student_id: parseInt(values.id),
+      const response = await enrollStudent(classroom.id, {
+        classroom_student: {
+          student_id: parseInt(values.id),
+        },
       });
 
       setStudents([...students, response.data.student]);
@@ -44,7 +45,7 @@ const AddStudentModal = ({
       notifications.show({
         color: "sazim-green",
         title: "Success",
-        message: "Student successfully added",
+        message: "Student successfully enrolled",
       });
 
       close();

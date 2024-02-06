@@ -6,7 +6,7 @@ import { notifications } from "@mantine/notifications";
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 import { setAllClassrooms } from "@/Stores/Actions/Classroom";
 
-import { getClassroomCards } from "./Api/DashboardMethods";
+import { fetchClassrooms } from "./Api/DashboardMethods";
 import CardsContainer from "./Components/CardsContainer/CardsContainer";
 
 const Dashboard = () => {
@@ -20,7 +20,7 @@ const Dashboard = () => {
       try {
         setLoading(true);
 
-        const response = await getClassroomCards();
+        const response = await fetchClassrooms();
 
         const classroomData = response.data.classrooms || [];
 
