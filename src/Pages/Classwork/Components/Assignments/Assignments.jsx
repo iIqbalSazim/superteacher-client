@@ -27,7 +27,7 @@ const Assignments = ({ uploadedAssignments }) => {
             setToggleAssignmentsCollapse(!toggleAssignmentCollapse)
           }
         >
-          <Title my={"md"} order={2}>
+          <Title my={"md"} order={3}>
             Assignments
           </Title>
         </Button>
@@ -45,7 +45,7 @@ const Assignments = ({ uploadedAssignments }) => {
             ))}
           </SimpleGrid>
         ) : (
-          <Title order={3} mx={"md"} fw={"400"} ta="center">
+          <Title order={4} mx={"md"} fw={"400"} ta="center">
             No Assignments available
           </Title>
         )}

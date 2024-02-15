@@ -10,10 +10,12 @@ import {
   TextInput,
   Textarea,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { DateInput } from "@mantine/dates";
 
 import { createNewResource, uploadFile } from "../../Api/ClassworkMethods";
+import CreateAssignmentFormSchema from "../../Validation/CreateAssignmentFormSchema";
 
 const CreateAssignmentFormModal = ({
   open,
@@ -28,7 +30,9 @@ const CreateAssignmentFormModal = ({
       title: "",
       file: null,
       description: "",
+      due_date: new Date(),
     },
+    validate: yupResolver(CreateAssignmentFormSchema),
   });
 
   const handleSubmit = async (values) => {
@@ -48,6 +52,7 @@ const CreateAssignmentFormModal = ({
         resource_type: "assignment",
         url: downloadURL,
         classroom_id: classroom.id,
+        due_date: values.due_date,
       };
 
       const response = await createNewResource(classroom.id, {
@@ -115,6 +120,12 @@ const CreateAssignmentFormModal = ({
               label="Upload file"
               placeholder="Upload file"
               {...form.getInputProps("file")}
+            />
+            <DateInput
+              minDate={new Date()}
+              size="md"
+              label="Due Date"
+              {...form.getInputProps("due_date")}
             />
           </SimpleGrid>
 

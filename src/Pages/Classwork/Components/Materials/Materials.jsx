@@ -19,7 +19,7 @@ const Materials = ({ uploadedMaterials }) => {
           color="white"
           onClick={() => setToggleMaterialsCollapse(!toggleMaterialsCollapse)}
         >
-          <Title my={"md"} order={2}>
+          <Title my={"md"} order={3}>
             Materials
           </Title>
         </Button>
@@ -37,7 +37,7 @@ const Materials = ({ uploadedMaterials }) => {
             ))}
           </SimpleGrid>
         ) : (
-          <Title order={3} mx={"md"} fw={"400"} ta="center">
+          <Title order={4} mx={"md"} fw={"400"} ta="center">
             No Materials available
           </Title>
         )}

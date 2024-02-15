@@ -3,22 +3,27 @@ import { Button, Group, Text } from "@mantine/core";
 import {
   IconBook2,
   IconClipboardText,
+  IconFilePencil,
   IconPlus,
   IconX,
 } from "@tabler/icons-react";
 
 import CreateAssignmentFormModal from "../CreateAssignmentFormModal/CreateAssignmentFormModal";
 import CreateMaterialFormModal from "../CreateMaterialFormModal/CreateMaterialFormModal";
+import ScheduleExamFormModal from "../ScheduleExamFormModal/ScheduleExamFormModal";
 
 const CreateFileButtonGroup = ({
   setUploadedAssignments,
   setUploadedMaterials,
+  setExams,
   classroom,
 }) => {
   const [openCreateButton, setOpenCreateButton] = useState(false);
   const [isCreateAssignmentFormModalOpen, setIsCreateAssignmentFormModalOpen] =
     useState(false);
   const [isCreateMaterialFormModalOpen, setIsCreateMaterialFormModalOpen] =
+    useState(false);
+  const [isScheduleExamFormModalOpen, setIsScheduleExamFormModalOpen] =
     useState(false);
 
   const closeCreateAssignmentFormModal = () => {
@@ -27,6 +32,10 @@ const CreateFileButtonGroup = ({
 
   const closeCreateMaterialFormModal = () => {
     setIsCreateMaterialFormModalOpen(false);
+  };
+
+  const closeScheduleExamFormModal = () => {
+    setIsScheduleExamFormModalOpen(false);
   };
 
   return (
@@ -47,6 +56,16 @@ const CreateFileButtonGroup = ({
             size="md"
             radius={"md"}
             leftSection={<IconClipboardText />}
+            color="sazim-green.7"
+            onClick={() => setIsScheduleExamFormModalOpen(true)}
+          >
+            <Text fw={500}>Schedule Exam</Text>
+          </Button>
+
+          <Button
+            size="md"
+            radius={"md"}
+            leftSection={<IconFilePencil />}
             color="sazim-green.7"
             onClick={() => setIsCreateAssignmentFormModalOpen(true)}
           >
@@ -74,6 +93,12 @@ const CreateFileButtonGroup = ({
         open={isCreateMaterialFormModalOpen}
         close={closeCreateMaterialFormModal}
         setUploadedMaterials={setUploadedMaterials}
+        classroom={classroom}
+      />
+      <ScheduleExamFormModal
+        open={isScheduleExamFormModalOpen}
+        close={closeScheduleExamFormModal}
+        setExams={setExams}
         classroom={classroom}
       />
     </Group>

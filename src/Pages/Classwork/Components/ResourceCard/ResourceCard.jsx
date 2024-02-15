@@ -9,9 +9,11 @@ import {
 } from "@mantine/core";
 import {
   IconBook2,
-  IconClipboardText,
   IconFileDownload,
+  IconFilePencil,
 } from "@tabler/icons-react";
+
+import { formatDate } from "../../ClassworkHelpers";
 
 const ResourceCard = ({ resource }) => {
   const onDownloadButtonClick = async (resource) => {
@@ -52,7 +54,7 @@ const ResourceCard = ({ resource }) => {
             color="sazim-blue"
             size={"lg"}
           >
-            <IconClipboardText />
+            <IconFilePencil />
           </ThemeIcon>
         ) : (
           <ThemeIcon
@@ -69,6 +71,7 @@ const ResourceCard = ({ resource }) => {
       <Text c={"sazim-blue"} my={"md"}>
         {resource.description}
       </Text>
+
       <Group justify="flex-end">
         <Button
           onClick={() => onDownloadButtonClick(resource)}
@@ -76,8 +79,14 @@ const ResourceCard = ({ resource }) => {
           color="sazim-blue"
           size="compact-sm"
         >
-          Download File
+          Download
         </Button>
+      </Group>
+
+      <Group justify="flex-end" mt={"sm"}>
+        {resource.resource_type === "assignment" && resource.due_date ? (
+          <Text>Due date: {formatDate(resource.due_date)}</Text>
+        ) : null}
       </Group>
     </Card>
   );

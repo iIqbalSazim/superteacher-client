@@ -2,7 +2,6 @@ import { useState } from "react";
 import {
   Box,
   Button,
-  FileInput,
   Group,
   Modal,
   SimpleGrid,
@@ -12,60 +11,44 @@ import {
 } from "@mantine/core";
 import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { DateInput } from "@mantine/dates";
 
-import { createNewResource, uploadFile } from "../../Api/ClassworkMethods";
-import CreateMaterialFormSchema from "../../Validation/CreateMaterialFormSchema";
+import ScheduleExamFormSchema from "../../Validation/ScheduleExamFormSchema";
+import { createNewExam } from "../../Api/ClassworkMethods";
 
-const CreateMaterialFormModal = ({
-  open,
-  close,
-  setUploadedMaterials,
-  classroom,
-}) => {
+const ScheduleExamFormModal = ({ open, close, setExams, classroom }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     initialValues: {
       title: "",
-      file: null,
       description: "",
+      date: new Date(),
     },
-    validate: yupResolver(CreateMaterialFormSchema),
+    validate: yupResolver(ScheduleExamFormSchema),
   });
 
   const handleSubmit = async (values) => {
-    setIsLoading(true);
     try {
       setIsLoading(true);
-      const { file } = values;
-      let formData = new FormData();
-      formData.append("file", file);
 
-      const res = await uploadFile(formData);
-
-      const downloadURL = res.data.url;
-
-      const newMaterial = {
+      const newExam = {
         title: values.title,
         description: values.description,
-        resource_type: "material",
-        url: downloadURL,
+        date: values.date,
         classroom_id: classroom.id,
       };
 
-      const response = await createNewResource(classroom.id, {
-        resource: { ...newMaterial },
+      const response = await createNewExam(classroom.id, {
+        exam: { ...newExam },
       });
 
-      setUploadedMaterials((prevState) => [
-        response.data.resource,
-        ...prevState,
-      ]);
+      setExams((prevState) => [response.data.exam, ...prevState]);
 
       notifications.show({
         color: "sazim-green",
         title: "Success",
-        message: "Successfully uploaded",
+        message: "Successfully scheduled exam",
         autoClose: 3000,
       });
 
@@ -93,10 +76,10 @@ const CreateMaterialFormModal = ({
   };
 
   return (
-    <Modal opened={open} onClose={close} size={"md"} centered px={"xl"}>
-      <Box mx="xl">
+    <Modal opened={open} onClose={close} size={"md"} centered>
+      <Box mx={{ base: "xs", sm: "xl" }}>
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
-          Upload Material
+          Schedule Exam
         </Text>
         <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
           <SimpleGrid gutter={"sm"}>
@@ -108,16 +91,15 @@ const CreateMaterialFormModal = ({
             />
             <Textarea
               size={"md"}
-              label="Description"
-              placeholder="Enter a description"
+              label="Instructions"
+              placeholder="Enter instructions"
               {...form.getInputProps("description")}
             />
-            <FileInput
-              clearable
+            <DateInput
+              minDate={new Date()}
               size="md"
-              label="Upload file"
-              placeholder="Upload file"
-              {...form.getInputProps("file")}
+              label="Date"
+              {...form.getInputProps("date")}
             />
           </SimpleGrid>
 
@@ -131,7 +113,7 @@ const CreateMaterialFormModal = ({
               color="sazim-green.7"
               loading={isLoading}
             >
-              Create
+              Schedule
             </Button>
           </Group>
         </form>
@@ -140,4 +122,4 @@ const CreateMaterialFormModal = ({
   );
 };
 
-export default CreateMaterialFormModal;
+export default ScheduleExamFormModal;
