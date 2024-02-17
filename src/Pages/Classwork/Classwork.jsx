@@ -7,11 +7,18 @@ import CreateFileButtonGroup from "./Components/CreateFileButtonGroup/CreateFile
 import ResourcesSection from "./Components/ResourcesSection/ResourcesSection";
 import ExamsSection from "./Components/ExamsSection/ExamsSection";
 import { getClassroomResources, getExams } from "./Api/ClassworkMethods";
+import {
+  generateAssignments,
+  generateMaterials,
+  sortByDate,
+} from "./ClassworkHelpers";
 
 const Classwork = ({ classroom }) => {
   const [uploadedMaterials, setUploadedMaterials] = useState([]);
   const [uploadedAssignments, setUploadedAssignments] = useState([]);
   const [exams, setExams] = useState([]);
+
+  const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     const fetchClassroomResources = async () => {
@@ -22,12 +29,8 @@ const Classwork = ({ classroom }) => {
           ? response.data.resources.reverse()
           : [];
 
-        const assignments = resourcesInLatestFirstOrder.filter(
-          (resource) => resource.resource_type === "assignment"
-        );
-        const materials = resourcesInLatestFirstOrder.filter(
-          (resource) => resource.resource_type === "material"
-        );
+        const assignments = generateAssignments(resourcesInLatestFirstOrder);
+        const materials = generateMaterials(resourcesInLatestFirstOrder);
 
         setUploadedMaterials(materials);
         setUploadedAssignments(assignments);
@@ -53,11 +56,9 @@ const Classwork = ({ classroom }) => {
       try {
         const response = await getExams(classroom.id);
 
-        const examsInLatestFirstOrder = response.data.exams
-          ? response.data.exams.reverse()
-          : [];
+        const examsArrangedByDate = sortByDate(response.data.exams, "date");
 
-        setExams(examsInLatestFirstOrder);
+        setExams(examsArrangedByDate);
       } catch (error) {
         let message;
         if (error.data) {
@@ -80,8 +81,6 @@ const Classwork = ({ classroom }) => {
     fetchExams();
   }, [classroom.id]);
 
-  const currentUser = useSelector((state) => state.auth.user);
-
   return (
     <Box
       mx={{ base: "xs", sm: "xl" }}
@@ -97,7 +96,7 @@ const Classwork = ({ classroom }) => {
           setExams={setExams}
         />
       )}
-      {exams && exams.length !== 0 ? <ExamsSection exams={exams} /> : null}
+      <ExamsSection exams={exams} />
       <ResourcesSection
         uploadedAssignments={uploadedAssignments}
         uploadedMaterials={uploadedMaterials}

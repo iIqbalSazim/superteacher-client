@@ -3,21 +3,11 @@ import { IconClipboardText } from "@tabler/icons-react";
 
 import { formatDate } from "../../ClassworkHelpers";
 
-const Exam = ({ exam }) => {
+const ScheduledExam = ({ exam }) => {
   return (
-    <Card
-      key={exam.title}
-      my={"md"}
-      px={{ base: "xs", sm: "md", md: "lg" }}
-      withBorder
-    >
-      <Flex justify="flex-start" wrap="wrap" gap={"sm"}>
-        <ThemeIcon
-          radius={"xl"}
-          variant="filled"
-          color="sazim-blue"
-          size={"lg"}
-        >
+    <Card my={"md"} px={{ base: "xs", sm: "md", md: "lg" }}>
+      <Flex justify="flex-start" wrap="wrap" align="center" gap={"sm"}>
+        <ThemeIcon radius={"xl"} variant="light" color="sazim-blue" size={"lg"}>
           <IconClipboardText />
         </ThemeIcon>
         <Title order={4}>{exam.title}</Title>
@@ -33,4 +23,4 @@ const Exam = ({ exam }) => {
   );
 };
 
-export default Exam;
+export default ScheduledExam;

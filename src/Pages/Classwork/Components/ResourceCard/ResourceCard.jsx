@@ -40,17 +40,12 @@ const ResourceCard = ({ resource }) => {
   };
 
   return (
-    <Card
-      key={resource.title}
-      my={"md"}
-      px={{ base: "xs", sm: "md", md: "lg" }}
-      withBorder
-    >
-      <Flex justify="flex-start" wrap="wrap" gap={"sm"}>
+    <Card my={"md"} px={{ base: "xs", sm: "md", md: "lg" }}>
+      <Flex justify="flex-start" wrap="wrap" align="center" gap={"sm"}>
         {resource.resource_type === "assignment" ? (
           <ThemeIcon
             radius={"xl"}
-            variant="filled"
+            variant="light"
             color="sazim-blue"
             size={"lg"}
           >
@@ -59,7 +54,7 @@ const ResourceCard = ({ resource }) => {
         ) : (
           <ThemeIcon
             radius={"xl"}
-            variant="filled"
+            variant="light"
             color="sazim-blue"
             size={"lg"}
           >
