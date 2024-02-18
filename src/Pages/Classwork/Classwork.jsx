@@ -5,7 +5,7 @@ import { notifications } from "@mantine/notifications";
 
 import CreateFileButtonGroup from "./Components/CreateFileButtonGroup/CreateFileButtonGroup";
 import ResourcesSection from "./Components/ResourcesSection/ResourcesSection";
-import ExamsSection from "./Components/ExamsSection/ExamsSection";
+import ExamsContainer from "./Components/ExamsContainer/ExamsContainer";
 import { getClassroomResources, getExams } from "./Api/ClassworkMethods";
 import {
   generateAssignments,
@@ -96,9 +96,11 @@ const Classwork = ({ classroom }) => {
           setExams={setExams}
         />
       )}
-      <ExamsSection exams={exams} />
+      <ExamsContainer exams={exams} setExams={setExams} />
       <ResourcesSection
         uploadedAssignments={uploadedAssignments}
+        setUploadedAssignments={setUploadedAssignments}
+        setUploadedMaterials={setUploadedMaterials}
         uploadedMaterials={uploadedMaterials}
       />
     </Box>

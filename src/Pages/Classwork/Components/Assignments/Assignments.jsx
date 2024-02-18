@@ -4,7 +4,7 @@ import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 
 import ResourceCard from "../ResourceCard/ResourceCard";
 
-const Assignments = ({ uploadedAssignments }) => {
+const Assignments = ({ setUploadedAssignments, uploadedAssignments }) => {
   const [toggleAssignmentCollapse, setToggleAssignmentsCollapse] =
     useState(true);
 
@@ -41,7 +41,11 @@ const Assignments = ({ uploadedAssignments }) => {
         {uploadedAssignments && uploadedAssignments.length !== 0 ? (
           <SimpleGrid px={{ base: "", xs: "sm" }}>
             {uploadedAssignments.map((resource) => (
-              <ResourceCard resource={resource} key={resource.id} />
+              <ResourceCard
+                setUploadedAssignments={setUploadedAssignments}
+                resource={resource}
+                key={resource.id}
+              />
             ))}
           </SimpleGrid>
         ) : (

@@ -4,7 +4,7 @@ import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 
 import ResourceCard from "../ResourceCard/ResourceCard";
 
-const Materials = ({ uploadedMaterials }) => {
+const Materials = ({ setUploadedMaterials, uploadedMaterials }) => {
   const [toggleMaterialsCollapse, setToggleMaterialsCollapse] = useState(true);
 
   return (
@@ -33,7 +33,11 @@ const Materials = ({ uploadedMaterials }) => {
         {uploadedMaterials && uploadedMaterials.length !== 0 ? (
           <SimpleGrid px={{ base: "", xs: "sm" }}>
             {uploadedMaterials.map((resource) => (
-              <ResourceCard resource={resource} key={resource.id} />
+              <ResourceCard
+                setUploadedMaterials={setUploadedMaterials}
+                resource={resource}
+                key={resource.id}
+              />
             ))}
           </SimpleGrid>
         ) : (
