@@ -43,6 +43,27 @@ export const deleteExam = async (classroom_id, exam_id) => {
   return await deleteRequest(`classrooms/${classroom_id}/exams/${exam_id}`);
 };
 
+export const createNewSubmission = async (
+  classroom_id,
+  resource_id,
+  submission
+) => {
+  return await postRequest(
+    `classrooms/${classroom_id}/assignments/${resource_id}/submissions`,
+    submission
+  );
+};
+
+export const deleteSubmission = async (
+  classroom_id,
+  assignment_id,
+  submission_id
+) => {
+  return await deleteRequest(
+    `classrooms/${classroom_id}/assignments/${assignment_id}/submissions/${submission_id}`
+  );
+};
+
 export const uploadFile = async (formData) => {
   const customHeaders = {
     "Content-Type": "multipart/form-data",

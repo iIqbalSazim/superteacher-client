@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+  ActionIcon,
   Box,
   Button,
   Group,
@@ -15,6 +17,7 @@ import { TimeInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
+import { IconClock } from "@tabler/icons-react";
 
 import { createClassroom } from "@/Pages/Dashboard/Api/DashboardMethods";
 import { updateClassrooms } from "@/Stores/Actions/Classroom";
@@ -77,6 +80,19 @@ const CreateClassroomFormModal = ({ open, close }) => {
       }
     }
   };
+
+  const ref = useRef(null);
+
+  const pickerControl = (
+    <ActionIcon
+      variant="subtle"
+      color="gray"
+      onClick={() => ref.current?.showPicker()}
+    >
+      <IconClock stroke={1.5} />
+    </ActionIcon>
+  );
+
   return (
     <Modal opened={open} onClose={close} size={"md"} centered>
       <Box mx="lg">
@@ -106,6 +122,8 @@ const CreateClassroomFormModal = ({ open, close }) => {
               size="sm"
               label="Class Time"
               withAsterisk
+              ref={ref}
+              rightSection={pickerControl}
               {...form.getInputProps("class_time")}
             />
 

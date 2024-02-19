@@ -38,13 +38,11 @@ const UpdateExamFormModal = ({ open, close, exam, setExams }) => {
         date: values.date,
       };
 
-      console.log(exam);
       const response = await updateExam(exam.classroom_id, exam.id, {
         exam: { ...newExam },
       });
 
       const updatedExam = response.data.exam;
-      console.log(response);
 
       setExams((prevState) => {
         return prevState.map((exam) => {

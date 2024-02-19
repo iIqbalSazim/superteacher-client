@@ -21,6 +21,9 @@ import {
 import UpdateAssignmentFormModal from "../UpdateAssignmentFormModal/UpdateAssignmentFormModal";
 import UpdateMaterialFormModal from "../UpdateMaterialFormModal/UpdateMaterialFormModal";
 import ConfirmDeleteResourceModal from "../ConfirmDeleteResourceModal/ConfirmDeleteResourceModal";
+import SubmitAssignmentModal from "../SubmitAssignmentModal/SubmitAssignmentModal";
+import ConfirmDeleteSubmissionModal from "../ConfirmDeleteSubmissionModal/ConfirmDeleteSubmissionModal";
+import SubmissionsContainerModal from "../SubmissionsContainerModal/SubmissionsContainerModal";
 import { formatDate } from "../../ClassworkHelpers";
 
 const ResourceCard = ({
@@ -30,28 +33,20 @@ const ResourceCard = ({
 }) => {
   const currentUser = useSelector((state) => state.auth.user);
 
-  const [isOpenUpdateAssignmentModal, setIsOpenUpdateAssignmentModal] =
+  const [isUpdateAssignmentModalOpen, setIsUpdateAssignmentModalOpen] =
+    useState(false);
+  const [isUpdateMaterialModalOpen, setIsUpdateMaterialModalOpen] =
+    useState(false);
+  const [isDeleteResourceModalOpen, setIsDeleteResourceModalOpen] =
+    useState(false);
+  const [isSubmitAssignmentModalOpen, setIsSubmitAssignmentModalOpen] =
+    useState(false);
+  const [isDeleteSubmissionModalOpen, setIsDeleteSubmissionModalOpen] =
+    useState(false);
+  const [isSubmissionsContainerModalOpen, setIsSubmissionsContainerModalOpen] =
     useState(false);
 
-  const [isOpenUpdateMaterialModal, setIsOpenUpdateMaterialModal] =
-    useState(false);
-
-  const [isOpenDeleteResourceModal, setIsOpenDeleteResourceModal] =
-    useState(false);
-
-  const closeDeleteResourceModal = () => {
-    setIsOpenDeleteResourceModal(false);
-  };
-
-  const closeUpdateMaterialModal = () => {
-    setIsOpenUpdateMaterialModal(false);
-  };
-
-  const closeUpdateAssignmentModal = () => {
-    setIsOpenUpdateAssignmentModal(false);
-  };
-
-  const onDownloadButtonClick = async (resource) => {
+  const downloadResource = async (resource) => {
     const { url, title } = resource;
 
     try {
@@ -73,6 +68,16 @@ const ResourceCard = ({
       console.error("Error fetching or creating blob:", error);
     }
   };
+
+  let userSubmission;
+
+  if (currentUser.role === "student") {
+    if (resource.resource_type === "assignment" && resource.submissions) {
+      userSubmission = resource.submissions.find(
+        (submission) => submission.student_id === currentUser.id
+      );
+    }
+  }
 
   return (
     <>
@@ -112,13 +117,13 @@ const ResourceCard = ({
                 <Menu.Item
                   onClick={() =>
                     resource.resource_type === "assignment"
-                      ? setIsOpenUpdateAssignmentModal(true)
-                      : setIsOpenUpdateMaterialModal(true)
+                      ? setIsUpdateAssignmentModalOpen(true)
+                      : setIsUpdateMaterialModalOpen(true)
                   }
                 >
                   Edit
                 </Menu.Item>
-                <Menu.Item onClick={() => setIsOpenDeleteResourceModal(true)}>
+                <Menu.Item onClick={() => setIsDeleteResourceModalOpen(true)}>
                   Delete
                 </Menu.Item>
               </Menu.Dropdown>
@@ -131,7 +136,7 @@ const ResourceCard = ({
 
         <Group justify="flex-end">
           <Button
-            onClick={() => onDownloadButtonClick(resource)}
+            onClick={() => downloadResource(resource)}
             rightSection={<IconFileDownload />}
             color="sazim-blue"
             size="compact-sm"
@@ -140,38 +145,140 @@ const ResourceCard = ({
           </Button>
         </Group>
 
-        <Group justify="flex-end" mt={"sm"}>
+        <Group justify="flex-end" mt={"md"} align="center">
           {resource.resource_type === "assignment" && resource.due_date ? (
-            <Text>Due date: {formatDate(resource.due_date)}</Text>
+            <>
+              <Text
+                c={
+                  formatDate(Date.now()) > formatDate(resource.due_date)
+                    ? "red.8"
+                    : "sazim-blue"
+                }
+              >
+                Due date: {formatDate(resource.due_date)}
+              </Text>
+              {currentUser.role === "teacher" ? (
+                <>
+                  {resource.submissions.length !== 0 ? (
+                    <>
+                      <Button
+                        variant="outline"
+                        color="sazim-blue"
+                        onClick={() => setIsSubmissionsContainerModalOpen(true)}
+                      >
+                        Submissions
+                      </Button>
+                    </>
+                  ) : null}
+                </>
+              ) : null}
+              {currentUser.role === "student" ? (
+                <>
+                  {!userSubmission ? (
+                    <Button
+                      onClick={() => setIsSubmitAssignmentModalOpen(true)}
+                      color="sazim-green"
+                      size="compact-sm"
+                    >
+                      Submit
+                    </Button>
+                  ) : (
+                    <Menu
+                      shadow="xl"
+                      withArrow
+                      offset={-3}
+                      position="bottom-end"
+                    >
+                      <Menu.Target>
+                        <Button
+                          variant="outline"
+                          size="compact-sm"
+                          color="sazim-blue"
+                        >
+                          Submitted
+                        </Button>
+                      </Menu.Target>
+
+                      <Menu.Dropdown>
+                        <Menu.Item
+                          onClick={() => downloadResource(userSubmission)}
+                        >
+                          Download
+                        </Menu.Item>
+                        <Menu.Item
+                          onClick={() => setIsDeleteSubmissionModalOpen(true)}
+                        >
+                          Delete
+                        </Menu.Item>
+                      </Menu.Dropdown>
+                    </Menu>
+                  )}
+                </>
+              ) : null}
+            </>
           ) : null}
         </Group>
       </Card>
 
-      {resource.resource_type === "assignment" ? (
+      {resource.resource_type === "assignment" &&
+      currentUser.role === "teacher" ? (
         <UpdateAssignmentFormModal
-          open={isOpenUpdateAssignmentModal}
-          close={closeUpdateAssignmentModal}
+          open={isUpdateAssignmentModalOpen}
+          close={() => setIsUpdateAssignmentModalOpen(false)}
           assignment={resource}
           setUploadedAssignments={setUploadedAssignments}
         />
       ) : null}
 
-      {resource.resource_type === "material" ? (
+      {resource.resource_type === "material" &&
+      currentUser.role === "teacher" ? (
         <UpdateMaterialFormModal
-          open={isOpenUpdateMaterialModal}
-          close={closeUpdateMaterialModal}
+          open={isUpdateMaterialModalOpen}
+          close={() => setIsUpdateMaterialModalOpen(false)}
           material={resource}
           setUploadedMaterials={setUploadedMaterials}
         />
       ) : null}
 
-      <ConfirmDeleteResourceModal
-        open={isOpenDeleteResourceModal}
-        close={closeDeleteResourceModal}
-        setUploadedAssignments={setUploadedAssignments}
-        setUploadedMaterials={setUploadedMaterials}
-        resource={resource}
-      />
+      {currentUser.role === "teacher" ? (
+        <ConfirmDeleteResourceModal
+          open={isDeleteResourceModalOpen}
+          close={() => setIsDeleteResourceModalOpen(false)}
+          setUploadedAssignments={setUploadedAssignments}
+          setUploadedMaterials={setUploadedMaterials}
+          resource={resource}
+        />
+      ) : null}
+
+      {resource.resource_type === "assignment" &&
+      currentUser.role === "student" ? (
+        <SubmitAssignmentModal
+          open={isSubmitAssignmentModalOpen}
+          close={() => setIsSubmitAssignmentModalOpen(false)}
+          resource={resource}
+        />
+      ) : null}
+
+      {resource.resource_type === "assignment" &&
+      currentUser.role === "student" ? (
+        <ConfirmDeleteSubmissionModal
+          open={isDeleteSubmissionModalOpen}
+          close={() => setIsDeleteSubmissionModalOpen(false)}
+          resource={resource}
+          submission={userSubmission}
+        />
+      ) : null}
+
+      {resource.submissions &&
+      currentUser.role === "teacher" &&
+      resource.submissions.length !== 0 ? (
+        <SubmissionsContainerModal
+          open={isSubmissionsContainerModalOpen}
+          close={() => setIsSubmissionsContainerModalOpen(false)}
+          submissions={resource.submissions}
+          downloadResource={downloadResource}
+        />
+      ) : null}
     </>
   );
 };
