@@ -1,5 +1,8 @@
 import * as yup from "yup";
 
+const phoneRegExp =
+  /^(?:\+[1-9]{1,4}[ -]*)?(?:\(\d{2,3}\)[ -]*)?(?:\d{2,4}[ -]*)*?\d{3,4}[ -]*\d{3,4}$/;
+
 const StudentFormSchema = yup.object().shape({
   first_name: yup
     .string()
@@ -16,9 +19,13 @@ const StudentFormSchema = yup.object().shape({
     .required("Address is required"),
   phone_number: yup
     .string()
-    .max(10, "Phone number must be at most 11 characters")
-    .min(10, "Phone number must be at least 11 characters")
-    .required("Phone number is required"),
+    .required("required")
+    .matches(
+      phoneRegExp,
+      "Phone number is not valid. Please follow this format: +8801289394762"
+    )
+    .min(7, "Phone number must be at least 7 characters")
+    .max(15, "Phone number must not exceed 15 characters"),
   education: yup.object().shape({
     level: yup.string().required("Education level is required"),
     english_bangla_medium: yup.string().when("education.level", {

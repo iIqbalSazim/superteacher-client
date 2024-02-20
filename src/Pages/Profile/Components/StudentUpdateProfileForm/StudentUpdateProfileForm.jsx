@@ -1,13 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Button,
-  Grid,
-  Group,
-  NumberInput,
-  Select,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
@@ -23,6 +15,7 @@ const StudentUpdateProfileForm = () => {
   const dispatch = useDispatch();
 
   const form = useForm({
+    validateInputOnChange: true,
     initialValues: {
       email: currentUser.email,
       gender: currentUser.gender,
@@ -218,14 +211,11 @@ const StudentUpdateProfileForm = () => {
         </Grid.Col>
 
         <Grid.Col span={{ xs: 6 }}>
-          <NumberInput
-            leftSection={<Text>+880</Text>}
-            allowNegative={false}
+          <TextInput
             size={"lg"}
             label="Phone number"
             placeholder="Enter your phone number"
             withAsterisk
-            allowLeadingZeros
             {...form.getInputProps("phone_number")}
           />
         </Grid.Col>

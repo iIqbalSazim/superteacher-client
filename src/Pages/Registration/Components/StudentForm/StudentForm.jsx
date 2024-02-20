@@ -13,7 +13,6 @@ import {
   Grid,
   Anchor,
   Select,
-  NumberInput,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
@@ -25,6 +24,7 @@ import StudentFormSchema from "../../Validation/StudentFormSchema";
 
 const StudentForm = () => {
   const form = useForm({
+    validateInputOnChange: ["phone_number"],
     initialValues: {
       email: "",
       password: "",
@@ -238,14 +238,11 @@ const StudentForm = () => {
             </Grid.Col>
 
             <Grid.Col span={{ xs: 5 }}>
-              <NumberInput
-                leftSection={<Text>+880</Text>}
-                allowNegative={false}
-                size={"lg"}
+              <TextInput
+                size={"md"}
                 label="Phone number"
                 placeholder="Enter your phone number"
                 withAsterisk
-                allowLeadingZeros
                 {...form.getInputProps("phone_number")}
               />
             </Grid.Col>

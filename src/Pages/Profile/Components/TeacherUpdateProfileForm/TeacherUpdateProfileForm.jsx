@@ -23,6 +23,7 @@ const TeacherUpdateProfileForm = () => {
   const dispatch = useDispatch();
 
   const form = useForm({
+    validateInputOnChange: true,
     initialValues: {
       email: currentUser.email,
       gender: currentUser.gender,

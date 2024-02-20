@@ -1,4 +1,4 @@
-import { postRequest } from "@/Config/Axios/AxiosConfig";
+import { postRequest, putRequest } from "@/Config/Axios/AxiosConfig";
 
 export const loginUser = async (user) => {
   return await postRequest("login", user);
@@ -10,4 +10,8 @@ export const generateToken = async (user) => {
 
 export const logoutUser = async (token) => {
   return await postRequest("oauth/revoke", token);
+};
+
+export const forgotPassword = async (payload) => {
+  return await putRequest("passwords/forgot", payload);
 };

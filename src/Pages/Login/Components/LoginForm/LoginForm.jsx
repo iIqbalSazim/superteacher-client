@@ -20,7 +20,7 @@ import { setUser } from "@/Stores/Actions/Auth";
 import { generateToken, loginUser } from "../../Api/LoginMethods";
 import LoginFormSchema from "../../Validation/LoginFormSchema";
 
-const LoginForm = () => {
+const LoginForm = ({ openForgotPasswordModal }) => {
   const form = useForm({
     initialValues: {
       email: "",
@@ -113,12 +113,22 @@ const LoginForm = () => {
             </Grid.Col>
           </Grid>
 
-          <Group justify="space-evenly" mt="xl" pt={"md"}>
+          <Group justify="space-evenly" my={"md"} pt={"md"}>
             <Button type="submit" size="md" color="sazim-green.7">
               Submit
             </Button>
           </Group>
         </form>
+
+        <Text fw={400} ta={"center"} my={"xs"} size="md">
+          <Anchor
+            component={Link}
+            onClick={openForgotPasswordModal}
+            c="sazim-green.4"
+          >
+            Forgot Password?
+          </Anchor>
+        </Text>
 
         <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md" mt={"xl"}>
           Don&apos;t have an account?{" "}

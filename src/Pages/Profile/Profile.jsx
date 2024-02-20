@@ -1,8 +1,6 @@
 import { useSelector } from "react-redux";
 import { SimpleGrid, Title } from "@mantine/core";
 
-import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
-
 import TeacherProfile from "./Components/TeacherProfile/TeacherProfile";
 import TeacherUpdateProfileForm from "./Components/TeacherUpdateProfileForm/TeacherUpdateProfileForm";
 import StudentProfile from "./Components/StudentProfile/StudentProfile";
@@ -17,20 +15,17 @@ const Profile = () => {
       <Title mx={"xl"} mt={"md"}>
         Profile
       </Title>
-      {currentUser ? (
-        <ProfileContainer
-          ProfileComponent={
-            currentUser.role === "teacher" ? TeacherProfile : StudentProfile
-          }
-          UpdateFormComponent={
-            currentUser.role === "teacher"
-              ? TeacherUpdateProfileForm
-              : StudentUpdateProfileForm
-          }
-        />
-      ) : (
-        <MyLoader />
-      )}
+
+      <ProfileContainer
+        ProfileComponent={
+          currentUser.role === "teacher" ? TeacherProfile : StudentProfile
+        }
+        UpdateFormComponent={
+          currentUser.role === "teacher"
+            ? TeacherUpdateProfileForm
+            : StudentUpdateProfileForm
+        }
+      />
     </SimpleGrid>
   );
 };
