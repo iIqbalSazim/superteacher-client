@@ -45,7 +45,7 @@ const StudentProfile = () => {
         <Title order={4} c={"white"}>
           Phone number
         </Title>
-        <Title order={3}>0{currentUser.phone_number}</Title>
+        <Title order={3}>{currentUser.phone_number}</Title>
       </Grid.Col>
 
       <Grid.Col span={{ xs: 6 }}>

@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { Badge, Card, Group, Image, Text } from "@mantine/core";
+import { useSelector } from "react-redux";
 
-const ClassroomCard = ({ classroom, currentUser }) => {
+const ClassroomCard = ({ classroom }) => {
+  const currentUser = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
   return (
@@ -40,7 +42,7 @@ const ClassroomCard = ({ classroom, currentUser }) => {
           minute: "2-digit",
         })}
       </Text>
-      {currentUser.role === "student" ? (
+      {currentUser && currentUser.role === "student" ? (
         <Text size="sm">
           <strong>Teacher:</strong>{" "}
           {`${classroom.teacher.first_name} ${classroom.teacher.last_name}`}

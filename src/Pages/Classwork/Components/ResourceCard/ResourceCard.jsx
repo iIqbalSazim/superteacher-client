@@ -1,22 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import {
-  ActionIcon,
-  Button,
-  Card,
-  Flex,
-  Group,
-  Menu,
-  Text,
-  ThemeIcon,
-  Title,
-} from "@mantine/core";
-import {
-  IconBook2,
-  IconDots,
-  IconFileDownload,
-  IconFilePencil,
-} from "@tabler/icons-react";
+import { Button, Card, Flex, Group, Text } from "@mantine/core";
+import { IconFileDownload } from "@tabler/icons-react";
 
 import UpdateAssignmentFormModal from "../UpdateAssignmentFormModal/UpdateAssignmentFormModal";
 import UpdateMaterialFormModal from "../UpdateMaterialFormModal/UpdateMaterialFormModal";
@@ -24,7 +9,9 @@ import ConfirmDeleteResourceModal from "../ConfirmDeleteResourceModal/ConfirmDel
 import SubmitAssignmentModal from "../SubmitAssignmentModal/SubmitAssignmentModal";
 import ConfirmDeleteSubmissionModal from "../ConfirmDeleteSubmissionModal/ConfirmDeleteSubmissionModal";
 import SubmissionsContainerModal from "../SubmissionsContainerModal/SubmissionsContainerModal";
-import { formatDate } from "../../ClassworkHelpers";
+import ResourceCardHeader from "../ResourceCardTitle/ResourceCardHeader";
+import ResourceEditMenu from "../ResourceEditMenu/ResourceEditMenu";
+import ResourceCardDueDateAndSubmissions from "../ResourceCardDueDateAndSubmissions/ResourceCardDueDateAndSubmissions";
 
 const ResourceCard = ({
   resource,
@@ -47,7 +34,31 @@ const ResourceCard = ({
     useState(false);
 
   const downloadResource = async (resource) => {
-    const { url, title } = resource;
+    const { url, title, resource_type } = resource;
+
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+
+      const blobUrl = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = `${title} ${resource_type}`;
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Error fetching or creating blob:", error);
+    }
+  };
+
+  const downloadSubmission = async (submission) => {
+    const { url } = submission;
+    const { title } = resource;
 
     try {
       const response = await fetch(url);
@@ -83,51 +94,15 @@ const ResourceCard = ({
     <>
       <Card my={"md"} px={{ base: "xs", sm: "md", md: "lg" }}>
         <Flex justify="space-between" wrap="wrap">
-          <Flex justify={"flex-start"} align="center" gap={"sm"}>
-            {resource.resource_type === "assignment" ? (
-              <ThemeIcon
-                radius={"xl"}
-                variant="light"
-                color="sazim-blue"
-                size={"lg"}
-              >
-                <IconFilePencil />
-              </ThemeIcon>
-            ) : (
-              <ThemeIcon
-                radius={"xl"}
-                variant="light"
-                color="sazim-blue"
-                size={"lg"}
-              >
-                <IconBook2 />
-              </ThemeIcon>
-            )}
-            <Title order={4}>{resource.title}</Title>
-          </Flex>
-          {currentUser.role === "teacher" ? (
-            <Menu shadow="xl" withArrow offset={-3} position="bottom-end">
-              <Menu.Target>
-                <ActionIcon m={"lg"} variant="transparent" color="sazim-blue">
-                  <IconDots />
-                </ActionIcon>
-              </Menu.Target>
+          <ResourceCardHeader resource={resource} />
 
-              <Menu.Dropdown>
-                <Menu.Item
-                  onClick={() =>
-                    resource.resource_type === "assignment"
-                      ? setIsUpdateAssignmentModalOpen(true)
-                      : setIsUpdateMaterialModalOpen(true)
-                  }
-                >
-                  Edit
-                </Menu.Item>
-                <Menu.Item onClick={() => setIsDeleteResourceModalOpen(true)}>
-                  Delete
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+          {currentUser.role === "teacher" ? (
+            <ResourceEditMenu
+              resource={resource}
+              setIsUpdateAssignmentModalOpen={setIsUpdateAssignmentModalOpen}
+              setIsUpdateMaterialModalOpen={setIsUpdateMaterialModalOpen}
+              setIsDeleteResourceModalOpen={setIsDeleteResourceModalOpen}
+            />
           ) : null}
         </Flex>
         <Text c={"sazim-blue"} my={"md"}>
@@ -145,82 +120,20 @@ const ResourceCard = ({
           </Button>
         </Group>
 
-        <Group justify="flex-end" mt={"md"} align="center">
-          {resource.resource_type === "assignment" && resource.due_date ? (
-            <>
-              <Text
-                c={
-                  formatDate(Date.now()) > formatDate(resource.due_date)
-                    ? "red.8"
-                    : "sazim-blue"
-                }
-              >
-                Due date: {formatDate(resource.due_date)}
-              </Text>
-              {currentUser.role === "teacher" ? (
-                <>
-                  {resource.submissions.length !== 0 ? (
-                    <>
-                      <Button
-                        variant="outline"
-                        color="sazim-blue"
-                        onClick={() => setIsSubmissionsContainerModalOpen(true)}
-                      >
-                        Submissions
-                      </Button>
-                    </>
-                  ) : null}
-                </>
-              ) : null}
-              {currentUser.role === "student" ? (
-                <>
-                  {!userSubmission ? (
-                    <Button
-                      onClick={() => setIsSubmitAssignmentModalOpen(true)}
-                      color="sazim-green"
-                      size="compact-sm"
-                    >
-                      Submit
-                    </Button>
-                  ) : (
-                    <Menu
-                      shadow="xl"
-                      withArrow
-                      offset={-3}
-                      position="bottom-end"
-                    >
-                      <Menu.Target>
-                        <Button
-                          variant="outline"
-                          size="compact-sm"
-                          color="sazim-blue"
-                        >
-                          Submitted
-                        </Button>
-                      </Menu.Target>
-
-                      <Menu.Dropdown>
-                        <Menu.Item
-                          onClick={() => downloadResource(userSubmission)}
-                        >
-                          Download
-                        </Menu.Item>
-                        <Menu.Item
-                          onClick={() => setIsDeleteSubmissionModalOpen(true)}
-                        >
-                          Delete
-                        </Menu.Item>
-                      </Menu.Dropdown>
-                    </Menu>
-                  )}
-                </>
-              ) : null}
-            </>
-          ) : null}
-        </Group>
+        <ResourceCardDueDateAndSubmissions
+          resource={resource}
+          setIsSubmissionsContainerModalOpen={
+            setIsSubmissionsContainerModalOpen
+          }
+          setIsSubmitAssignmentModalOpen={setIsSubmitAssignmentModalOpen}
+          userSubmission={userSubmission}
+          downloadSubmission={downloadSubmission}
+          setIsDeleteSubmissionModalOpen={setIsDeleteSubmissionModalOpen}
+        />
       </Card>
 
-      {resource.resource_type === "assignment" &&
+      {isUpdateAssignmentModalOpen &&
+      resource.resource_type === "assignment" &&
       currentUser.role === "teacher" ? (
         <UpdateAssignmentFormModal
           open={isUpdateAssignmentModalOpen}
@@ -230,7 +143,8 @@ const ResourceCard = ({
         />
       ) : null}
 
-      {resource.resource_type === "material" &&
+      {isUpdateMaterialModalOpen &&
+      resource.resource_type === "material" &&
       currentUser.role === "teacher" ? (
         <UpdateMaterialFormModal
           open={isUpdateMaterialModalOpen}
@@ -240,7 +154,7 @@ const ResourceCard = ({
         />
       ) : null}
 
-      {currentUser.role === "teacher" ? (
+      {isDeleteResourceModalOpen && currentUser.role === "teacher" ? (
         <ConfirmDeleteResourceModal
           open={isDeleteResourceModalOpen}
           close={() => setIsDeleteResourceModalOpen(false)}
@@ -250,33 +164,37 @@ const ResourceCard = ({
         />
       ) : null}
 
-      {resource.resource_type === "assignment" &&
+      {isSubmitAssignmentModalOpen &&
+      resource.resource_type === "assignment" &&
       currentUser.role === "student" ? (
         <SubmitAssignmentModal
           open={isSubmitAssignmentModalOpen}
           close={() => setIsSubmitAssignmentModalOpen(false)}
+          setUploadedAssignments={setUploadedAssignments}
           resource={resource}
         />
       ) : null}
 
-      {resource.resource_type === "assignment" &&
+      {isDeleteSubmissionModalOpen &&
+      resource.resource_type === "assignment" &&
       currentUser.role === "student" ? (
         <ConfirmDeleteSubmissionModal
           open={isDeleteSubmissionModalOpen}
           close={() => setIsDeleteSubmissionModalOpen(false)}
+          setUploadedAssignments={setUploadedAssignments}
           resource={resource}
           submission={userSubmission}
         />
       ) : null}
 
-      {resource.submissions &&
+      {resource.resource_type === "assignment" &&
       currentUser.role === "teacher" &&
-      resource.submissions.length !== 0 ? (
+      isSubmissionsContainerModalOpen ? (
         <SubmissionsContainerModal
           open={isSubmissionsContainerModalOpen}
           close={() => setIsSubmissionsContainerModalOpen(false)}
-          submissions={resource.submissions}
-          downloadResource={downloadResource}
+          resource={resource}
+          downloadSubmission={downloadSubmission}
         />
       ) : null}
     </>

@@ -30,11 +30,11 @@ const Header = () => {
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     try {
-      navigate("/");
-
       await logoutUser({ token: token });
 
       localStorage.removeItem("token");
+
+      navigate("/");
 
       dispatch(reset());
     } catch (error) {
@@ -81,7 +81,7 @@ const Header = () => {
             Dashboard
           </Title>
         </Anchor>
-        {currentUser.role === "teacher" ? (
+        {currentUser && currentUser.role === "teacher" ? (
           <>
             <ActionIcon
               variant="subtle"
@@ -107,7 +107,7 @@ const Header = () => {
         >
           <Menu.Target>
             <Button color="white" variant={"outline"}>
-              {currentUser.first_name.slice(0, 12)}
+              {currentUser && currentUser.first_name.slice(0, 12)}
             </Button>
           </Menu.Target>
 

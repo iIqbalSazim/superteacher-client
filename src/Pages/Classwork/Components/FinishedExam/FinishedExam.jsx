@@ -9,7 +9,11 @@ import {
   ThemeIcon,
   Title,
 } from "@mantine/core";
-import { IconClipboardText, IconDots } from "@tabler/icons-react";
+import {
+  IconClipboardText,
+  IconDots,
+  IconInfoSquareRounded,
+} from "@tabler/icons-react";
 
 import { formatDate } from "../../ClassworkHelpers";
 
@@ -26,7 +30,7 @@ const FinishedExam = ({ exam, openDeleteExamModal, openUpdateExamModal }) => {
         {currentUser.role === "teacher" ? (
           <Menu shadow="xl" withArrow offset={-3} position="bottom-end">
             <Menu.Target>
-              <ActionIcon m={"lg"} variant="transparent" color="sazim-blue">
+              <ActionIcon m={"lg"} variant="transparent" color="white">
                 <IconDots />
               </ActionIcon>
             </Menu.Target>
@@ -46,7 +50,25 @@ const FinishedExam = ({ exam, openDeleteExamModal, openUpdateExamModal }) => {
         {exam.description}
       </Text>
 
-      <Group justify="flex-end" mt={"sm"}>
+      <Group justify="space-between" align="center">
+        <Menu
+          shadow="xl"
+          position="bottom-start"
+          withArrow
+          arrowPosition="center"
+        >
+          <Menu.Target>
+            <ActionIcon m={"md"} variant="transparent" color="white">
+              <IconInfoSquareRounded />
+            </ActionIcon>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Text size="sm" c="sazim-blue">
+              You can reschedule the exam by editing the date.
+            </Text>
+          </Menu.Dropdown>
+        </Menu>
         <Text>Finished on: {formatDate(exam.date)}</Text>
       </Group>
     </Card>

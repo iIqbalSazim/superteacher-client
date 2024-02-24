@@ -8,6 +8,7 @@ const AddMeetLinkButton = ({ setIsAddMeetLinkFormModalOpen }) => {
       color="green"
       onClick={() => setIsAddMeetLinkFormModalOpen(true)}
       leftSection={<IconPlus />}
+      w={"100%"}
     >
       Add meet link
     </Button>

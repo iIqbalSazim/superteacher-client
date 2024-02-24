@@ -56,18 +56,23 @@ const StreamHeader = ({ classroom, setClassroom }) => {
         </Flex>
       </BackgroundImage>
 
-      <ConfirmDeleteClassroomModal
-        open={isConfirmDeleteModalOpen}
-        close={closeDeleteModal}
-        classroomId={classroom.id}
-        setClassroom={setClassroom}
-      />
-      <EditClassroomFormModal
-        open={isEditFormModalOpen}
-        close={closeEditFormModal}
-        classroom={classroom}
-        setClassroom={setClassroom}
-      />
+      {isConfirmDeleteModalOpen ? (
+        <ConfirmDeleteClassroomModal
+          open={isConfirmDeleteModalOpen}
+          close={closeDeleteModal}
+          classroomId={classroom.id}
+          setClassroom={setClassroom}
+        />
+      ) : null}
+
+      {isEditFormModalOpen ? (
+        <EditClassroomFormModal
+          open={isEditFormModalOpen}
+          close={closeEditFormModal}
+          classroom={classroom}
+          setClassroom={setClassroom}
+        />
+      ) : null}
     </Box>
   );
 };

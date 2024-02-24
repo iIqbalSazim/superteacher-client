@@ -26,18 +26,6 @@ const CreateFileButtonGroup = ({
   const [isScheduleExamFormModalOpen, setIsScheduleExamFormModalOpen] =
     useState(false);
 
-  const closeCreateAssignmentFormModal = () => {
-    setIsCreateAssignmentFormModalOpen(false);
-  };
-
-  const closeCreateMaterialFormModal = () => {
-    setIsCreateMaterialFormModalOpen(false);
-  };
-
-  const closeScheduleExamFormModal = () => {
-    setIsScheduleExamFormModalOpen(false);
-  };
-
   return (
     <Group gap={"xl"} my={"xl"}>
       <Button
@@ -83,24 +71,31 @@ const CreateFileButtonGroup = ({
           </Button>
         </Group>
       ) : null}
-      <CreateAssignmentFormModal
-        open={isCreateAssignmentFormModalOpen}
-        close={closeCreateAssignmentFormModal}
-        setUploadedAssignments={setUploadedAssignments}
-        classroom={classroom}
-      />
-      <CreateMaterialFormModal
-        open={isCreateMaterialFormModalOpen}
-        close={closeCreateMaterialFormModal}
-        setUploadedMaterials={setUploadedMaterials}
-        classroom={classroom}
-      />
-      <ScheduleExamFormModal
-        open={isScheduleExamFormModalOpen}
-        close={closeScheduleExamFormModal}
-        setExams={setExams}
-        classroom={classroom}
-      />
+
+      {isCreateAssignmentFormModalOpen ? (
+        <CreateAssignmentFormModal
+          open={isCreateAssignmentFormModalOpen}
+          close={() => setIsCreateAssignmentFormModalOpen(false)}
+          setUploadedAssignments={setUploadedAssignments}
+          classroom={classroom}
+        />
+      ) : null}
+      {isCreateMaterialFormModalOpen ? (
+        <CreateMaterialFormModal
+          open={isCreateMaterialFormModalOpen}
+          close={() => setIsCreateMaterialFormModalOpen(false)}
+          setUploadedMaterials={setUploadedMaterials}
+          classroom={classroom}
+        />
+      ) : null}
+      {isScheduleExamFormModalOpen ? (
+        <ScheduleExamFormModal
+          open={isScheduleExamFormModalOpen}
+          close={() => setIsScheduleExamFormModalOpen(false)}
+          setExams={setExams}
+          classroom={classroom}
+        />
+      ) : null}
     </Group>
   );
 };

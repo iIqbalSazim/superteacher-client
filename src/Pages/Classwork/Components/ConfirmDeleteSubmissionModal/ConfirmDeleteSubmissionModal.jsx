@@ -9,6 +9,7 @@ const ConfirmDeleteSubmissionModal = ({
   close,
   resource,
   submission,
+  setUploadedAssignments,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -16,16 +17,35 @@ const ConfirmDeleteSubmissionModal = ({
     try {
       setIsLoading(true);
 
-      await deleteSubmission(
+      const response = await deleteSubmission(
         resource.classroom_id,
         resource.assignment_id,
         submission.id
       );
 
-      setIsLoading(false);
-      close();
+      if (response.status === 200) {
+        let submissionIdToRemove = response.data.id;
 
-      location.reload();
+        setUploadedAssignments((prevState) => {
+          return prevState.map((assignment) => {
+            if (assignment.id === resource.id) {
+              const updatedSubmissions = assignment.submissions.filter(
+                (submission) => submission.id !== submissionIdToRemove
+              );
+
+              return {
+                ...assignment,
+                submissions: updatedSubmissions,
+              };
+            }
+            return assignment;
+          });
+        });
+
+        close();
+
+        setIsLoading(false);
+      }
     } catch (error) {
       setIsLoading(false);
       let message;

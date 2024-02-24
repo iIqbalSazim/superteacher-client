@@ -43,13 +43,19 @@ export const deleteExam = async (classroom_id, exam_id) => {
   return await deleteRequest(`classrooms/${classroom_id}/exams/${exam_id}`);
 };
 
+export const getSubmissions = async (classroom_id, assignment_id) => {
+  return await getRequest(
+    `classrooms/${classroom_id}/assignments/${assignment_id}/submissions`
+  );
+};
+
 export const createNewSubmission = async (
   classroom_id,
-  resource_id,
+  assignment_id,
   submission
 ) => {
   return await postRequest(
-    `classrooms/${classroom_id}/assignments/${resource_id}/submissions`,
+    `classrooms/${classroom_id}/assignments/${assignment_id}/submissions`,
     submission
   );
 };

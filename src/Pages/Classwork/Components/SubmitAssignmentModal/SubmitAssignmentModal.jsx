@@ -8,7 +8,12 @@ import { createNewSubmission, uploadFile } from "../../Api/ClassworkMethods";
 import { formatDate } from "../../ClassworkHelpers";
 import SubmitAssignmentSchema from "../../Validation/SubmitAssignmentFormSchema";
 
-const SubmitAssignmentModal = ({ open, close, resource }) => {
+const SubmitAssignmentModal = ({
+  open,
+  close,
+  resource,
+  setUploadedAssignments,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const currentUser = useSelector((state) => state.auth.user);
@@ -40,18 +45,29 @@ const SubmitAssignmentModal = ({ open, close, resource }) => {
 
       const response = await createNewSubmission(
         resource.classroom_id,
-        resource.id,
+        resource.assignment_id,
         {
           submission: { ...newAssignment },
         }
       );
 
-      if (response.data.submission) {
-        setIsLoading(false);
-        close();
+      setUploadedAssignments((prevState) => {
+        return prevState.map((assignment) => {
+          if (assignment.id === resource.id) {
+            return {
+              ...assignment,
+              submissions: [
+                ...assignment.submissions,
+                response.data.submission,
+              ],
+            };
+          }
+          return assignment;
+        });
+      });
 
-        location.reload();
-      }
+      setIsLoading(false);
+      close();
     } catch (error) {
       let message;
       if (error.data) {

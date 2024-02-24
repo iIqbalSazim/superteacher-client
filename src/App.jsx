@@ -11,11 +11,12 @@ import Login from "./Pages/Login/Login";
 import Landing from "./Pages/Landing/Landing";
 import Dashboard from "./Pages/Dashboard/Dashboard";
 import Classroom from "./Pages/Classroom/Classroom";
-import Header from "./Shared/Components/Header/Header";
 import Profile from "./Pages/Profile/Profile";
+import Header from "./Shared/Components/Header/Header";
 
 const ProtectedRoute = ({ children }) => {
   const token = localStorage.getItem("token");
+
   let location = useLocation();
 
   if (!token) {
@@ -31,6 +32,16 @@ const ProtectedRoute = ({ children }) => {
 
 const NotFound = () => {
   return <Navigate to="/dashboard" />;
+};
+
+const AlreadyLoggedIn = ({ children }) => {
+  const token = localStorage.getItem("token");
+  let location = useLocation();
+
+  if (token) {
+    return <Navigate to="/dashboard" state={{ from: location }} replace />;
+  }
+  return <>{children}</>;
 };
 
 function App() {
@@ -61,10 +72,30 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/register/:role" element={<Registration />} />
-        <Route path="/" element={<Landing />} />
+        <Route
+          path="/login"
+          element={
+            <AlreadyLoggedIn>
+              <Login />
+            </AlreadyLoggedIn>
+          }
+        />
+        <Route
+          path="/register/:role"
+          element={
+            <AlreadyLoggedIn>
+              <Registration />
+            </AlreadyLoggedIn>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <AlreadyLoggedIn>
+              <Landing />
+            </AlreadyLoggedIn>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>

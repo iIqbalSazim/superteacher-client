@@ -18,9 +18,11 @@ import { updateClassroomApi } from "../../Api/StreamMethods";
 import AddMeetLinkFormSchema from "../../Validation/AddMeetLinkFormSchema";
 
 const AddMeetLinkFormModal = ({ open, close, classroom, setClassroom }) => {
+  let meet = classroom.meet_link ? classroom.meet_link : "";
+
   const form = useForm({
     initialValues: {
-      meet_link: classroom.meet_link || "",
+      meet_link: meet,
     },
     validate: yupResolver(AddMeetLinkFormSchema),
   });
@@ -46,8 +48,6 @@ const AddMeetLinkFormModal = ({ open, close, classroom, setClassroom }) => {
         message: "Meet link added",
         autoClose: 3000,
       });
-
-      form.reset();
     } catch (error) {
       let message;
       if (error.data) {

@@ -18,10 +18,6 @@ const Stream = ({ classroom, setClassroom, cable }) => {
   const [isAddMeetLinkFormModalOpen, setIsAddMeetLinkFormModalOpen] =
     useState(false);
 
-  const closeAddMeetLinkFormModal = () => {
-    setIsAddMeetLinkFormModalOpen(false);
-  };
-
   const currentUser = useSelector((state) => state.auth.user);
 
   useEffect(() => {
@@ -88,6 +84,7 @@ const Stream = ({ classroom, setClassroom, cable }) => {
             <ClassMeetLink
               setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
               classroom={classroom}
+              setClassroom={setClassroom}
               currentUser={currentUser}
             />
           ) : (
@@ -100,11 +97,13 @@ const Stream = ({ classroom, setClassroom, cable }) => {
             </>
           )}
         </Box>
+
         <Flex direction={"column"} gap={"lg"} visibleFrom="md" mr={"lg"}>
           {classroom.meet_link ? (
             <ClassMeetLink
               setIsAddMeetLinkFormModalOpen={setIsAddMeetLinkFormModalOpen}
               classroom={classroom}
+              setClassroom={setClassroom}
               currentUser={currentUser}
             />
           ) : (
@@ -137,12 +136,14 @@ const Stream = ({ classroom, setClassroom, cable }) => {
           </Grid>
         </Paper>
       </Flex>
-      <AddMeetLinkFormModal
-        open={isAddMeetLinkFormModalOpen}
-        close={closeAddMeetLinkFormModal}
-        classroom={classroom}
-        setClassroom={setClassroom}
-      />
+      {isAddMeetLinkFormModalOpen ? (
+        <AddMeetLinkFormModal
+          open={isAddMeetLinkFormModalOpen}
+          close={() => setIsAddMeetLinkFormModalOpen(false)}
+          classroom={classroom}
+          setClassroom={setClassroom}
+        />
+      ) : null}
     </Box>
   );
 };

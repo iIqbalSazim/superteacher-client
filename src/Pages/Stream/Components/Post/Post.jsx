@@ -1,8 +1,14 @@
 import { useSelector } from "react-redux";
 import { Card, Flex, Paper, Text } from "@mantine/core";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 const Post = ({ post }) => {
   const currentUser = useSelector((state) => state.auth.user);
+
+  const relativeTimestamp = dayjs(post.created_at).fromNow();
 
   return (
     <Card key={post.id} shadow="xs" p={"lg"} withBorder my={"lg"} radius={"md"}>
@@ -16,7 +22,7 @@ const Post = ({ post }) => {
           {post.user.email === currentUser.email ? "(you)" : null}
         </Text>
         <Text size="md" c={"dimmed"}>
-          {new Date(post.created_at).toLocaleDateString()}
+          {relativeTimestamp}
         </Text>
       </Flex>
       <Paper shadow="0" py={"md"} mt={"sm"} style={{ whiteSpace: "pre-line" }}>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Divider, SimpleGrid, Title } from "@mantine/core";
 
@@ -12,6 +12,8 @@ import {
 } from "../../ClassworkHelpers";
 
 const ExamsContainer = ({ exams, setExams }) => {
+  const [scheduledExams, setScheduledExams] = useState([]);
+  const [finishedExams, setFinishedExams] = useState([]);
   const [examToBeUpdatedOrDeleted, setExamToBeUpdatedOrDeleted] =
     useState(null);
   const [isUpdateExamModalOpen, setIsUpdateExamModalOpen] = useState(false);
@@ -19,8 +21,10 @@ const ExamsContainer = ({ exams, setExams }) => {
 
   const currentUser = useSelector((state) => state.auth.user);
 
-  const scheduledExams = filterScheduledExams(exams);
-  const finishedExams = filterFinishedExams(exams);
+  useEffect(() => {
+    setScheduledExams(filterScheduledExams(exams));
+    setFinishedExams(filterFinishedExams(exams));
+  }, [exams]);
 
   const openUpdateExamModal = (exam) => {
     setExamToBeUpdatedOrDeleted(exam);
@@ -30,14 +34,6 @@ const ExamsContainer = ({ exams, setExams }) => {
   const openDeleteExamModal = (exam) => {
     setExamToBeUpdatedOrDeleted(exam);
     setIsDeleteExamModalOpen(true);
-  };
-
-  const closeUpdateExamModal = () => {
-    setIsUpdateExamModalOpen(false);
-  };
-
-  const closeDeleteExamModal = () => {
-    setIsDeleteExamModalOpen(false);
   };
 
   return (
@@ -56,7 +52,6 @@ const ExamsContainer = ({ exams, setExams }) => {
                   return (
                     <ScheduledExam
                       exam={exam}
-                      setExams={setExams}
                       key={exam.id}
                       openUpdateExamModal={openUpdateExamModal}
                       openDeleteExamModal={openDeleteExamModal}
@@ -67,7 +62,6 @@ const ExamsContainer = ({ exams, setExams }) => {
                 ? finishedExams.map((exam) => (
                     <FinishedExam
                       exam={exam}
-                      setExams={setExams}
                       key={exam.id}
                       openUpdateExamModal={openUpdateExamModal}
                       openDeleteExamModal={openDeleteExamModal}
@@ -77,19 +71,19 @@ const ExamsContainer = ({ exams, setExams }) => {
             </SimpleGrid>
           </SimpleGrid>
 
-          {examToBeUpdatedOrDeleted ? (
+          {isUpdateExamModalOpen && examToBeUpdatedOrDeleted ? (
             <UpdateExamFormModal
               open={isUpdateExamModalOpen}
-              close={closeUpdateExamModal}
+              close={() => setIsUpdateExamModalOpen(false)}
               exam={examToBeUpdatedOrDeleted}
               setExams={setExams}
             />
           ) : null}
 
-          {examToBeUpdatedOrDeleted ? (
+          {isDeleteExamModalOpen && examToBeUpdatedOrDeleted ? (
             <ConfirmDeleteExamModal
               open={isDeleteExamModalOpen}
-              close={closeDeleteExamModal}
+              close={() => setIsDeleteExamModalOpen(false)}
               exam={examToBeUpdatedOrDeleted}
               setExams={setExams}
             />

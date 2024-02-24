@@ -55,6 +55,9 @@ const ScheduledExam = ({ exam, openUpdateExamModal, openDeleteExamModal }) => {
 
         <Group justify="flex-end" mt={"sm"}>
           <Text>Scheduled for: {formatDate(exam.date)}</Text>
+          {formatDate(Date.now()) > formatDate(exam.date) ? (
+            <Text>Scheduled for: {formatDate(exam.date)}</Text>
+          ) : null}
         </Group>
       </Card>
     </>

@@ -1,11 +1,17 @@
 import { ActionIcon, Anchor, Flex, Group, Paper, Title } from "@mantine/core";
-import { IconEditCircle } from "@tabler/icons-react";
+import { IconEditCircle, IconTrash } from "@tabler/icons-react";
+import ConfirmDeleteMeetLinkModal from "../ConfirmDeleteMeetLinkModal/ConfirmDeleteMeetLinkModal";
+import { useState } from "react";
 
 const ClassMeetLink = ({
   setIsAddMeetLinkFormModalOpen,
   classroom,
   currentUser,
+  setClassroom,
 }) => {
+  const [isDeleteMeetLinkFormModalOpen, setIsDeleteMeetLinkFormModalOpen] =
+    useState(false);
+
   return (
     <Paper
       w={{ base: "auto" }}
@@ -30,17 +36,33 @@ const ClassMeetLink = ({
             {classroom.meet_link}
           </Anchor>
           {currentUser.role === "teacher" ? (
-            <ActionIcon
-              variant="light"
-              color="sazim-blue"
-              size={"xs"}
-              onClick={() => setIsAddMeetLinkFormModalOpen(true)}
-            >
-              <IconEditCircle />
-            </ActionIcon>
+            <Flex gap={"xs"}>
+              <ActionIcon
+                variant="subtle"
+                color="sazim-blue"
+                size={"xs"}
+                onClick={() => setIsAddMeetLinkFormModalOpen(true)}
+              >
+                <IconEditCircle />
+              </ActionIcon>
+              <ActionIcon
+                variant="subtle"
+                color="sazim-blue"
+                size={"xs"}
+                onClick={() => setIsDeleteMeetLinkFormModalOpen(true)}
+              >
+                <IconTrash />
+              </ActionIcon>
+            </Flex>
           ) : null}
         </Group>
       </Flex>
+      <ConfirmDeleteMeetLinkModal
+        open={isDeleteMeetLinkFormModalOpen}
+        close={() => setIsDeleteMeetLinkFormModalOpen(false)}
+        classroom={classroom}
+        setClassroom={setClassroom}
+      />
     </Paper>
   );
 };
