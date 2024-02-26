@@ -41,7 +41,6 @@ const StudentUpdateProfileFormSchema = yup.object().shape({
     }),
     degree_level: yup.string().when("level", {
       is: "University",
-
       then: (s) => s.required("Degree level is required"),
     }),
     semester_year: yup.string().when("level", {

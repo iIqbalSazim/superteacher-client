@@ -12,6 +12,14 @@ export const logoutUser = async (token) => {
   return await postRequest("oauth/revoke", token);
 };
 
-export const forgotPassword = async (payload) => {
-  return await putRequest("passwords/forgot", payload);
+export const generateResetToken = async (payload) => {
+  return await postRequest("passwords/forgot/token", payload);
+};
+
+export const validateResetToken = async (payload) => {
+  return await postRequest("passwords/forgot/validate", payload);
+};
+
+export const resetForgotPassword = async (payload) => {
+  return await putRequest("passwords/forgot/reset", payload);
 };

@@ -1,95 +1,205 @@
 import { useState } from "react";
-import { Box, Button, Group, Modal, Text, TextInput } from "@mantine/core";
+import { Box, Modal, Text } from "@mantine/core";
 import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 
-import ForgotPasswordSchema from "../../Validation/ForgotPasswordSchema";
-import { forgotPassword } from "../../Api/LoginMethods";
+import {
+  ForgotPasswordEmailSchema,
+  ForgotPasswordCodeSchema,
+  ForgotPasswordResetSchema,
+} from "../../Validation/ForgotPasswordSchema";
+import {
+  generateResetToken,
+  resetForgotPassword,
+  validateResetToken,
+} from "../../Api/LoginMethods";
+import CodeForm from "../CodeForm/CodeForm";
+import NewPasswordForm from "../NewPasswordForm/NewPasswordForm";
+import EmailForm from "../EmailForm/EmailForm";
 
 const ForgotPasswordModal = ({ open, close }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState("email");
 
-  const form = useForm({
+  const emailForm = useForm({
     initialValues: {
       email: "",
     },
-    validate: yupResolver(ForgotPasswordSchema),
+    validate: yupResolver(ForgotPasswordEmailSchema),
   });
 
-  const handleSubmit = async (values) => {
+  const codeForm = useForm({
+    initialValues: {
+      code: "",
+    },
+    validate: yupResolver(ForgotPasswordCodeSchema),
+  });
+
+  const newPasswordForm = useForm({
+    initialValues: {
+      new_password: "",
+      confirm_new_password: "",
+    },
+    validate: yupResolver(ForgotPasswordResetSchema),
+  });
+
+  const handleSubmitEmail = async (values) => {
     try {
       setIsLoading(true);
 
-      const response = await forgotPassword({
-        password: { email: values.email },
+      const response = await generateResetToken({
+        email: values.email,
       });
 
       if (response.status === 200) {
         notifications.show({
           color: "sazim-green",
           title: "Success",
-          message: `Email was sent to ${values.email}`,
+          message: `Email with a code was sent to ${values.email}`,
         });
 
-        close();
-        setIsLoading(false);
-        form.reset();
+        setStep("code");
       }
+
+      setIsLoading(false);
     } catch (error) {
-      let message;
-      if (error.data) {
+      let message = error.message;
+
+      if (error.data && error.data.message) {
         message = error.data.message;
-      } else {
-        message = error.message;
       }
 
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      notifications.show({
+        color: "red",
+        title: "Error",
+        message: message,
+      });
 
       setIsLoading(false);
     }
   };
 
+  const handleSubmitCode = async (values) => {
+    try {
+      setIsLoading(true);
+
+      const response = await validateResetToken({
+        token: values.code,
+        email: emailForm.values.email,
+      });
+
+      if (response.status === 200) {
+        notifications.show({
+          color: "sazim-green",
+          title: "Success",
+          message: "Code valid. Please reset your password.",
+          autoClose: "3000",
+        });
+
+        setStep("password");
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      let message = error.message;
+
+      if (error.data && error.data.message) {
+        message = error.data.message;
+      }
+
+      notifications.show({
+        color: "red",
+        title: "Error",
+        message: message,
+      });
+
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmitNewPassword = async (values) => {
+    try {
+      setIsLoading(true);
+
+      const response = await resetForgotPassword({
+        password: {
+          email: emailForm.values.email,
+          new_password: values.new_password,
+        },
+        token: codeForm.values.code,
+      });
+
+      if (response.status === 200) {
+        notifications.show({
+          color: "sazim-green",
+          title: "Success",
+          message: "Password was reset successfully",
+        });
+
+        emailForm.reset();
+        codeForm.reset();
+        newPasswordForm.reset();
+
+        setStep("email");
+        close();
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      let message = error.message;
+
+      if (error.data && error.data.message) {
+        message = error.data.message;
+      }
+
+      notifications.show({
+        color: "red",
+        title: "Error",
+        message: message,
+      });
+
+      setIsLoading(false);
+    }
+  };
+
+  const handleStepBack = () => {
+    if (step === "code") setStep("email");
+    else if (step === "password") setStep("code");
+  };
+
   return (
-    <Modal opened={open} onClose={close} size={"md"} centered>
+    <Modal opened={open} onClose={close} size="md" centered>
       <Box mx={{ base: "xs", sm: "xl" }}>
-        <Text mb={20} fw={700} tt={"uppercase"} size="lg">
+        <Text mb={20} fw={700} tt="uppercase" size="lg">
           Forgot Password
         </Text>
 
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <TextInput
-            size={"md"}
-            label="Email"
-            placeholder="Enter your email"
-            withAsterisk
-            {...form.getInputProps("email")}
+        {step === "email" && (
+          <EmailForm
+            form={emailForm}
+            onSubmit={handleSubmitEmail}
+            isLoading={isLoading}
+            onCancel={close}
           />
+        )}
 
-          <Text fw={300} size="md" mt={20} mx={"sm"}>
-            Enter the email address you logged in with. An email with
-            instructions will be sent to you.
-          </Text>
+        {step === "code" && (
+          <CodeForm
+            form={codeForm}
+            onSubmit={handleSubmitCode}
+            isLoading={isLoading}
+            onBack={handleStepBack}
+          />
+        )}
 
-          <Group justify="flex-end" mt="xl" mb={"sm"}>
-            <Button size="sm" color="sazim-green.7" onClick={close}>
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              size="sm"
-              color="sazim-green.7"
-              loading={isLoading}
-            >
-              Submit
-            </Button>
-          </Group>
-        </form>
+        {step === "password" && (
+          <NewPasswordForm
+            form={newPasswordForm}
+            onSubmit={handleSubmitNewPassword}
+            isLoading={isLoading}
+            onBack={handleStepBack}
+          />
+        )}
       </Box>
     </Modal>
   );
