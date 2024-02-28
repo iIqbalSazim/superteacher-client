@@ -36,7 +36,9 @@ const Header = () => {
 
       navigate("/");
 
-      dispatch(reset());
+      setTimeout(() => {
+        dispatch(reset());
+      }, 5000);
     } catch (error) {
       let message;
       if (error.data) {
