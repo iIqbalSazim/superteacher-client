@@ -17,6 +17,7 @@ import {
 import { notifications } from "@mantine/notifications";
 
 import { setUser } from "@/Stores/Actions/Auth";
+import { handleEducationLevelChange } from "@/Shared/SharedHelpers";
 
 import { generateToken } from "../../../Login/Api/LoginMethods";
 import { createNewUser } from "../../Api/RegistrationMethods";
@@ -255,6 +256,9 @@ const StudentForm = () => {
                 withAsterisk
                 {...form.getInputProps("education.level")}
                 data={["School", "College", "University"]}
+                onOptionSubmit={(value) =>
+                  handleEducationLevelChange(form, value)
+                }
               />
             </Grid.Col>
 

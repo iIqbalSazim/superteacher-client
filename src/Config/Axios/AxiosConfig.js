@@ -68,21 +68,6 @@ export async function postRequest(URL, payload) {
   return axiosClient.post(`/${URL}`, payload).then((response) => response);
 }
 
-export async function postRequestWithCustomHeaders(
-  URL,
-  payload,
-  customHeaders = {}
-) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...customHeaders,
-  };
-
-  return axiosClient
-    .post(`/${URL}`, payload, { headers })
-    .then((response) => response);
-}
-
 export async function putRequest(URL, payload) {
   return axiosClient.put(`/${URL}`, payload).then((response) => response);
 }
@@ -90,5 +75,17 @@ export async function putRequest(URL, payload) {
 export async function deleteRequest(URL, payload) {
   return axiosClient
     .delete(`/${URL}`, { data: payload })
+    .then((response) => response);
+}
+
+export async function postRequestForCloudinary(cloudName, payload) {
+  return axios
+    .post(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      payload,
+      {
+        "Content-Type": "multipart/form-data",
+      }
+    )
     .then((response) => response);
 }

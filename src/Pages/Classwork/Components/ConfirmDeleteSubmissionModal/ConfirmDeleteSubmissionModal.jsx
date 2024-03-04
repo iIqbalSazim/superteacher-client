@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
 import { deleteSubmission } from "../../Api/ClassworkMethods";
 
 const ConfirmDeleteSubmissionModal = ({
@@ -44,24 +46,17 @@ const ConfirmDeleteSubmissionModal = ({
 
         close();
 
+        notifications.show({
+          color: "sazim-purple.5",
+          title: "Success",
+          message: "Submission deleted",
+        });
+
         setIsLoading(false);
       }
     } catch (error) {
+      handleErrorMessage(error);
       setIsLoading(false);
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
     }
   };
 

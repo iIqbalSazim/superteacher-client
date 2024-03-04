@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
 import { deleteExam } from "../../Api/ClassworkMethods";
 
 const ConfirmDeleteExamModal = ({ open, close, exam, setExams }) => {
@@ -24,20 +26,7 @@ const ConfirmDeleteExamModal = ({ open, close, exam, setExams }) => {
       setIsLoading(false);
       close();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
     }
   };
 

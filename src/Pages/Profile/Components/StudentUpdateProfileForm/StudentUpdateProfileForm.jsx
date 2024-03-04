@@ -5,6 +5,7 @@ import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
 import { updateUser } from "@/Stores/Actions/Auth";
+import { handleEducationLevelChange } from "@/Shared/SharedHelpers";
 
 import { updateUserProfile } from "../../Api/ProfileMethods";
 import StudentUpdateProfileFormSchema from "../../Validation/StudentUpdateProfileFormSchema";
@@ -228,6 +229,7 @@ const StudentUpdateProfileForm = () => {
             withAsterisk
             {...form.getInputProps("education.level")}
             data={["School", "College", "University"]}
+            onOptionSubmit={(value) => handleEducationLevelChange(form, value)}
           />
         </Grid.Col>
 

@@ -1,3 +1,8 @@
+import {
+  generateUploadSignature,
+  uploadFilePreSignedUrl,
+} from "./Api/ClassworkMethods";
+
 export function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toDateString().slice(4, 15);
@@ -44,4 +49,21 @@ export function filterFinishedExams(exams) {
     const examDate = removeTimeFromDate(exam.date);
     return examDate < currentDate;
   });
+}
+
+export async function handleFileUpload(file) {
+  const res = await generateUploadSignature();
+  const { signature, timestamp } = res.data.sign_data;
+  const apiKey = res.data.sign_data.api_key;
+  const cloudName = res.data.sign_data.cloud_name;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("api_key", apiKey);
+  formData.append("timestamp", timestamp);
+  formData.append("signature", signature);
+
+  const fileUploadResponse = await uploadFilePreSignedUrl(cloudName, formData);
+
+  return fileUploadResponse.data.secure_url;
 }

@@ -15,6 +15,7 @@ import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { setUser } from "@/Stores/Actions/Auth";
 
 import { generateToken, loginUser } from "../../Api/LoginMethods";
@@ -61,20 +62,7 @@ const LoginForm = ({ openForgotPasswordModal }) => {
 
       form.reset();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
     }
   };
 

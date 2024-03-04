@@ -1,9 +1,9 @@
 import {
   getRequest,
-  postRequestWithCustomHeaders,
   postRequest,
   deleteRequest,
   putRequest,
+  postRequestForCloudinary,
 } from "@/Config/Axios/AxiosConfig";
 
 export const getClassroomResources = async (classroom_id) => {
@@ -70,14 +70,10 @@ export const deleteSubmission = async (
   );
 };
 
-export const uploadFile = async (formData) => {
-  const customHeaders = {
-    "Content-Type": "multipart/form-data",
-  };
+export const generateUploadSignature = async () => {
+  return await postRequest(`upload/signature`);
+};
 
-  return await postRequestWithCustomHeaders(
-    "cloudinary/upload",
-    formData,
-    customHeaders
-  );
+export const uploadFilePreSignedUrl = async (cloudName, formData) => {
+  return await postRequestForCloudinary(cloudName, formData);
 };

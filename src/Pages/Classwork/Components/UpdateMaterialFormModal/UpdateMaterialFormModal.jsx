@@ -13,8 +13,11 @@ import {
 import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 
-import { updateResource, uploadFile } from "../../Api/ClassworkMethods";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
+import { updateResource } from "../../Api/ClassworkMethods";
 import UpdateMaterialFormSchema from "../../Validation/UpdateMaterialFormSchema";
+import { handleFileUpload } from "../../ClassworkHelpers";
 
 const UpdateMaterialFormModal = ({
   open,
@@ -41,12 +44,9 @@ const UpdateMaterialFormModal = ({
       let downloadURL = material.url;
 
       if (file) {
-        let formData = new FormData();
-        formData.append("file", file);
+        const { file } = values;
 
-        const res = await uploadFile(formData);
-
-        downloadURL = res.data.url;
+        downloadURL = await handleFileUpload(file);
       }
 
       const updatedMaterial = {
@@ -86,20 +86,7 @@ const UpdateMaterialFormModal = ({
       setIsLoading(false);
       close();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
 
       setIsLoading(false);
     }

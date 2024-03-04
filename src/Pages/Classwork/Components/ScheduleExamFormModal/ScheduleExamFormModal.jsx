@@ -13,6 +13,8 @@ import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { DateInput } from "@mantine/dates";
 
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
 import ScheduleExamFormSchema from "../../Validation/ScheduleExamFormSchema";
 import { createNewExam } from "../../Api/ClassworkMethods";
 
@@ -56,21 +58,7 @@ const ScheduleExamFormModal = ({ open, close, setExams, classroom }) => {
       close();
       form.reset();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
-
+      handleErrorMessage(error);
       setIsLoading(false);
     }
   };

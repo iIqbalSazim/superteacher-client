@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useForm } from "@mantine/form";
@@ -17,6 +18,7 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { setUser } from "@/Stores/Actions/Auth";
 import { Subjects } from "@/Data/FormData";
 
@@ -25,6 +27,8 @@ import { createNewUser } from "../../Api/RegistrationMethods";
 import TeacherFormSchema from "../../Validation/TeacherFormSchema";
 
 const TeacherForm = () => {
+  const [attemptsRemaining, setAttemptsRemaining] = useState(3);
+
   const form = useForm({
     initialValues: {
       code: "",
@@ -75,20 +79,10 @@ const TeacherForm = () => {
 
       form.reset();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
+      let { attempts_remaining } = error.data;
+      setAttemptsRemaining(attempts_remaining);
 
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
     }
   };
 
@@ -114,6 +108,15 @@ const TeacherForm = () => {
                 withAsterisk
                 {...form.getInputProps("code")}
               />
+              {attemptsRemaining && attemptsRemaining > 0 ? (
+                <Text size="xs" style={{ color: "white", marginTop: "4px" }}>
+                  Attempts remaining: {attemptsRemaining}
+                </Text>
+              ) : attemptsRemaining === 0 ? (
+                <Text size="xs" style={{ color: "gray", marginTop: "4px" }}>
+                  No attempts remaining
+                </Text>
+              ) : null}
             </Grid.Col>
 
             <Grid.Col span={{ xs: 6, md: 4 }}>

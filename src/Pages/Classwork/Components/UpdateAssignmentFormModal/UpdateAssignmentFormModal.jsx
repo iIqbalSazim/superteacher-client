@@ -15,7 +15,9 @@ import { notifications } from "@mantine/notifications";
 import { DateInput } from "@mantine/dates";
 
 import UpdateAssignmentFormSchema from "../../Validation/UpdateAssignmentFormSchema";
-import { updateResource, uploadFile } from "../../Api/ClassworkMethods";
+import { updateResource } from "../../Api/ClassworkMethods";
+import { handleFileUpload } from "../../ClassworkHelpers";
+import { handleErrorMessage } from "../../../../Shared/SharedHelpers";
 
 const UpdateAssignmentFormModal = ({
   open,
@@ -43,12 +45,9 @@ const UpdateAssignmentFormModal = ({
       let downloadURL = assignment.url;
 
       if (file) {
-        let formData = new FormData();
-        formData.append("file", file);
+        const { file } = values;
 
-        const res = await uploadFile(formData);
-
-        downloadURL = res.data.url;
+        downloadURL = await handleFileUpload(file);
       }
 
       const updatedAssignment = {
@@ -89,20 +88,7 @@ const UpdateAssignmentFormModal = ({
       setIsLoading(false);
       close();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
 
       setIsLoading(false);
     }

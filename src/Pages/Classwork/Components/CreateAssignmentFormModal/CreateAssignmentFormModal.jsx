@@ -14,8 +14,11 @@ import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { DateInput } from "@mantine/dates";
 
-import { createNewResource, uploadFile } from "../../Api/ClassworkMethods";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
+import { createNewResource } from "../../Api/ClassworkMethods";
 import CreateAssignmentFormSchema from "../../Validation/CreateAssignmentFormSchema";
+import { handleFileUpload } from "../../ClassworkHelpers";
 
 const CreateAssignmentFormModal = ({
   open,
@@ -39,12 +42,8 @@ const CreateAssignmentFormModal = ({
     try {
       setIsLoading(true);
       const { file } = values;
-      let formData = new FormData();
-      formData.append("file", file);
 
-      const res = await uploadFile(formData);
-
-      const downloadURL = res.data.url;
+      const downloadURL = await handleFileUpload(file);
 
       const newAssignment = {
         title: values.title,
@@ -75,21 +74,7 @@ const CreateAssignmentFormModal = ({
       close();
       form.reset();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
-
+      handleErrorMessage(error);
       setIsLoading(false);
     }
   };

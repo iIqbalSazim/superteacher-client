@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Button, FileInput, Group, Modal, Text } from "@mantine/core";
 import { useForm, yupResolver } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
 
-import { createNewSubmission, uploadFile } from "../../Api/ClassworkMethods";
-import { formatDate } from "../../ClassworkHelpers";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
+import { createNewSubmission } from "../../Api/ClassworkMethods";
+import { formatDate, handleFileUpload } from "../../ClassworkHelpers";
 import SubmitAssignmentSchema from "../../Validation/SubmitAssignmentFormSchema";
 
 const SubmitAssignmentModal = ({
@@ -29,14 +30,10 @@ const SubmitAssignmentModal = ({
     try {
       setIsLoading(true);
       const { file } = values;
-      let formData = new FormData();
-      formData.append("file", file);
 
-      const res = await uploadFile(formData);
+      const downloadURL = await handleFileUpload(file);
 
-      const downloadURL = res.data.url;
-
-      const newAssignment = {
+      const newAssignmentSubmission = {
         assignment_id: resource.assignment_id,
         student_id: currentUser.id,
         submitted_on: formatDate(Date.now()),
@@ -47,7 +44,7 @@ const SubmitAssignmentModal = ({
         resource.classroom_id,
         resource.assignment_id,
         {
-          submission: { ...newAssignment },
+          submission: { ...newAssignmentSubmission },
         }
       );
 
@@ -69,20 +66,7 @@ const SubmitAssignmentModal = ({
       setIsLoading(false);
       close();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
 
       setIsLoading(false);
     }

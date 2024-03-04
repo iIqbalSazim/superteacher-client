@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+
 import { deleteResource } from "../../Api/ClassworkMethods";
 
 const ConfirmDeleteResourceModal = ({
@@ -42,20 +44,7 @@ const ConfirmDeleteResourceModal = ({
 
       setIsLoading(false);
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
     }
   };
 
