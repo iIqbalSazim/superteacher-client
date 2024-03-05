@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
-import { updateClassroom } from "@/Stores/Actions/Classroom";
+import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
 
 import { updateClassroomApi } from "../../Api/StreamMethods";
 
@@ -17,7 +17,7 @@ const ConfirmDeleteMeetLinkModal = ({
   const confirmDelete = async () => {
     try {
       const response = await updateClassroomApi(classroom.id, {
-        classroom: { ...classroom, meet_link: "" },
+        classroom: { ...classroom, meet_link: null },
       });
 
       const updatedClassroom = response.data.classroom;

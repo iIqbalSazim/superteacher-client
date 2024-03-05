@@ -1,21 +1,20 @@
 import { useState } from "react";
 import { Box, Modal, Text } from "@mantine/core";
 import { useForm, yupResolver } from "@mantine/form";
-import { notifications } from "@mantine/notifications";
 
+import CodeForm from "../CodeForm/CodeForm";
+import NewPasswordForm from "../NewPasswordForm/NewPasswordForm";
+import EmailForm from "../EmailForm/EmailForm";
 import {
   ForgotPasswordEmailSchema,
   ForgotPasswordCodeSchema,
   ForgotPasswordResetSchema,
 } from "../../Validation/ForgotPasswordSchema";
 import {
-  generateResetToken,
-  resetForgotPassword,
-  validateResetToken,
-} from "../../Api/LoginMethods";
-import CodeForm from "../CodeForm/CodeForm";
-import NewPasswordForm from "../NewPasswordForm/NewPasswordForm";
-import EmailForm from "../EmailForm/EmailForm";
+  GenerateResetToken,
+  ResetForgotPassword,
+  ValidateResetToken,
+} from "../../LoginHelpers";
 
 const ForgotPasswordModal = ({ open, close }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -44,122 +43,28 @@ const ForgotPasswordModal = ({ open, close }) => {
   });
 
   const handleSubmitEmail = async (values) => {
-    try {
-      setIsLoading(true);
-
-      const response = await generateResetToken({
-        email: values.email,
-      });
-
-      if (response.status === 200) {
-        notifications.show({
-          color: "sazim-green",
-          title: "Success",
-          message: `Email with a code was sent to ${values.email}`,
-        });
-
-        setStep("code");
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      let message = error.message;
-
-      if (error.data && error.data.message) {
-        message = error.data.message;
-      }
-
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: message,
-      });
-
-      setIsLoading(false);
-    }
+    await GenerateResetToken(values.email, setStep, setIsLoading);
   };
 
   const handleSubmitCode = async (values) => {
-    try {
-      setIsLoading(true);
-
-      const response = await validateResetToken({
-        token: values.code,
-        email: emailForm.values.email,
-      });
-
-      if (response.status === 200) {
-        notifications.show({
-          color: "sazim-green",
-          title: "Success",
-          message: "Code valid. Please reset your password.",
-          autoClose: "3000",
-        });
-
-        setStep("password");
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      let message = error.message;
-
-      if (error.data && error.data.message) {
-        message = error.data.message;
-      }
-
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: message,
-      });
-
-      setIsLoading(false);
-    }
+    await ValidateResetToken(
+      values.code,
+      emailForm.values.email,
+      setStep,
+      setIsLoading
+    );
   };
 
   const handleSubmitNewPassword = async (values) => {
-    try {
-      setIsLoading(true);
-
-      const response = await resetForgotPassword({
-        password: {
-          email: emailForm.values.email,
-          new_password: values.new_password,
-        },
-        token: codeForm.values.code,
-      });
-
-      if (response.status === 200) {
-        notifications.show({
-          color: "sazim-green",
-          title: "Success",
-          message: "Password was reset successfully",
-        });
-
-        emailForm.reset();
-        codeForm.reset();
-        newPasswordForm.reset();
-
-        setStep("email");
-        close();
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      let message = error.message;
-
-      if (error.data && error.data.message) {
-        message = error.data.message;
-      }
-
-      notifications.show({
-        color: "red",
-        title: "Error",
-        message: message,
-      });
-
-      setIsLoading(false);
-    }
+    await ResetForgotPassword(
+      emailForm,
+      codeForm,
+      newPasswordForm,
+      values.new_password,
+      setIsLoading,
+      setStep,
+      close
+    );
   };
 
   const handleStepBack = () => {

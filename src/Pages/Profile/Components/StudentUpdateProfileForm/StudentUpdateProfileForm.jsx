@@ -4,7 +4,7 @@ import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
-import { updateUser } from "@/Stores/Actions/Auth";
+import { updateUser } from "@/Stores/Slices/AuthSlice";
 import { handleEducationLevelChange } from "@/Shared/SharedHelpers";
 
 import { updateUserProfile } from "../../Api/ProfileMethods";

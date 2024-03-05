@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 import { Box, Divider, Text } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
-
-import { setClassroomStudents } from "@/Stores/Actions/Classroom";
 
 import AddStudentModal from "./Components/AddStudentModal/AddStudentModal";
 import StudentList from "./Components/StudentList/StudentList";
 import TeacherHeadingAndList from "./Components/TeacherHeadingAndList/TeacherHeadingAndList";
 import StudentHeadingAndAddButton from "./Components/StudentHeadingAndAddButton/StudentHeadingAndAddButton";
-import { getStudents } from "./Api/PeopleMethods";
+import { useFetchStudents } from "./Hooks/useFetchStudents";
 
 const People = ({ classroom }) => {
   const [students, setStudents] = useState([]);
@@ -22,62 +19,12 @@ const People = ({ classroom }) => {
 
   const currentUser = useSelector((state) => state.auth.user);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const fetchClassroomStudents = async () => {
-      try {
-        const response = await getStudents(classroom.id, "enrolled");
-
-        dispatch(setClassroomStudents(response.data.students));
-
-        setStudents(response.data.students);
-      } catch (error) {
-        let message;
-        if (error.data) {
-          message = error.data.message;
-        } else {
-          message = error.message;
-        }
-
-        if (message) {
-          notifications.show({
-            color: "red",
-            title: "Error",
-            message: message,
-          });
-        }
-      }
-    };
-
-    const fetchAllNotEnrolledStudents = async () => {
-      try {
-        const response = await getStudents(classroom.id, "unenrolled");
-
-        setNotEnrolledStudents(response.data.students);
-      } catch (error) {
-        let message;
-        if (error.data) {
-          message = error.data.message;
-        } else {
-          message = error.message;
-        }
-
-        if (message) {
-          notifications.show({
-            color: "red",
-            title: "Error",
-            message: message,
-          });
-        }
-      }
-    };
-
-    if (currentUser.role === "teacher") {
-      fetchAllNotEnrolledStudents();
-    }
-    fetchClassroomStudents();
-  }, [classroom.id, dispatch, currentUser]);
+  useFetchStudents(
+    classroom.id,
+    setStudents,
+    setNotEnrolledStudents,
+    currentUser
+  );
 
   return (
     <>
@@ -99,7 +46,6 @@ const People = ({ classroom }) => {
             notEnrolledStudents={notEnrolledStudents}
             setNotEnrolledStudents={setNotEnrolledStudents}
             setStudents={setStudents}
-            setClassroomStudents={setClassroomStudents}
           />
         ) : (
           <Text>No students found for this classroom.</Text>

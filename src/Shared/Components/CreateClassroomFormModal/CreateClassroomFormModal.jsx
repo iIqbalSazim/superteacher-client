@@ -20,8 +20,9 @@ import { notifications } from "@mantine/notifications";
 import { IconClock } from "@tabler/icons-react";
 
 import { createClassroom } from "@/Pages/Dashboard/Api/DashboardMethods";
-import { updateClassrooms } from "@/Stores/Actions/Classroom";
+import { updateClassrooms } from "@/Stores/Slices/ClassroomSlice";
 import { Subjects, DaysOfTheWeek } from "@/Data/FormData";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
 import CreateClassroomFormSchema from "../../Validation/CreateClassroomFormSchema";
 
@@ -64,20 +65,7 @@ const CreateClassroomFormModal = ({ open, close }) => {
 
       form.reset();
     } catch (error) {
-      let message;
-      if (error.data) {
-        message = error.data.message;
-      } else {
-        message = error.message;
-      }
-
-      if (message) {
-        notifications.show({
-          color: "red",
-          title: "Error",
-          message: message,
-        });
-      }
+      handleErrorMessage(error);
     }
   };
 

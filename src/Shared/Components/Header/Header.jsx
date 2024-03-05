@@ -5,8 +5,9 @@ import { ActionIcon, Anchor, Button, Group, Menu, Title } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconPlus } from "@tabler/icons-react";
 
-import { reset } from "@/Stores/Actions/Auth";
 import { logoutUser } from "@/Pages/Login/Api/LoginMethods";
+import { resetClassroomState } from "@/Stores/Slices/ClassroomSlice";
+import { resetAuthState } from "@/Stores/Slices/AuthSlice";
 
 import CreateClassroomFormModal from "../CreateClassroomFormModal/CreateClassroomFormModal";
 
@@ -37,8 +38,9 @@ const Header = () => {
       navigate("/");
 
       setTimeout(() => {
-        dispatch(reset());
-      }, 5000);
+        dispatch(resetClassroomState());
+        dispatch(resetAuthState());
+      }, 100);
     } catch (error) {
       let message;
       if (error.data) {

@@ -12,7 +12,7 @@ import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
-import { updateClassroom } from "@/Stores/Actions/Classroom";
+import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
 
 import { updateClassroomApi } from "../../Api/StreamMethods";
 import AddMeetLinkFormSchema from "../../Validation/AddMeetLinkFormSchema";

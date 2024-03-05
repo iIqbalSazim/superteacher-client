@@ -13,13 +13,9 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { yupResolver } from "mantine-form-yup-resolver";
-import { notifications } from "@mantine/notifications";
 
-import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { setUser } from "@/Stores/Actions/Auth";
-
-import { generateToken, loginUser } from "../../Api/LoginMethods";
 import LoginFormSchema from "../../Validation/LoginFormSchema";
+import { loginUserAndGenerateToken } from "../../LoginHelpers";
 
 const LoginForm = ({ openForgotPasswordModal }) => {
   const form = useForm({
@@ -34,36 +30,7 @@ const LoginForm = ({ openForgotPasswordModal }) => {
   const navigate = useNavigate();
 
   const handleSubmit = async (values) => {
-    try {
-      const response = await loginUser({ ...values });
-
-      const newUser = response.data.user;
-
-      const tokenRequest = await generateToken({
-        grant_type: "password",
-        email: values.email,
-        password: values.password,
-      });
-
-      const token = tokenRequest.data.access_token;
-
-      dispatch(setUser(newUser));
-
-      localStorage.setItem("token", token);
-
-      navigate("/dashboard");
-
-      notifications.show({
-        color: "sazim-green",
-        title: "Success",
-        message: "Logged in successfully",
-        autoClose: 3000,
-      });
-
-      form.reset();
-    } catch (error) {
-      handleErrorMessage(error);
-    }
+    await loginUserAndGenerateToken(values, dispatch, navigate, form);
   };
 
   return (

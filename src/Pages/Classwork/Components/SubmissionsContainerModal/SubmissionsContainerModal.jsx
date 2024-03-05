@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   ActionIcon,
   Badge,
@@ -10,11 +10,10 @@ import {
   Title,
 } from "@mantine/core";
 import { IconDownload } from "@tabler/icons-react";
-import { notifications } from "@mantine/notifications";
 
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
 
-import { getSubmissions } from "../../Api/ClassworkMethods";
+import { useFetchSubmissions } from "../../Hooks/useFetchSubmissions";
 
 const SubmissionsContainerModal = ({
   open,
@@ -25,38 +24,12 @@ const SubmissionsContainerModal = ({
   const [submissions, setSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSubmissions = async () => {
-      try {
-        const response = await getSubmissions(
-          resource.classroom_id,
-          resource.assignment_id
-        );
-
-        setSubmissions(response.data.submissions);
-        setIsLoading(false);
-      } catch (error) {
-        let message;
-        if (error.data) {
-          message = error.data.message;
-        } else {
-          message = error.message;
-        }
-
-        if (message) {
-          notifications.show({
-            color: "red",
-            title: "Error",
-            message: message,
-          });
-        }
-
-        setIsLoading(false);
-      }
-    };
-
-    fetchSubmissions();
-  }, [resource.assignment_id, resource.classroom_id, setSubmissions]);
+  useFetchSubmissions(
+    resource.classroom_id,
+    resource.assignment_id,
+    setSubmissions,
+    setIsLoading
+  );
 
   return (
     <Modal opened={open} onClose={close} size={"md"}>

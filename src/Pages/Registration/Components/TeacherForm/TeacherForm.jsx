@@ -19,7 +19,7 @@ import {
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { setUser } from "@/Stores/Actions/Auth";
+import { setUser } from "@/Stores/Slices/AuthSlice";
 import { Subjects } from "@/Data/FormData";
 
 import { generateToken } from "../../../Login/Api/LoginMethods";

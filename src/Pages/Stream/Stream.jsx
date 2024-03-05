@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Box, Flex, Grid, Paper, Title } from "@mantine/core";
-import { notifications } from "@mantine/notifications";
 
 import StreamHeader from "./Components/StreamHeader/StreamHeader";
 import SubjectDetails from "./Components/SubjectDetails/SubjectDetails";
@@ -10,7 +9,8 @@ import CreatePostForm from "./Components/CreatePostForm/CreatePostForm";
 import ClassMeetLink from "./Components/ClassMeetLink/ClassMeetLink";
 import AddMeetLinkFormModal from "./Components/AddMeetLinkFormModal/AddMeetLinkFormModal";
 import AddMeetLinkButton from "./Components/AddMeetLinkButton/AddMeetLinkButton";
-import { getStreamPosts } from "./Api/StreamMethods";
+import { useFetchPosts } from "./Hooks/useFetchPosts";
+import { useGlobalChatSubscription } from "./Hooks/useGlobalChatSubscription";
 
 const Stream = ({ classroom, setClassroom, cable }) => {
   const [posts, setPosts] = useState([]);
@@ -20,54 +20,8 @@ const Stream = ({ classroom, setClassroom, cable }) => {
 
   const currentUser = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getStreamPosts(classroom.id);
-
-        const postsInLatestFirstOrder = response.data.messages
-          ? response.data.messages.reverse()
-          : [];
-
-        setPosts(postsInLatestFirstOrder);
-      } catch (error) {
-        let message;
-        if (error.data) {
-          message = error.data.message;
-        } else {
-          message = error.message;
-        }
-
-        if (message) {
-          notifications.show({
-            color: "red",
-            title: "Error",
-            message: message,
-          });
-        }
-      }
-    };
-
-    fetchData();
-  }, [classroom.id]);
-
-  useEffect(() => {
-    const subscription = cable.subscriptions.create(
-      {
-        channel: "GlobalChatChannel",
-        classroom_id: classroom.id,
-      },
-      {
-        received: (data) => {
-          setPosts((prevState) => [data, ...prevState]);
-        },
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [cable.subscriptions, classroom.id]);
+  useFetchPosts(classroom.id, setPosts);
+  useGlobalChatSubscription(cable, classroom.id, setPosts);
 
   return (
     <Box

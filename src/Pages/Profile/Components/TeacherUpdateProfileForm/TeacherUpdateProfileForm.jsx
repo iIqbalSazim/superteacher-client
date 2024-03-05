@@ -12,7 +12,7 @@ import { yupResolver } from "mantine-form-yup-resolver";
 import { notifications } from "@mantine/notifications";
 
 import { Subjects } from "@/Data/FormData";
-import { updateUser } from "@/Stores/Actions/Auth";
+import { updateUser } from "@/Stores/Slices/AuthSlice";
 
 import { updateUserProfile } from "../../Api/ProfileMethods";
 import TeacherUpdateProfileFormSchema from "../../Validation/TeacherUpdateProfileFormSchema";

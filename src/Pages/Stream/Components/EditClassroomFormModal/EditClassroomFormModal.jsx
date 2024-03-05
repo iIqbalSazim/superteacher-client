@@ -15,7 +15,7 @@ import { notifications } from "@mantine/notifications";
 import { TimeInput } from "@mantine/dates";
 
 import { Subjects, DaysOfTheWeek } from "@/Data/FormData";
-import { updateClassroom } from "@/Stores/Actions/Classroom";
+import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
 import CreateClassroomFormSchema from "@/Shared/Validation/CreateClassroomFormSchema";
 
 import { updateClassroomApi } from "../../Api/StreamMethods";

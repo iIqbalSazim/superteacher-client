@@ -16,7 +16,7 @@ import {
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
-import { setUser } from "@/Stores/Actions/Auth";
+import { setUser } from "@/Stores/Slices/AuthSlice";
 import { handleEducationLevelChange } from "@/Shared/SharedHelpers";
 
 import { generateToken } from "../../../Login/Api/LoginMethods";

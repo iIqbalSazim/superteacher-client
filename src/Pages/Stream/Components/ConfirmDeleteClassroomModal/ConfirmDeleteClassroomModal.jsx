@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
-import { removeClassroom } from "@/Stores/Actions/Classroom";
+import { removeClassroom } from "@/Stores/Slices/ClassroomSlice";
 
 import { deleteClassroom } from "../../Api/StreamMethods";
 
