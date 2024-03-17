@@ -1,23 +1,23 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { CreateAssignmentFormValues } from "../Components/CreateAssignmentFormModal/CreateAssignmentFormModalTypes";
 
-const CreateAssignmentFormSchema: yup.Schema<CreateAssignmentFormValues> = yup
-  .object()
-  .shape({
-    title: yup
+const CreateAssignmentFormSchema: z.Schema<CreateAssignmentFormValues> = z
+  .object({
+    title: z
       .string()
-      .required("Title is required")
-      .max(255, "Title must be at most 255 characters"),
-    file: yup.mixed<File>().required("File is required"),
-    description: yup
+      .min(1, { message: "Title is required" })
+      .max(255, { message: "Title must be at most 255 characters" }),
+    file: z.instanceof(File, { message: "File is required" }),
+    description: z
       .string()
-      .required("Description is required")
-      .max(1000, "Description must be at most 1000 characters"),
-    due_date: yup
+      .min(1, { message: "Description is required" })
+      .max(1000, { message: "Description must be at most 1000 characters" }),
+    due_date: z
       .date()
-      .required("Due date is required")
-      .min(new Date(), "Due date must be in the future"),
-  });
+      .min(new Date(), { message: "Due date must be in the future" }),
+  })
+  .strict()
+  .required();
 
 export default CreateAssignmentFormSchema;

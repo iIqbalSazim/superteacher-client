@@ -1,12 +1,7 @@
-import {
-  Button,
-  Grid,
-  Group,
-  MultiSelect,
-  Select,
-  TextInput,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Button, Grid, Group } from "@mantine/core";
+import { MultiSelect, TextInput, Select } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { Subjects } from "@/Data/FormData";
@@ -30,9 +25,12 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
 
   const dispatch = useAppDispatch();
 
-  const form = useForm<TeacherProfileFormValues>({
-    validateInputOnChange: true,
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+    reset,
+  } = useForm<TeacherProfileFormValues>({
+    defaultValues: {
       email: currentUser.email,
       gender: currentUser.gender,
       first_name: currentUser.first_name,
@@ -41,11 +39,15 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
       highest_education_level: profile.highest_education_level,
       subjects_to_teach: profile.subjects_to_teach,
     },
-    validate: yupResolver(TeacherUpdateProfileFormSchema),
+    resolver: zodResolver(TeacherUpdateProfileFormSchema),
   });
 
-  const handleSubmit = async (values: TeacherProfileFormValues) => {
+  const onSubmit: FormSubmitHandler<TeacherProfileFormValues> = async (
+    formPayload
+  ) => {
     try {
+      const values = formPayload.data;
+
       const response = await updateUserProfile(userId, values);
 
       const user = response.data.user as User;
@@ -73,7 +75,7 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
   };
 
   return (
-    <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+    <Form onSubmit={onSubmit} control={control}>
       <Grid gutter={"sm"} grow mx={"lg"} px={"lg"}>
         <Grid.Col span={{ xs: 6 }}>
           <TextInput
@@ -82,7 +84,8 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             label="Email"
             placeholder="Enter your email"
             withAsterisk
-            {...form.getInputProps("email")}
+            control={control}
+            name="email"
           />
         </Grid.Col>
 
@@ -92,8 +95,10 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             label="Gender"
             placeholder="Select your gender"
             withAsterisk
-            {...form.getInputProps("gender")}
             data={["Male", "Female"]}
+            control={control}
+            name="gender"
+            error={errors.gender?.message}
           />
         </Grid.Col>
 
@@ -103,7 +108,9 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             label="First name"
             placeholder="Enter your first name"
             withAsterisk
-            {...form.getInputProps("first_name")}
+            control={control}
+            name="first_name"
+            error={errors.first_name?.message}
           />
         </Grid.Col>
 
@@ -113,7 +120,9 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             label="Last name"
             placeholder="Enter your last name"
             withAsterisk
-            {...form.getInputProps("last_name")}
+            control={control}
+            name="last_name"
+            error={errors.last_name?.message}
           />
         </Grid.Col>
 
@@ -123,7 +132,9 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             label="Major Subject"
             placeholder="Enter your field of specialization"
             withAsterisk
-            {...form.getInputProps("major_subject")}
+            control={control}
+            name="major_subject"
+            error={errors.major_subject?.message}
           />
         </Grid.Col>
 
@@ -134,7 +145,9 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             placeholder="Select education level"
             withAsterisk
             data={["Bachelors", "Masters", "Diploma", "PhD"]}
-            {...form.getInputProps("highest_education_level")}
+            control={control}
+            name="highest_education_level"
+            error={errors.highest_education_level?.message}
           />
         </Grid.Col>
 
@@ -146,20 +159,22 @@ const TeacherUpdateProfileForm: React.FC<TeacherProfileProps> = ({
             withAsterisk
             searchable
             data={Subjects}
-            {...form.getInputProps("subjects_to_teach")}
+            control={control}
+            name="subjects_to_teach"
+            error={errors.subjects_to_teach?.message}
           />
         </Grid.Col>
       </Grid>
 
       <Group justify="space-evenly" mt="lg" pt={"sm"}>
-        <Button size="md" color="sazim-purple.6" onClick={() => form.reset()}>
+        <Button size="md" color="sazim-purple.6" onClick={() => reset()}>
           Revert
         </Button>
         <Button type="submit" size="md" color="sazim-green.7">
           Submit
         </Button>
       </Group>
-    </form>
+    </Form>
   );
 };
 

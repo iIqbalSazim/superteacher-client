@@ -1,5 +1,7 @@
-import { Button, Grid, Group, Select, TextInput } from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Button, Grid, Group } from "@mantine/core";
+import { TextInput, Select } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { updateUser } from "@/Stores/Slices/AuthSlice";
@@ -25,9 +27,14 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
 
   const dispatch = useAppDispatch();
 
-  const form = useForm<StudentProfileFormValues>({
-    validateInputOnChange: true,
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+    setValue,
+    watch,
+    reset,
+  } = useForm<StudentProfileFormValues>({
+    defaultValues: {
       email: currentUser.email,
       gender: currentUser.gender,
       first_name: currentUser.first_name,
@@ -36,11 +43,14 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
       phone_number: currentUser.phone_number,
       education: profile.education,
     },
-    validate: yupResolver(StudentUpdateProfileFormSchema),
+    resolver: zodResolver(StudentUpdateProfileFormSchema),
   });
 
-  const handleSubmit = async (values: StudentProfileFormValues) => {
+  const onSubmit: FormSubmitHandler<StudentProfileFormValues> = async (
+    formPayload
+  ) => {
     try {
+      const values = formPayload.data;
       const response = await updateUserProfile(userId, values);
 
       const user = response.data.user as User;
@@ -69,7 +79,7 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
   };
 
   const renderAdditionalFields = () => {
-    const { level } = form.values.education;
+    const { level } = watch("education");
 
     if (level === "School") {
       return (
@@ -80,8 +90,10 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
               label="English/Bangla Medium"
               placeholder="Select medium"
               withAsterisk
-              {...form.getInputProps("education.english_bangla_medium")}
               data={["English", "Bangla"]}
+              control={control}
+              name="education.english_bangla_medium"
+              error={errors.education?.english_bangla_medium?.message}
             />
           </Grid.Col>
           <Grid.Col span={{ xs: 6 }}>
@@ -90,8 +102,10 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
               label="Class"
               placeholder="Select class"
               withAsterisk
-              {...form.getInputProps("education.class_level")}
               data={["Class 7", "Class 8", "Class 9", "Class 10"]}
+              control={control}
+              name="education.class_level"
+              error={errors.education?.class_level?.message}
             />
           </Grid.Col>
         </>
@@ -107,8 +121,10 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
               label="English/Bangla Medium"
               placeholder="Select medium"
               withAsterisk
-              {...form.getInputProps("education.english_bangla_medium")}
               data={["English", "Bangla"]}
+              control={control}
+              name="education.english_bangla_medium"
+              error={errors.education?.english_bangla_medium?.message}
             />
           </Grid.Col>
           <Grid.Col span={{ xs: 6 }}>
@@ -117,8 +133,10 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
               label="Class"
               placeholder="Select class"
               withAsterisk
-              {...form.getInputProps("education.class_level")}
               data={["Class 11", "Class 12"]}
+              control={control}
+              name="education.class_level"
+              error={errors.education?.class_level?.message}
             />
           </Grid.Col>
         </>
@@ -134,8 +152,10 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
               label="Bachelors/Masters"
               placeholder="Select degree level"
               withAsterisk
-              {...form.getInputProps("education.degree_level")}
               data={["Bachelors", "Masters"]}
+              control={control}
+              name="education.degree_level"
+              error={errors.education?.degree_level?.message}
             />
           </Grid.Col>
           <Grid.Col span={{ xs: 6 }}>
@@ -144,7 +164,9 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
               label="Semester/Year"
               placeholder="Enter semester or year"
               withAsterisk
-              {...form.getInputProps("education.semester_year")}
+              control={control}
+              name="education.semester_year"
+              error={errors.education?.semester_year?.message}
             />
           </Grid.Col>
         </>
@@ -155,7 +177,7 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
   };
 
   return (
-    <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+    <Form onSubmit={onSubmit} control={control}>
       <Grid gutter={"sm"} grow mx={"lg"} px={"lg"}>
         <Grid.Col span={{ xs: 6 }}>
           <TextInput
@@ -164,7 +186,8 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             label="Email"
             placeholder="Enter your email"
             withAsterisk
-            {...form.getInputProps("email")}
+            control={control}
+            name="email"
           />
         </Grid.Col>
 
@@ -174,8 +197,10 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             label="Gender"
             placeholder="Select your gender"
             withAsterisk
-            {...form.getInputProps("gender")}
             data={["Male", "Female"]}
+            control={control}
+            name="gender"
+            error={errors.gender?.message}
           />
         </Grid.Col>
 
@@ -185,7 +210,9 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             label="First name"
             placeholder="Enter your first name"
             withAsterisk
-            {...form.getInputProps("first_name")}
+            control={control}
+            name="first_name"
+            error={errors.first_name?.message}
           />
         </Grid.Col>
 
@@ -195,7 +222,9 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             label="Last name"
             placeholder="Enter your last name"
             withAsterisk
-            {...form.getInputProps("last_name")}
+            control={control}
+            name="last_name"
+            error={errors.last_name?.message}
           />
         </Grid.Col>
 
@@ -205,7 +234,9 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             label="Address"
             placeholder="Enter your address"
             withAsterisk
-            {...form.getInputProps("address")}
+            control={control}
+            name="address"
+            error={errors.address?.message}
           />
         </Grid.Col>
 
@@ -215,7 +246,9 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             label="Phone number"
             placeholder="Enter your phone number"
             withAsterisk
-            {...form.getInputProps("phone_number")}
+            control={control}
+            name="phone_number"
+            error={errors.phone_number?.message}
           />
         </Grid.Col>
 
@@ -225,11 +258,15 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             placeholder="Select your education level"
             label="Education level"
             withAsterisk
-            {...form.getInputProps("education.level")}
             data={["School", "College", "University"]}
-            onOptionSubmit={(value) =>
-              handleEducationLevelChange(form.setFieldValue, value)
-            }
+            control={control}
+            name="education.level"
+            error={errors.education?.level?.message}
+            onOptionSubmit={(value) => {
+              const updates = handleEducationLevelChange(value);
+
+              setValue("education", updates);
+            }}
           />
         </Grid.Col>
 
@@ -237,14 +274,14 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
       </Grid>
 
       <Group justify="space-evenly" mt="lg" pt={"sm"}>
-        <Button size="md" color="sazim-purple.6" onClick={() => form.reset()}>
+        <Button size="md" color="sazim-purple.6" onClick={() => reset()}>
           Revert
         </Button>
         <Button type="submit" size="md" color="sazim-green.7">
           Submit
         </Button>
       </Group>
-    </form>
+    </Form>
   );
 };
 

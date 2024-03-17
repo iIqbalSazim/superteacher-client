@@ -9,7 +9,7 @@ export interface TeacherProfileType {
 }
 
 export interface Education {
-  level: string;
+  level?: string;
   english_bangla_medium?: string;
   class_level?: string;
   degree_level?: string;
@@ -60,7 +60,11 @@ export interface ClassroomType {
   teacher: Teacher;
 }
 
-export interface ClassroomFormValues
-  extends Omit<ClassroomType, "id" | "created_at" | "teacher"> {
-  teacher_id?: number;
+export interface ClassroomFormValues {
+  teacher_id?: number | null;
+  title?: string | null;
+  subject?: string | null;
+  class_time?: string | null;
+  days?: string[] | null;
+  meet_link?: string | null;
 }

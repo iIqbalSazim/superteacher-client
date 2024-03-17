@@ -1,4 +1,4 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { ForgotPasswordResetValues } from "../Components/ForgotPasswordModal/ForgotPasswordModalTypes";
 import { EmailFormValues } from "../Components/EmailForm/EmailFormTypes";
@@ -8,41 +8,50 @@ const lowercaseRegExp = /[a-z]/;
 const uppercaseRegExp = /[A-Z]/;
 const numberRegExp = /[0-9]/;
 
-export const ForgotPasswordEmailSchema: yup.Schema<EmailFormValues> = yup
-  .object()
-  .shape({
-    email: yup
+export const ForgotPasswordEmailSchema: z.Schema<EmailFormValues> = z
+  .object({
+    email: z
       .string()
-      .email("Invalid email")
-      .max(255, "Email must be at most 255 characters")
-      .required("Email is required"),
-  });
+      .min(1, "Email is required")
+      .max(255, { message: "Email must be at most 255 characters" })
+      .email("Invalid email"),
+  })
+  .strict();
 
-export const ForgotPasswordCodeSchema: yup.Schema<CodeFormValues> = yup
-  .object()
-  .shape({
-    code: yup.string().required("Code is required"),
-  });
+export const ForgotPasswordCodeSchema: z.Schema<CodeFormValues> = z
+  .object({
+    code: z.string().min(1, "Code is required"),
+  })
+  .strict();
 
-export const ForgotPasswordResetSchema: yup.Schema<ForgotPasswordResetValues> =
-  yup.object().shape({
-    new_password: yup
+export const ForgotPasswordResetSchema: z.Schema<ForgotPasswordResetValues> = z
+  .object({
+    new_password: z
       .string()
-      .matches(
-        lowercaseRegExp,
-        "Password must contain at least one lowercase character"
-      )
-      .matches(
-        uppercaseRegExp,
-        "Password must contain at least one uppercase character"
-      )
-      .matches(numberRegExp, "Password must contain at least one number")
-      .min(8, "Password should be at least 8 characters")
-      .max(255, "Password must be at most 255 characters")
-      .required("Password is required"),
-    confirm_new_password: yup
+      .min(1, "Password is required")
+      .min(8, { message: "Password should be at least 8 characters" })
+      .max(255, { message: "Password must be at most 255 characters" })
+      .regex(lowercaseRegExp, {
+        message: "Password must contain at least one lowercase character",
+      })
+      .regex(uppercaseRegExp, {
+        message: "Password must contain at least one uppercase character",
+      })
+      .regex(numberRegExp, {
+        message: "Password must contain at least one number",
+      }),
+    confirm_new_password: z
       .string()
-      .oneOf([yup.ref("new_password"), ""], "Passwords must match")
-      .max(255, "Confirm password must be at most 255 characters")
-      .required("Confirm password is required"),
-  });
+      .min(1, "Confirm password is required")
+      .max(255, { message: "Confirm password must be at most 255 characters" }),
+  })
+  .strict()
+  .refine(
+    (data) =>
+      data.confirm_new_password === data.new_password ||
+      data.confirm_new_password === "",
+    {
+      message: "Passwords must match",
+      path: ["confirm_new_password"],
+    }
+  );

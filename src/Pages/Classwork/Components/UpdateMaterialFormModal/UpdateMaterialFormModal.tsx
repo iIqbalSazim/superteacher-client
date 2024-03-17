@@ -1,16 +1,8 @@
 import { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  FileInput,
-  Group,
-  Modal,
-  SimpleGrid,
-  Text,
-  TextInput,
-  Textarea,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
+import { TextInput, Textarea, FileInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
@@ -31,18 +23,25 @@ const UpdateMaterialFormModal: React.FC<UpdateMaterialFormModalProps> = ({
 
   const { setUploadedMaterials } = useContext(ClassworkContext);
 
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+  } = useForm<CreateMaterialFormValues>({
+    defaultValues: {
       title: material.title,
       file: null,
       description: material.description,
     },
-    validate: yupResolver(UpdateMaterialFormSchema),
+    resolver: zodResolver(UpdateMaterialFormSchema),
   });
 
-  const handleSubmit = async (values: CreateMaterialFormValues) => {
+  const onSubmit: FormSubmitHandler<CreateMaterialFormValues> = async (
+    formPayload
+  ) => {
     try {
       setIsLoading(true);
+
+      const values = formPayload.data;
 
       let downloadURL = material.url;
 
@@ -99,26 +98,34 @@ const UpdateMaterialFormModal: React.FC<UpdateMaterialFormModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Update Material
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form onSubmit={onSubmit} control={control}>
           <SimpleGrid>
             <TextInput
               size={"md"}
               label="Title"
               placeholder="Enter a title"
-              {...form.getInputProps("title")}
+              control={control}
+              name="title"
+              error={errors.title?.message}
             />
+
             <Textarea
               size={"md"}
               label="Description"
               placeholder="Enter a description"
-              {...form.getInputProps("description")}
+              control={control}
+              name="description"
+              error={errors.description?.message}
             />
+
             <FileInput
               clearable
               size="md"
               label="Upload file"
               placeholder="Upload file"
-              {...form.getInputProps("file")}
+              control={control}
+              name="file"
+              error={errors.file?.message}
             />
           </SimpleGrid>
 
@@ -135,7 +142,7 @@ const UpdateMaterialFormModal: React.FC<UpdateMaterialFormModalProps> = ({
               Update
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

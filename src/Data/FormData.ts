@@ -1,6 +1,6 @@
 export const Subjects = ["Physics", "Chemistry", "Math", "Biology", "History"];
 
-export const DaysOfTheWeek = [
+export const DaysOfTheWeek: string[] = [
   "Sunday",
   "Monday",
   "Tuesday",
@@ -9,3 +9,8 @@ export const DaysOfTheWeek = [
   "Friday",
   "Saturday",
 ];
+
+export const DaysOfTheWeekOptions = DaysOfTheWeek.map((day) => ({
+  value: day,
+  label: day,
+}));

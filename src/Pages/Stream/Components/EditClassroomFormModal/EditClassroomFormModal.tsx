@@ -1,18 +1,14 @@
 import { useContext } from "react";
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  MultiSelect,
-  Select,
-  SimpleGrid,
-  Text,
-  TextInput,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { TimeInput } from "@mantine/dates";
+import {
+  TextInput,
+  Select,
+  MultiSelect,
+  TimeInput,
+} from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Subjects, DaysOfTheWeek } from "@/Data/FormData";
 import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
@@ -31,8 +27,12 @@ const EditClassroomFormModal: React.FC<EditClassroomParams> = ({
   classroom,
 }) => {
   const { setClassroom } = useContext(ClassroomContext);
-  const form = useForm({
-    initialValues: {
+
+  const {
+    formState: { errors },
+    control,
+  } = useForm<ClassroomFormValues>({
+    defaultValues: {
       title: classroom.title,
       subject: classroom.subject,
       class_time: new Date(classroom.class_time).toLocaleTimeString([], {
@@ -42,13 +42,17 @@ const EditClassroomFormModal: React.FC<EditClassroomParams> = ({
       }),
       days: classroom.days,
     },
-    validate: yupResolver(CreateClassroomFormSchema),
+    resolver: zodResolver(CreateClassroomFormSchema),
   });
 
   const dispatch = useAppDispatch();
 
-  const handleSubmit = async (values: ClassroomFormValues) => {
+  const onSubmit: FormSubmitHandler<ClassroomFormValues> = async (
+    formPayload
+  ) => {
     try {
+      const values = formPayload.data;
+
       const response = await updateClassroomApi(classroom.id, {
         title: values.title,
         subject: values.subject,
@@ -80,14 +84,16 @@ const EditClassroomFormModal: React.FC<EditClassroomParams> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Edit Classroom
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <SimpleGrid>
             <TextInput
               size="sm"
               label="Title"
               placeholder="Enter a title"
               withAsterisk
-              {...form.getInputProps("title")}
+              control={control}
+              name="title"
+              error={errors.title?.message}
             />
 
             <Select
@@ -96,14 +102,18 @@ const EditClassroomFormModal: React.FC<EditClassroomParams> = ({
               placeholder="Pick a subject"
               withAsterisk
               data={Subjects}
-              {...form.getInputProps("subject")}
+              control={control}
+              name="subject"
+              error={errors.subject?.message}
             />
 
             <TimeInput
               size="sm"
               label="Class Time"
               withAsterisk
-              {...form.getInputProps("class_time")}
+              control={control}
+              name="class_time"
+              error={errors.class_time?.message}
             />
 
             <MultiSelect
@@ -113,7 +123,9 @@ const EditClassroomFormModal: React.FC<EditClassroomParams> = ({
               withAsterisk
               searchable
               data={DaysOfTheWeek}
-              {...form.getInputProps("days")}
+              control={control}
+              name="days"
+              error={errors.days?.message}
             />
           </SimpleGrid>
 
@@ -125,7 +137,7 @@ const EditClassroomFormModal: React.FC<EditClassroomParams> = ({
               Update
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

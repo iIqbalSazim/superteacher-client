@@ -1,4 +1,4 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { TeacherProfileFormValues } from "../Components/TeacherUpdateProfileForm/TeacherUpdateProfileFormTypes";
 
@@ -7,30 +7,52 @@ export interface TeacherProfleFormSchema
   subjects_to_teach?: (string | undefined)[] | undefined;
 }
 
-const TeacherUpdateProfileFormSchema: yup.Schema<TeacherProfleFormSchema> = yup
-  .object()
-  .shape({
-    first_name: yup
+const TeacherUpdateProfileFormSchema = z
+  .object({
+    first_name: z
       .string()
-      .max(255, "First name must be at most 255 characters")
-      .required("First name is required"),
-    last_name: yup
+      .max(255, { message: "First name must be at most 255 characters" })
+      .min(1, "First name is required"),
+    last_name: z
       .string()
-      .max(255, "First name must be at most 255 characters")
-      .required("Last name is required"),
-    gender: yup.string().required("Gender is required"),
-    major_subject: yup.string().required("Major subject is required"),
-    highest_education_level: yup
+      .max(255, { message: "Last name must be at most 255 characters" })
+      .min(1, "Last name is required"),
+    gender: z
       .string()
-      .required("Highest education level is required"),
-    subjects_to_teach: yup
-      .array()
-      .min(1, "At least one subject to teach is required"),
-    email: yup
+      .min(1, "Gender is required")
+      .nullish()
+      .transform((value, ctx): string => {
+        if (value == null)
+          ctx.addIssue({
+            code: "custom",
+            message: "Gender is required",
+          });
+
+        return value as string;
+      }),
+    major_subject: z.string().min(1, "Major subject is required"),
+    highest_education_level: z
+      .string()
+      .min(1, "Highest education level is required")
+      .nullish()
+      .transform((value, ctx): string => {
+        if (value == null)
+          ctx.addIssue({
+            code: "custom",
+            message: "Highest education level is required",
+          });
+
+        return value as string;
+      }),
+    subjects_to_teach: z
+      .array(z.string())
+      .min(1, { message: "At least one subject to teach is required" }),
+    email: z
       .string()
       .email("Invalid email")
-      .max(255, "Email must be at most 255 characters")
-      .required("Email is required"),
-  });
+      .max(255, { message: "Email must be at most 255 characters" })
+      .min(1, "Email is required"),
+  })
+  .strict();
 
 export default TeacherUpdateProfileFormSchema;

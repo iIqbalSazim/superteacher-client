@@ -1,32 +1,42 @@
-import { Button, Group, Textarea } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { Button, Group } from "@mantine/core";
+import { Textarea } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { User } from "@/Types/SharedTypes";
 import { useAppSelector } from "@/Stores/Store";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
-import { createPost } from "../../Api/StreamMethods";
 import {
   CreatePostFormProps,
   CreatePostFormValues,
 } from "./CreatePostFormTypes";
+import { createPost } from "../../Api/StreamMethods";
+import CreatePostFormSchema from "../../Validation/CreatePostFormSchema";
 
 const CreatePostForm: React.FC<CreatePostFormProps> = ({ classroom }) => {
-  const form = useForm({
-    initialValues: {
+  const {
+    control,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
       text: "",
     },
+    resolver: zodResolver(CreatePostFormSchema),
   });
 
   const currentUser = useAppSelector((state) => state.auth.user) as User;
 
-  const handleSubmit = async (values: CreatePostFormValues) => {
+  const onSubmit: FormSubmitHandler<CreatePostFormValues> = async (
+    formPayload
+  ) => {
     try {
       const response = await createPost(classroom.id, {
         user_id: currentUser.id,
         classroom_id: classroom.id,
-        text: values.text,
+        text: formPayload.data.text,
       });
 
       if (response.data.new_message) {
@@ -37,28 +47,31 @@ const CreatePostForm: React.FC<CreatePostFormProps> = ({ classroom }) => {
         });
       }
 
-      form.reset();
+      reset();
     } catch (error) {
       handleErrorMessage(error);
     }
   };
 
   return (
-    <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+    <Form control={control} onSubmit={onSubmit}>
       <Textarea
         placeholder="Announce something to your class"
         size="xl"
-        {...form.getInputProps("text")}
+        control={control}
+        name="text"
+        error={errors.text?.message}
       />
+
       <Group justify="flex-end" mt={"md"}>
-        <Button size="sm" color="sazim-blue" onClick={form.reset}>
+        <Button size="sm" color="sazim-blue" onClick={() => reset()}>
           Reset
         </Button>
         <Button size="sm" color="sazim-blue" type="submit">
           Post
         </Button>
       </Group>
-    </form>
+    </Form>
   );
 };
 

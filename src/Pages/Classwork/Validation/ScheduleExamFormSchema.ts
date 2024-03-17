@@ -1,22 +1,21 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { ScheduleExamFormValues } from "../Components/ScheduleExamFormModal/ScheduleExamFormModalTypes";
 
-const ScheduleExamFormSchema: yup.Schema<ScheduleExamFormValues> = yup
-  .object()
-  .shape({
-    title: yup
+const ScheduleExamFormSchema: z.Schema<ScheduleExamFormValues> = z
+  .object({
+    title: z
       .string()
-      .required("Title is required")
-      .max(255, "Title must be at most 255 characters"),
-    description: yup
+      .min(1, { message: "Title is required" })
+      .max(255, { message: "Title must be at most 255 characters" }),
+    description: z
       .string()
-      .required("Description is required")
-      .max(1000, "Description must be at most 1000 characters"),
-    date: yup
+      .min(1, { message: "Description is required" })
+      .max(1000, { message: "Description must be at most 1000 characters" }),
+    date: z
       .date()
-      .required("Due date is required")
-      .min(new Date(), "Due date must be in the future"),
-  });
+      .min(new Date(), { message: "Due date must be in the future" }),
+  })
+  .strict();
 
 export default ScheduleExamFormSchema;

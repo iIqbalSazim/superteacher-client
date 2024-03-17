@@ -4,13 +4,13 @@ import {
   Box,
   Button,
   Flex,
-  Grid,
   Group,
-  PasswordInput,
+  SimpleGrid,
   Text,
-  TextInput,
 } from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { TextInput, PasswordInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { useAppDispatch } from "@/Stores/Store";
 
@@ -19,19 +19,25 @@ import { LoginUserAndGenerateToken } from "../../LoginHelpers";
 import { LoginFormProps, LoginFormValues } from "./LoginFormTypes";
 
 const LoginForm: React.FC<LoginFormProps> = ({ openForgotPasswordModal }) => {
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+    reset,
+  } = useForm<LoginFormValues>({
+    defaultValues: {
       email: "",
       password: "",
     },
-    validate: yupResolver(LoginFormSchema),
+    resolver: zodResolver(LoginFormSchema),
   });
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (values: LoginFormValues) => {
-    await LoginUserAndGenerateToken(values, form, dispatch, navigate);
+  const onSubmit: FormSubmitHandler<LoginFormValues> = async (formPayload) => {
+    const values = formPayload.data;
+
+    await LoginUserAndGenerateToken(values, reset, dispatch, navigate);
   };
 
   return (
@@ -46,35 +52,35 @@ const LoginForm: React.FC<LoginFormProps> = ({ openForgotPasswordModal }) => {
         Login
       </Text>
       <Box maw={700} mx="auto">
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
-          <Grid gutter="xl">
-            <Grid.Col span={12}>
-              <TextInput
-                size="md"
-                label="Email"
-                placeholder="Enter your email"
-                withAsterisk
-                {...form.getInputProps("email")}
-              />
-            </Grid.Col>
+        <Form control={control} onSubmit={onSubmit}>
+          <SimpleGrid w={300}>
+            <TextInput
+              size="md"
+              label="Email"
+              placeholder="Enter your email"
+              withAsterisk
+              control={control}
+              name="email"
+              error={errors.email?.message}
+            />
 
-            <Grid.Col span={12}>
-              <PasswordInput
-                size="md"
-                label="Password"
-                placeholder="Enter your password"
-                withAsterisk
-                {...form.getInputProps("password")}
-              />
-            </Grid.Col>
-          </Grid>
+            <PasswordInput
+              size="md"
+              label="Password"
+              placeholder="Enter your password"
+              withAsterisk
+              control={control}
+              name="password"
+              error={errors.password?.message}
+            />
+          </SimpleGrid>
 
           <Group justify="space-evenly" my="md" pt="md">
             <Button type="submit" size="md" color="sazim-green.7">
               Submit
             </Button>
           </Group>
-        </form>
+        </Form>
 
         <Text fw={400} ta="center" my="xs" size="md">
           <Anchor onClick={openForgotPasswordModal} c="sazim-green.4">
