@@ -1,53 +1,81 @@
-import * as yup from "yup";
-
-import { TeacherFormValues } from "../Components/TeacherForm/TeacherFormTypes";
+import { z } from "zod";
 
 const lowercaseRegExp = /[a-z]/;
 const uppercaseRegExp = /[A-Z]/;
 const numberRegExp = /[0-9]/;
 
-const TeacherFormSchema: yup.Schema<TeacherFormValues> = yup.object().shape({
-  first_name: yup
-    .string()
-    .max(255, "First name must be at most 255 characters")
-    .required("First name is required"),
-  last_name: yup
-    .string()
-    .max(255, "First name must be at most 255 characters")
-    .required("Last name is required"),
-  gender: yup.string().required("Gender is required"),
-  major_subject: yup.string().required("Major subject is required"),
-  highest_education_level: yup
-    .string()
-    .required("Highest education level is required"),
-  subjects_to_teach: yup
-    .array()
-    .min(1, "At least one subject to teach is required")
-    .required("Subjects to teach is required"),
-  email: yup
-    .string()
-    .email("Invalid email")
-    .max(255, "Email must be at most 255 characters")
-    .required("Email is required"),
-  password: yup
-    .string()
-    .matches(
-      lowercaseRegExp,
-      "Password must contain at least one lowercase character"
-    )
-    .matches(
-      uppercaseRegExp,
-      "Password must contain at least one uppercase character"
-    )
-    .matches(numberRegExp, "Password must contain at least one number")
-    .min(8, "Password should be at least 8 characters")
-    .max(255, "Password must be at most 255 characters")
-    .required("Password is required"),
-  confirm_password: yup
-    .string()
-    .oneOf([yup.ref("password"), ""], "Passwords must match")
-    .max(255, "Confirm password must be at most 255 characters")
-    .required("Confirm password is required"),
-});
+const TeacherFormSchema = z
+  .object({
+    first_name: z
+      .string()
+      .max(255, { message: "First name must be at most 255 characters" })
+      .min(1, "First name is required"),
+    last_name: z
+      .string()
+      .max(255, { message: "Last name must be at most 255 characters" })
+      .min(1, "Last name is required"),
+    gender: z
+      .string()
+      .min(1, "Gender is required")
+      .nullish()
+      .transform((value, ctx): string => {
+        if (value == null)
+          ctx.addIssue({
+            code: "custom",
+            message: "Gender is required",
+          });
+
+        return value as string;
+      }),
+    major_subject: z.string().min(1, "Major subject is required"),
+    highest_education_level: z
+      .string()
+      .min(1, "Highest education level is required")
+      .nullish()
+      .transform((value, ctx): string => {
+        if (value == null)
+          ctx.addIssue({
+            code: "custom",
+            message: "Highest education level is required",
+          });
+
+        return value as string;
+      }),
+    subjects_to_teach: z
+      .array(z.string())
+      .min(1, { message: "At least one subject to teach is required" }),
+    email: z
+      .string()
+      .email("Invalid email")
+      .max(255, { message: "Email must be at most 255 characters" })
+      .min(1, "Email is required"),
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, { message: "Password should be at least 8 characters" })
+      .max(255, { message: "Password must be at most 255 characters" })
+      .regex(lowercaseRegExp, {
+        message: "Password must contain at least one lowercase character",
+      })
+      .regex(uppercaseRegExp, {
+        message: "Password must contain at least one uppercase character",
+      })
+      .regex(numberRegExp, {
+        message: "Password must contain at least one number",
+      }),
+    confirm_password: z
+      .string()
+      .min(1, "Confirm password is required")
+      .max(255, { message: "Confirm password must be at most 255 characters" }),
+  })
+  .strict()
+  .refine(
+    (data) =>
+      data.confirm_password === data.password || data.confirm_password === "",
+    {
+      message: "Passwords must match",
+      path: ["confirm_new_password"],
+    }
+  );
 
 export default TeacherFormSchema;

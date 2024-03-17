@@ -1,18 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useForm, yupResolver } from "@mantine/form";
-import {
-  TextInput,
-  Button,
-  Group,
-  Box,
-  PasswordInput,
-  Flex,
-  Text,
-  Grid,
-  Anchor,
-  Select,
-} from "@mantine/core";
+import { Button, Group, Box, Flex, Text, Grid, Anchor } from "@mantine/core";
+import { TextInput, Select, PasswordInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { setUser } from "@/Stores/Slices/AuthSlice";
@@ -27,9 +18,14 @@ import StudentFormSchema from "../../Validation/StudentFormSchema";
 import { StudentFormValues } from "./StudentFormTypes";
 
 const StudentForm: React.FC = () => {
-  const form = useForm<StudentFormValues>({
-    validateInputOnChange: ["phone_number"],
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+    setValue,
+    watch,
+    reset,
+  } = useForm<StudentFormValues>({
+    defaultValues: {
       email: "",
       password: "",
       confirm_password: "",
@@ -46,24 +42,30 @@ const StudentForm: React.FC = () => {
       first_name: "",
       last_name: "",
     },
-    validate: yupResolver(StudentFormSchema),
+    resolver: zodResolver(StudentFormSchema),
   });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (values: StudentFormValues) => {
+  const onSubmit: FormSubmitHandler<StudentFormValues> = async (
+    formPayload
+  ) => {
     try {
+      const values = formPayload.data;
+
       const response = await createNewUser({
-        email: values.email,
-        password: values.password,
-        gender: values.gender,
-        first_name: values.first_name,
-        last_name: values.last_name,
-        address: values.address,
-        phone_number: values.phone_number,
-        education: values.education,
-        role: "student",
+        user: {
+          email: values.email,
+          password: values.password,
+          gender: values.gender,
+          first_name: values.first_name,
+          last_name: values.last_name,
+          address: values.address,
+          phone_number: values.phone_number,
+          education: values.education,
+          role: "student",
+        },
       });
 
       const newUser = response.data.user;
@@ -89,14 +91,14 @@ const StudentForm: React.FC = () => {
         autoClose: 3000,
       });
 
-      form.reset();
+      reset();
     } catch (error) {
       handleErrorMessage(error);
     }
   };
 
   const renderAdditionalFields = () => {
-    const { level } = form.values.education;
+    const { level } = watch("education");
 
     if (level === "School") {
       return (
@@ -107,8 +109,10 @@ const StudentForm: React.FC = () => {
               label="English/Bangla Medium"
               placeholder="Select medium"
               withAsterisk
-              {...form.getInputProps("education.english_bangla_medium")}
               data={["English", "Bangla"]}
+              control={control}
+              name="education.english_bangla_medium"
+              error={errors.education?.english_bangla_medium?.message}
             />
           </Grid.Col>
           <Grid.Col span={6}>
@@ -117,8 +121,10 @@ const StudentForm: React.FC = () => {
               label="Class"
               placeholder="Select class"
               withAsterisk
-              {...form.getInputProps("education.class_level")}
               data={["Class 7", "Class 8", "Class 9", "Class 10"]}
+              control={control}
+              name="education.class_level"
+              error={errors.education?.class_level?.message}
             />
           </Grid.Col>
         </>
@@ -134,8 +140,10 @@ const StudentForm: React.FC = () => {
               label="English/Bangla Medium"
               placeholder="Select medium"
               withAsterisk
-              {...form.getInputProps("education.english_bangla_medium")}
               data={["English", "Bangla"]}
+              control={control}
+              name="education.english_bangla_medium"
+              error={errors.education?.english_bangla_medium?.message}
             />
           </Grid.Col>
           <Grid.Col span={6}>
@@ -144,8 +152,10 @@ const StudentForm: React.FC = () => {
               label="Class"
               placeholder="Select class"
               withAsterisk
-              {...form.getInputProps("education.class_level")}
               data={["Class 11", "Class 12"]}
+              control={control}
+              name="education.class_level"
+              error={errors.education?.class_level?.message}
             />
           </Grid.Col>
         </>
@@ -161,8 +171,10 @@ const StudentForm: React.FC = () => {
               label="Bachelors/Masters"
               placeholder="Select degree level"
               withAsterisk
-              {...form.getInputProps("education.degree_level")}
               data={["Bachelors", "Masters"]}
+              control={control}
+              name="education.degree_level"
+              error={errors.education?.degree_level?.message}
             />
           </Grid.Col>
           <Grid.Col span={6}>
@@ -171,7 +183,9 @@ const StudentForm: React.FC = () => {
               label="Semester/Year"
               placeholder="Enter semester or year"
               withAsterisk
-              {...form.getInputProps("education.semester_year")}
+              control={control}
+              name="education.semester_year"
+              error={errors.education?.semester_year?.message}
             />
           </Grid.Col>
         </>
@@ -193,7 +207,7 @@ const StudentForm: React.FC = () => {
         Register as a Student
       </Text>
       <Box maw={700}>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <Grid gutter={"md"} grow>
             <Grid.Col span={{ xs: 6, md: 4 }}>
               <TextInput
@@ -201,7 +215,9 @@ const StudentForm: React.FC = () => {
                 label="First name"
                 placeholder="Enter your first name"
                 withAsterisk
-                {...form.getInputProps("first_name")}
+                control={control}
+                name="first_name"
+                error={errors.first_name?.message}
               />
             </Grid.Col>
 
@@ -211,7 +227,9 @@ const StudentForm: React.FC = () => {
                 label="Last name"
                 placeholder="Enter your last name"
                 withAsterisk
-                {...form.getInputProps("last_name")}
+                control={control}
+                name="last_name"
+                error={errors.last_name?.message}
               />
             </Grid.Col>
 
@@ -221,8 +239,10 @@ const StudentForm: React.FC = () => {
                 label="Gender"
                 placeholder="Select your gender"
                 withAsterisk
-                {...form.getInputProps("gender")}
                 data={["Male", "Female"]}
+                control={control}
+                name="gender"
+                error={errors.gender?.message}
               />
             </Grid.Col>
 
@@ -232,7 +252,9 @@ const StudentForm: React.FC = () => {
                 label="Address"
                 placeholder="Enter your address"
                 withAsterisk
-                {...form.getInputProps("address")}
+                control={control}
+                name="address"
+                error={errors.address?.message}
               />
             </Grid.Col>
 
@@ -242,7 +264,9 @@ const StudentForm: React.FC = () => {
                 label="Phone number"
                 placeholder="Enter your phone number"
                 withAsterisk
-                {...form.getInputProps("phone_number")}
+                control={control}
+                name="phone_number"
+                error={errors.phone_number?.message}
               />
             </Grid.Col>
 
@@ -252,11 +276,15 @@ const StudentForm: React.FC = () => {
                 placeholder="Select your education level"
                 label="Education level"
                 withAsterisk
-                {...form.getInputProps("education.level")}
                 data={["School", "College", "University"]}
-                onOptionSubmit={(value) =>
-                  handleEducationLevelChange(form.setFieldValue, value)
-                }
+                control={control}
+                name="education.level"
+                error={errors.education?.level?.message}
+                onOptionSubmit={(value) => {
+                  const updates = handleEducationLevelChange(value);
+
+                  setValue("education", updates);
+                }}
               />
             </Grid.Col>
 
@@ -268,7 +296,9 @@ const StudentForm: React.FC = () => {
                 label="Email"
                 placeholder="Enter your email"
                 withAsterisk
-                {...form.getInputProps("email")}
+                control={control}
+                name="email"
+                error={errors.email?.message}
               />
             </Grid.Col>
 
@@ -278,7 +308,9 @@ const StudentForm: React.FC = () => {
                 label="Password"
                 placeholder="Enter your password"
                 withAsterisk
-                {...form.getInputProps("password")}
+                control={control}
+                name="password"
+                error={errors.password?.message}
               />
             </Grid.Col>
 
@@ -288,24 +320,22 @@ const StudentForm: React.FC = () => {
                 label="Confirm Password"
                 placeholder="Confirm password"
                 withAsterisk
-                {...form.getInputProps("confirm_password")}
+                control={control}
+                name="confirm_password"
+                error={errors.confirm_password?.message}
               />
             </Grid.Col>
           </Grid>
 
           <Group justify="space-evenly" mt="lg" pt={"sm"}>
-            <Button
-              size="md"
-              color="sazim-purple.6"
-              onClick={() => form.reset()}
-            >
+            <Button size="md" color="sazim-purple.6" onClick={() => reset()}>
               Reset
             </Button>
             <Button type="submit" size="md" color="sazim-green.7">
               Submit
             </Button>
           </Group>
-        </form>
+        </Form>
 
         <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md" mt={"lg"}>
           Already have an account?{" "}

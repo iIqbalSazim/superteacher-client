@@ -1,10 +1,12 @@
 import { notifications } from "@mantine/notifications";
+import { NavigateFunction } from "react-router-dom";
+import { UseFormReturn } from "react-hook-form";
 
 import { setUser } from "@/Stores/Slices/AuthSlice";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
+import { AppDispatch } from "@/Stores/Types/StoreTypes";
 
 import { LoginFormValues } from "./Components/LoginForm/LoginFormTypes";
-
 import {
   generateResetToken,
   resetForgotPassword,
@@ -12,10 +14,6 @@ import {
   loginUser,
   generateToken,
 } from "./Api/LoginMethods";
-import { EmailFormValues } from "./Components/EmailForm/EmailFormTypes";
-import { CodeFormValues } from "./Components/CodeForm/CodeFormTypes";
-import { NavigateFunction } from "react-router-dom";
-import { AppDispatch } from "@/Stores/Types/StoreTypes";
 
 export interface ResetTokenParams {
   email: string;
@@ -27,15 +25,17 @@ export interface ValidateTokenParams {
 }
 
 export interface ResetForgotPasswordParams {
-  emailForm: { values: EmailFormValues; reset: () => void };
-  codeForm: { values: CodeFormValues; reset: () => void };
-  newPasswordForm: { reset: () => void };
-  new_password: string;
+  emailForm: UseFormReturn<{ email: string }>;
+  codeForm: UseFormReturn<{ code: string }>;
+  newPasswordForm: UseFormReturn<{
+    new_password: string;
+    confirm_new_password: string;
+  }>;
 }
 
 export const LoginUserAndGenerateToken = async (
   values: LoginFormValues,
-  form: { reset: () => void },
+  reset: () => void,
   dispatch: AppDispatch,
   navigate: NavigateFunction
 ): Promise<void> => {
@@ -65,7 +65,7 @@ export const LoginUserAndGenerateToken = async (
       autoClose: 3000,
     });
 
-    form.reset();
+    reset();
   } catch (error) {
     handleErrorMessage(error);
   }
@@ -138,16 +138,16 @@ export const ResetForgotPassword = async (
   close: () => void
 ): Promise<void> => {
   try {
-    const { emailForm, codeForm, newPasswordForm, new_password } = params;
+    const { emailForm, codeForm, newPasswordForm } = params;
 
     setIsLoading(true);
 
     const response = await resetForgotPassword({
       password: {
-        email: emailForm.values.email,
-        new_password: new_password,
+        email: emailForm.getValues("email"),
+        new_password: newPasswordForm.getValues("new_password"),
       },
-      token: codeForm.values.code,
+      token: codeForm.getValues("code"),
     });
 
     if (response.status === 200) {

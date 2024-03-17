@@ -1,11 +1,12 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { SubmitAssignmentFormValues } from "../Components/SubmitAssignmentModal/SubmitAssignmentModalTypes";
 
-const SubmitAssignmentSchema: yup.Schema<SubmitAssignmentFormValues> = yup
-  .object()
-  .shape({
-    file: yup.mixed<File>().required("File is required"),
-  });
+const SubmitAssignmentSchema: z.Schema<SubmitAssignmentFormValues> = z
+  .object({
+    file: z.instanceof(File, { message: "File is required" }),
+  })
+  .strict()
+  .required();
 
 export default SubmitAssignmentSchema;

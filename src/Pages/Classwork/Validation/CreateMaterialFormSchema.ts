@@ -1,19 +1,20 @@
-import * as yup from "yup";
+import { z } from "zod";
 
 import { CreateMaterialFormValues } from "../Components/CreateMaterialFormModal/CreateMaterialFormModalTypes";
 
-const CreateMaterialFormSchema: yup.Schema<CreateMaterialFormValues> = yup
-  .object()
-  .shape({
-    title: yup
+const CreateMaterialFormSchema: z.Schema<CreateMaterialFormValues> = z
+  .object({
+    title: z
       .string()
-      .required("Title is required")
-      .max(255, "Title must be at most 255 characters"),
-    file: yup.mixed<File>().required("File is required"),
-    description: yup
+      .min(1, { message: "Title is required" })
+      .max(255, { message: "Title must be at most 255 characters" }),
+    file: z.instanceof(File, { message: "File is required" }),
+    description: z
       .string()
-      .required("Description is required")
-      .max(1000, "Description must be at most 1000 characters"),
-  });
+      .min(1, { message: "Description is required" })
+      .max(1000, { message: "Description must be at most 1000 characters" }),
+  })
+  .strict()
+  .required();
 
 export default CreateMaterialFormSchema;

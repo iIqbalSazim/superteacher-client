@@ -1,6 +1,8 @@
 import { useContext, useState } from "react";
-import { Box, Button, FileInput, Group, Modal, Text } from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Box, Button, Group, Modal, Text } from "@mantine/core";
+import { FileInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { useAppSelector } from "@/Stores/Store";
@@ -27,16 +29,23 @@ const SubmitAssignmentModal: React.FC<SubmitAssignmentModalProps> = ({
 
   const { setUploadedAssignments } = useContext(ClassworkContext);
 
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+  } = useForm<SubmitAssignmentFormValues>({
+    defaultValues: {
       file: null,
     },
-    validate: yupResolver(SubmitAssignmentSchema),
+    resolver: zodResolver(SubmitAssignmentSchema),
   });
 
-  const handleSubmit = async (values: SubmitAssignmentFormValues) => {
+  const onSubmit: FormSubmitHandler<SubmitAssignmentFormValues> = async (
+    formPayload
+  ) => {
     try {
       setIsLoading(true);
+
+      const values = formPayload.data;
 
       if (values.file) {
         const { file } = values;
@@ -87,13 +96,15 @@ const SubmitAssignmentModal: React.FC<SubmitAssignmentModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Submit Assignment
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <FileInput
             clearable
             size="md"
             label="Upload file"
             placeholder="Upload file"
-            {...form.getInputProps("file")}
+            control={control}
+            name="file"
+            error={errors.file?.message}
           />
 
           <Group justify="flex-end" mt="xl" mb={"sm"}>
@@ -109,7 +120,7 @@ const SubmitAssignmentModal: React.FC<SubmitAssignmentModalProps> = ({
               Submit
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

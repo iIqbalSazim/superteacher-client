@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, Modal, Text } from "@mantine/core";
-import { useForm, yupResolver, UseFormReturnType } from "@mantine/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   ForgotPasswordEmailSchema,
@@ -15,12 +16,7 @@ import {
 import CodeForm from "../CodeForm/CodeForm";
 import NewPasswordForm from "../NewPasswordForm/NewPasswordForm";
 import EmailForm from "../EmailForm/EmailForm";
-import {
-  ForgotPasswordModalProps,
-  ForgotPasswordResetValues,
-} from "./ForgotPasswordModalTypes";
-import { EmailFormValues } from "../EmailForm/EmailFormTypes";
-import { CodeFormValues } from "../CodeForm/CodeFormTypes";
+import { ForgotPasswordModalProps } from "./ForgotPasswordModalTypes";
 
 const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   open,
@@ -29,51 +25,42 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [step, setStep] = useState<"email" | "code" | "password">("email");
 
-  const emailForm: UseFormReturnType<EmailFormValues> = useForm({
-    initialValues: {
-      email: "",
-    },
-    validate: yupResolver(ForgotPasswordEmailSchema),
+  const emailForm = useForm<{ email: string }>({
+    resolver: zodResolver(ForgotPasswordEmailSchema),
+    defaultValues: { email: "" },
   });
 
-  const codeForm: UseFormReturnType<CodeFormValues> = useForm({
-    initialValues: {
-      code: "",
-    },
-    validate: yupResolver(ForgotPasswordCodeSchema),
+  const codeForm = useForm<{ code: string }>({
+    resolver: zodResolver(ForgotPasswordCodeSchema),
+    defaultValues: { code: "" },
   });
 
-  const newPasswordForm: UseFormReturnType<ForgotPasswordResetValues> = useForm(
-    {
-      initialValues: {
-        new_password: "",
-        confirm_new_password: "",
-      },
-      validate: yupResolver(ForgotPasswordResetSchema),
-    }
-  );
+  const newPasswordForm = useForm<{
+    new_password: string;
+    confirm_new_password: string;
+  }>({
+    resolver: zodResolver(ForgotPasswordResetSchema),
+    defaultValues: {
+      new_password: "",
+      confirm_new_password: "",
+    },
+  });
 
-  const handleSubmitEmail = async (values: { email: string }) => {
-    const params = { ...values };
-
+  const handleSubmitEmail = async (data: { email: string }) => {
+    const params = { ...data };
     await GenerateResetToken(params, setStep, setIsLoading);
   };
 
-  const handleSubmitCode = async (values: { code: string }) => {
-    const params = { code: values.code, email: emailForm.values.email };
-
+  const handleSubmitCode = async (data: { code: string }) => {
+    const params = { code: data.code, email: emailForm.getValues("email") };
     await ValidateResetToken(params, setStep, setIsLoading);
   };
 
-  const handleSubmitNewPassword = async (values: {
-    new_password: string;
-    confirm_new_password: string;
-  }) => {
+  const handleSubmitNewPassword = async () => {
     const params = {
       emailForm,
       codeForm,
       newPasswordForm,
-      new_password: values.new_password,
     };
 
     await ResetForgotPassword(params, setStep, setIsLoading, close);

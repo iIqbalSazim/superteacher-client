@@ -1,25 +1,18 @@
-import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
 import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Modal,
-  MultiSelect,
-  Select,
-  SimpleGrid,
-  Text,
   TextInput,
-} from "@mantine/core";
-import { TimeInput } from "@mantine/dates";
-import { useForm, yupResolver } from "@mantine/form";
+  Select,
+  MultiSelect,
+  TimeInput,
+} from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
-import { IconClock } from "@tabler/icons-react";
 
 import { createClassroom } from "@/Pages/Dashboard/Api/DashboardMethods";
 import { updateClassrooms } from "@/Stores/Slices/ClassroomSlice";
-import { Subjects, DaysOfTheWeek } from "@/Data/FormData";
+import { Subjects, DaysOfTheWeekOptions } from "@/Data/FormData";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { useAppDispatch, useAppSelector } from "@/Stores/Store";
 import { ClassroomFormValues, User } from "@/Types/SharedTypes";
@@ -31,14 +24,18 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
   open,
   close,
 }) => {
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    reset,
+    control,
+  } = useForm<ClassroomFormValues>({
+    defaultValues: {
       title: "",
       subject: "",
       class_time: "",
       days: [],
     },
-    validate: yupResolver(CreateClassroomFormSchema),
+    resolver: zodResolver(CreateClassroomFormSchema),
   });
 
   const dispatch = useAppDispatch();
@@ -46,8 +43,15 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
 
   const currentUser = useAppSelector((state) => state.auth.user) as User;
 
-  const handleSubmit = async (values: ClassroomFormValues) => {
+  const onSubmit: FormSubmitHandler<ClassroomFormValues> = async (
+    formPayload
+  ) => {
     try {
+      const values = formPayload.data;
+
+      console.log(values);
+      return;
+
       const response = await createClassroom({
         classroom: {
           teacher_id: currentUser.id,
@@ -73,23 +77,11 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
         autoClose: 3000,
       });
 
-      form.reset();
+      reset();
     } catch (error) {
       handleErrorMessage(error);
     }
   };
-
-  const ref = useRef<HTMLInputElement>(null);
-
-  const pickerControl = (
-    <ActionIcon
-      variant="subtle"
-      color="gray"
-      onClick={() => ref.current?.showPicker()}
-    >
-      <IconClock stroke={1.5} />
-    </ActionIcon>
-  );
 
   return (
     <Modal opened={open} onClose={close} size={"md"} centered>
@@ -97,14 +89,16 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Create a Classroom
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <SimpleGrid>
             <TextInput
               size="sm"
               label="Title"
               placeholder="Enter a title"
               withAsterisk
-              {...form.getInputProps("title")}
+              control={control}
+              name="title"
+              error={errors.title?.message}
             />
 
             <Select
@@ -113,16 +107,18 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
               placeholder="Pick a subject"
               withAsterisk
               data={Subjects}
-              {...form.getInputProps("subject")}
+              control={control}
+              name="subject"
+              error={errors.subject?.message}
             />
 
             <TimeInput
               size="sm"
               label="Class Time"
               withAsterisk
-              ref={ref}
-              rightSection={pickerControl}
-              {...form.getInputProps("class_time")}
+              control={control}
+              name="class_time"
+              error={errors.class_time?.message}
             />
 
             <MultiSelect
@@ -131,8 +127,10 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
               placeholder="Pick your preferred days"
               withAsterisk
               searchable
-              data={DaysOfTheWeek}
-              {...form.getInputProps("days")}
+              data={DaysOfTheWeekOptions}
+              control={control}
+              name="days"
+              error={errors.days?.message}
             />
           </SimpleGrid>
 
@@ -144,7 +142,7 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
               Create
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

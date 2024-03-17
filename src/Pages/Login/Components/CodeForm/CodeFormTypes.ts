@@ -1,11 +1,11 @@
-import { UseFormReturnType } from "@mantine/form";
+import { UseFormReturn } from "react-hook-form";
 
 export interface CodeFormValues {
   code: string;
 }
 
 export interface CodeFormProps {
-  form: UseFormReturnType<CodeFormValues>;
+  form: UseFormReturn<CodeFormValues>;
   onSubmit: (values: CodeFormValues) => void;
   isLoading: boolean;
   onBack: () => void;

@@ -8,8 +8,8 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
+import { useForm } from "react-hook-form";
 
 import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
@@ -22,6 +22,7 @@ import {
   AddMeetLinkFormValues,
   AddMeetLinkModalProps,
 } from "./AddMeetLinkTypes";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const AddMeetLinkFormModal: React.FC<AddMeetLinkModalProps> = ({
   open,
@@ -30,18 +31,20 @@ const AddMeetLinkFormModal: React.FC<AddMeetLinkModalProps> = ({
 }) => {
   const { setClassroom } = useContext(ClassroomContext);
 
-  let meet = classroom.meet_link ? classroom.meet_link : "";
-
-  const form = useForm({
-    initialValues: {
-      meet_link: meet,
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<AddMeetLinkFormValues>({
+    defaultValues: {
+      meet_link: classroom.meet_link || "",
     },
-    validate: yupResolver(AddMeetLinkFormSchema),
+    resolver: zodResolver(AddMeetLinkFormSchema),
   });
 
   const dispatch = useAppDispatch();
 
-  const handleSubmit = async (values: AddMeetLinkFormValues) => {
+  const onSubmit = async (values: AddMeetLinkFormValues) => {
     try {
       const response = await updateClassroomApi(classroom.id, {
         ...classroom,
@@ -72,14 +75,15 @@ const AddMeetLinkFormModal: React.FC<AddMeetLinkModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Add Meet Link
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <SimpleGrid>
             <TextInput
               size="sm"
               label="Meet Link"
               placeholder="Enter a link"
               withAsterisk
-              {...form.getInputProps("meet_link")}
+              error={errors.meet_link?.message}
+              {...register("meet_link", { required: "Meet Link is required" })}
             />
           </SimpleGrid>
 

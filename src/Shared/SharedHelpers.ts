@@ -1,7 +1,5 @@
 import { notifications } from "@mantine/notifications";
 
-import { Education } from "@/Types/SharedTypes";
-
 interface ApiError {
   data: {
     message: string;
@@ -31,30 +29,37 @@ export function handleErrorMessage(error: unknown) {
   }
 }
 
-export function handleEducationLevelChange(
-  setFieldValue: (fieldName: string, values: Education) => void,
-  level: string
-) {
-  if (level == "School") {
-    setFieldValue("education", {
+export function handleEducationLevelChange(level: string) {
+  if (level === "School") {
+    return {
       level: "School",
       english_bangla_medium: "English",
       class_level: "Class 7",
-    });
-  }
-
-  if (level == "College") {
-    setFieldValue("education", {
+      degree_level: "",
+      semester_year: "",
+    };
+  } else if (level === "College") {
+    return {
       level: "College",
       english_bangla_medium: "English",
       class_level: "Class 11",
-    });
-  }
-
-  if (level == "University") {
-    setFieldValue("education", {
+      degree_level: "",
+      semester_year: "",
+    };
+  } else if (level === "University") {
+    return {
       level: "University",
       degree_level: "Bachelors",
-    });
+      english_bangla_medium: "",
+      class_level: "",
+      semester_year: "",
+    };
+  } else {
+    return {
+      english_bangla_medium: "",
+      class_level: "",
+      degree_level: "",
+      semester_year: "",
+    };
   }
 }

@@ -1,17 +1,9 @@
 import { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  SimpleGrid,
-  Text,
-  TextInput,
-  Textarea,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
+import { TextInput, Textarea, DateInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
-import { DateInput } from "@mantine/dates";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
@@ -32,18 +24,25 @@ const UpdateExamFormModal: React.FC<UpdateExamFormModalProps> = ({
 
   const { setExams } = useContext(ClassworkContext);
 
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+  } = useForm<UpdateExamFormValues>({
+    defaultValues: {
       title: exam.title,
       description: exam.description,
       date: new Date(exam.date),
     },
-    validate: yupResolver(UpdateExamFormSchema),
+    resolver: zodResolver(UpdateExamFormSchema),
   });
 
-  const handleSubmit = async (values: UpdateExamFormValues) => {
+  const onSubmit: FormSubmitHandler<UpdateExamFormValues> = async (
+    formPayload
+  ) => {
     try {
       setIsLoading(true);
+
+      const values = formPayload.data;
 
       const response = await updateExam(exam.classroom_id, exam.id, {
         exam: {
@@ -87,25 +86,32 @@ const UpdateExamFormModal: React.FC<UpdateExamFormModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Update Exam Details
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <SimpleGrid>
             <TextInput
               size={"md"}
               label="Title"
               placeholder="Enter a title"
-              {...form.getInputProps("title")}
+              control={control}
+              name="title"
+              error={errors.title?.message}
             />
             <Textarea
               size={"md"}
               label="Instructions"
               placeholder="Enter instructions"
-              {...form.getInputProps("description")}
+              control={control}
+              name="description"
+              error={errors.description?.message}
             />
+
             <DateInput
               minDate={new Date()}
               size="md"
               label="Date"
-              {...form.getInputProps("date")}
+              control={control}
+              name="date"
+              error={errors.date?.message}
             />
           </SimpleGrid>
 
@@ -122,7 +128,7 @@ const UpdateExamFormModal: React.FC<UpdateExamFormModalProps> = ({
               Update
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

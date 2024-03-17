@@ -1,20 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { useForm, yupResolver } from "@mantine/form";
 import {
-  TextInput,
-  Button,
-  Group,
-  Box,
-  PasswordInput,
-  Flex,
-  Text,
-  Grid,
-  Anchor,
   MultiSelect,
+  TextInput,
   Select,
-} from "@mantine/core";
+  PasswordInput,
+} from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, Group, Box, Flex, Text, Grid, Anchor } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
@@ -29,8 +24,12 @@ import { TeacherFormApiError, TeacherFormValues } from "./TeacherFormTypes";
 const TeacherForm: React.FC = () => {
   const [attemptsRemaining, setAttemptsRemaining] = useState(3);
 
-  const form = useForm<TeacherFormValues>({
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+    reset,
+  } = useForm<TeacherFormValues>({
+    defaultValues: {
       code: "",
       email: "",
       password: "",
@@ -42,25 +41,31 @@ const TeacherForm: React.FC = () => {
       first_name: "",
       last_name: "",
     },
-    validate: yupResolver(TeacherFormSchema),
+    resolver: zodResolver(TeacherFormSchema),
   });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (values: TeacherFormValues) => {
+  const onSubmit: FormSubmitHandler<TeacherFormValues> = async (
+    formPayload
+  ) => {
     try {
+      const values = formPayload.data;
+
       const response = await createNewUser({
-        email: values.email,
-        password: values.password,
-        code: values.code,
-        gender: values.gender,
-        first_name: values.first_name,
-        last_name: values.last_name,
-        major_subject: values.major_subject,
-        highest_education_level: values.highest_education_level,
-        subjects_to_teach: values.subjects_to_teach,
-        role: "teacher",
+        user: {
+          email: values.email,
+          password: values.password,
+          code: values.code,
+          gender: values.gender,
+          first_name: values.first_name,
+          last_name: values.last_name,
+          major_subject: values.major_subject,
+          highest_education_level: values.highest_education_level,
+          subjects_to_teach: values.subjects_to_teach,
+          role: "teacher",
+        },
       });
 
       const newUser = response.data.user;
@@ -86,7 +91,7 @@ const TeacherForm: React.FC = () => {
         autoClose: 3000,
       });
 
-      form.reset();
+      reset();
     } catch (error) {
       const apiError = error as TeacherFormApiError;
 
@@ -109,7 +114,7 @@ const TeacherForm: React.FC = () => {
         Register as a Teacher
       </Text>
       <Box maw={700}>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form onSubmit={onSubmit} control={control}>
           <Grid gutter={"md"} grow>
             <Grid.Col>
               <TextInput
@@ -117,7 +122,8 @@ const TeacherForm: React.FC = () => {
                 label="Enter registration code"
                 placeholder="Enter unique code, e.g. ceb486"
                 withAsterisk
-                {...form.getInputProps("code")}
+                control={control}
+                name="code"
               />
               {attemptsRemaining && attemptsRemaining > 0 ? (
                 <Text size="xs" style={{ color: "white", marginTop: "4px" }}>
@@ -136,7 +142,9 @@ const TeacherForm: React.FC = () => {
                 label="First name"
                 placeholder="Enter your first name"
                 withAsterisk
-                {...form.getInputProps("first_name")}
+                control={control}
+                name="first_name"
+                error={errors.first_name?.message}
               />
             </Grid.Col>
 
@@ -146,7 +154,9 @@ const TeacherForm: React.FC = () => {
                 label="Last name"
                 placeholder="Enter your last name"
                 withAsterisk
-                {...form.getInputProps("last_name")}
+                control={control}
+                name="last_name"
+                error={errors.last_name?.message}
               />
             </Grid.Col>
 
@@ -156,8 +166,10 @@ const TeacherForm: React.FC = () => {
                 label="Gender"
                 placeholder="Select your gender"
                 withAsterisk
-                {...form.getInputProps("gender")}
                 data={["Male", "Female"]}
+                control={control}
+                name="gender"
+                error={errors.gender?.message}
               />
             </Grid.Col>
 
@@ -167,7 +179,9 @@ const TeacherForm: React.FC = () => {
                 label="Major Subject"
                 placeholder="Enter your field of specialization"
                 withAsterisk
-                {...form.getInputProps("major_subject")}
+                control={control}
+                name="major_subject"
+                error={errors.major_subject?.message}
               />
             </Grid.Col>
 
@@ -178,7 +192,9 @@ const TeacherForm: React.FC = () => {
                 placeholder="Select education level"
                 withAsterisk
                 data={["Bachelors", "Masters", "Diploma", "PhD"]}
-                {...form.getInputProps("highest_education_level")}
+                control={control}
+                name="highest_education_level"
+                error={errors.highest_education_level?.message}
               />
             </Grid.Col>
 
@@ -190,7 +206,9 @@ const TeacherForm: React.FC = () => {
                 withAsterisk
                 searchable
                 data={Subjects}
-                {...form.getInputProps("subjects_to_teach")}
+                control={control}
+                name="subjects_to_teach"
+                error={errors.subjects_to_teach?.message}
               />
             </Grid.Col>
 
@@ -200,7 +218,9 @@ const TeacherForm: React.FC = () => {
                 label="Email"
                 placeholder="Enter your email"
                 withAsterisk
-                {...form.getInputProps("email")}
+                control={control}
+                name="email"
+                error={errors.email?.message}
               />
             </Grid.Col>
 
@@ -210,7 +230,9 @@ const TeacherForm: React.FC = () => {
                 label="Password"
                 placeholder="Enter your password"
                 withAsterisk
-                {...form.getInputProps("password")}
+                control={control}
+                name="password"
+                error={errors.password?.message}
               />
             </Grid.Col>
 
@@ -220,24 +242,22 @@ const TeacherForm: React.FC = () => {
                 label="Confirm Password"
                 placeholder="Confirm password"
                 withAsterisk
-                {...form.getInputProps("confirm_password")}
+                control={control}
+                name="confirm_password"
+                error={errors.confirm_password?.message}
               />
             </Grid.Col>
           </Grid>
 
           <Group justify="space-evenly" mt="lg" pt={"sm"}>
-            <Button
-              size="md"
-              color="sazim-purple.6"
-              onClick={() => form.reset()}
-            >
+            <Button size="md" color="sazim-purple.6" onClick={() => reset()}>
               Reset
             </Button>
             <Button type="submit" size="md" color="sazim-green.7">
               Submit
             </Button>
           </Group>
-        </form>
+        </Form>
 
         <Text fw={400} c={"sazim-green.4"} ta={"center"} size="md" mt={"lg"}>
           Already have an account?{" "}

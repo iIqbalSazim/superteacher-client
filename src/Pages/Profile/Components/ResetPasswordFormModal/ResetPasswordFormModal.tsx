@@ -1,14 +1,8 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  PasswordInput,
-  SimpleGrid,
-  Text,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
+import { PasswordInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
@@ -26,18 +20,26 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    reset,
+    control,
+  } = useForm<ResetPasswordFormValues>({
+    defaultValues: {
       old_password: "",
       new_password: "",
       confirm_new_password: "",
     },
-    validate: yupResolver(ResetPasswordFormSchema),
+    resolver: zodResolver(ResetPasswordFormSchema),
   });
 
-  const handleSubmit = async (values: ResetPasswordFormValues) => {
+  const onSubmit: FormSubmitHandler<ResetPasswordFormValues> = async (
+    formPayload
+  ) => {
     try {
       setIsLoading(true);
+
+      const values = formPayload.data;
 
       const passwords = {
         old_password: values.old_password,
@@ -56,7 +58,7 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
 
         setIsLoading(false);
         close();
-        form.reset();
+        reset();
       }
     } catch (error) {
       handleErrorMessage(error);
@@ -71,14 +73,16 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Reset Password
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <SimpleGrid>
             <PasswordInput
               size="md"
               label="Old password"
               placeholder="Enter your old password"
               withAsterisk
-              {...form.getInputProps("old_password")}
+              control={control}
+              name="old_password"
+              error={errors.old_password?.message}
             />
 
             <PasswordInput
@@ -86,7 +90,9 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
               label="New Password"
               placeholder="Enter your new password"
               withAsterisk
-              {...form.getInputProps("new_password")}
+              control={control}
+              name="new_password"
+              error={errors.new_password?.message}
             />
 
             <PasswordInput
@@ -94,7 +100,9 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
               label="Confirm New Password"
               placeholder="Confirm new password"
               withAsterisk
-              {...form.getInputProps("confirm_new_password")}
+              control={control}
+              name="confirm_new_password"
+              error={errors.confirm_new_password?.message}
             />
           </SimpleGrid>
 
@@ -111,7 +119,7 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
               Submit
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

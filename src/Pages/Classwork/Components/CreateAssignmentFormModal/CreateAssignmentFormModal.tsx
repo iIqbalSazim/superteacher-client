@@ -1,18 +1,14 @@
 import { useContext, useState } from "react";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
 import {
-  Box,
-  Button,
-  FileInput,
-  Group,
-  Modal,
-  SimpleGrid,
-  Text,
   TextInput,
   Textarea,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+  FileInput,
+  DateInput,
+} from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
-import { DateInput } from "@mantine/dates";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
@@ -34,19 +30,27 @@ const CreateAssignmentFormModal: React.FC<CreateAssignmentFormModalProps> = ({
 
   const { setUploadedAssignments } = useContext(ClassworkContext);
 
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    reset,
+    control,
+  } = useForm<CreateAssignmentFormValues>({
+    defaultValues: {
       title: "",
       file: null,
       description: "",
       due_date: new Date(),
     },
-    validate: yupResolver(CreateAssignmentFormSchema),
+    resolver: zodResolver(CreateAssignmentFormSchema),
   });
 
-  const handleSubmit = async (values: CreateAssignmentFormValues) => {
+  const onSubmit: FormSubmitHandler<CreateAssignmentFormValues> = async (
+    formPayload
+  ) => {
     try {
       setIsLoading(true);
+
+      const values = formPayload.data;
 
       if (values.file) {
         const { file } = values;
@@ -80,7 +84,7 @@ const CreateAssignmentFormModal: React.FC<CreateAssignmentFormModalProps> = ({
 
         setIsLoading(false);
         close();
-        form.reset();
+        reset();
       }
     } catch (error) {
       handleErrorMessage(error);
@@ -94,32 +98,43 @@ const CreateAssignmentFormModal: React.FC<CreateAssignmentFormModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Create Assignment
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <SimpleGrid>
             <TextInput
               size={"md"}
               label="Title"
               placeholder="Enter a title"
-              {...form.getInputProps("title")}
+              control={control}
+              name="title"
+              error={errors.title?.message}
             />
+
             <Textarea
               size={"md"}
               label="Instructions"
               placeholder="Enter instructions"
-              {...form.getInputProps("description")}
+              control={control}
+              name="description"
+              error={errors.description?.message}
             />
+
             <FileInput
               clearable
               size="md"
               label="Upload file"
               placeholder="Upload file"
-              {...form.getInputProps("file")}
+              control={control}
+              name="file"
+              error={errors.file?.message}
             />
+
             <DateInput
               minDate={new Date()}
               size="md"
               label="Due Date"
-              {...form.getInputProps("due_date")}
+              control={control}
+              name="due_date"
+              error={errors.due_date?.message}
             />
           </SimpleGrid>
 
@@ -136,7 +151,7 @@ const CreateAssignmentFormModal: React.FC<CreateAssignmentFormModalProps> = ({
               Create
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );

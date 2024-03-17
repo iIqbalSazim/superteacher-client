@@ -1,13 +1,7 @@
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  Select,
-  SimpleGrid,
-  Text,
-} from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
+import { Select } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
@@ -17,6 +11,7 @@ import {
   AddStudentFormValues,
   AddStudentModalProps,
 } from "./AddStudentModalTypes";
+import AddStudentFormSchema from "../../Validation/AddStudentFormSchema";
 
 const AddStudentModal: React.FC<AddStudentModalProps> = ({
   open,
@@ -27,16 +22,23 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
   setNotEnrolledStudents,
   setStudents,
 }) => {
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    control,
+    reset,
+  } = useForm<AddStudentFormValues>({
+    defaultValues: {
       id: "",
     },
+    resolver: zodResolver(AddStudentFormSchema),
   });
 
-  const handleSubmit = async (values: AddStudentFormValues) => {
+  const onSubmit: FormSubmitHandler<AddStudentFormValues> = async (
+    formPayload
+  ) => {
     try {
       const response = await enrollStudent(classroom.id, {
-        student_id: parseInt(values.id),
+        student_id: parseInt(formPayload.data.id),
       });
 
       setStudents([...students, response.data.student]);
@@ -54,7 +56,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
 
       close();
 
-      form.reset();
+      reset();
     } catch (error) {
       handleErrorMessage(error);
     }
@@ -67,7 +69,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
           Enroll a Student
         </Text>
         {notEnrolledStudents.length > 0 ? (
-          <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+          <Form control={control} onSubmit={onSubmit}>
             <SimpleGrid>
               <Select
                 label="Type a name"
@@ -77,7 +79,9 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                   value: String(student.id),
                 }))}
                 searchable
-                {...form.getInputProps("id")}
+                control={control}
+                name="id"
+                error={errors.id?.message}
               />
             </SimpleGrid>
 
@@ -89,7 +93,7 @@ const AddStudentModal: React.FC<AddStudentModalProps> = ({
                 Enroll
               </Button>
             </Group>
-          </form>
+          </Form>
         ) : (
           <SimpleGrid>
             <Text>No Student available for enrollment</Text>

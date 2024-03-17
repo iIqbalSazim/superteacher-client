@@ -1,17 +1,9 @@
 import { useContext, useState } from "react";
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  SimpleGrid,
-  Text,
-  TextInput,
-  Textarea,
-} from "@mantine/core";
-import { useForm, yupResolver } from "@mantine/form";
+import { Box, Button, Group, Modal, SimpleGrid, Text } from "@mantine/core";
+import { TextInput, Textarea, DateInput } from "react-hook-form-mantine";
+import { Form, FormSubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
-import { DateInput } from "@mantine/dates";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
@@ -32,18 +24,26 @@ const ScheduleExamFormModal: React.FC<ScheduleExamFormModalProps> = ({
 
   const { setExams } = useContext(ClassworkContext);
 
-  const form = useForm({
-    initialValues: {
+  const {
+    formState: { errors },
+    reset,
+    control,
+  } = useForm<ScheduleExamFormValues>({
+    defaultValues: {
       title: "",
       description: "",
       date: new Date(),
     },
-    validate: yupResolver(ScheduleExamFormSchema),
+    resolver: zodResolver(ScheduleExamFormSchema),
   });
 
-  const handleSubmit = async (values: ScheduleExamFormValues) => {
+  const onSubmit: FormSubmitHandler<ScheduleExamFormValues> = async (
+    formPayload
+  ) => {
     try {
       setIsLoading(true);
+
+      const values = formPayload.data;
 
       const response = await createNewExam(classroom.id, {
         exam: {
@@ -65,7 +65,7 @@ const ScheduleExamFormModal: React.FC<ScheduleExamFormModalProps> = ({
 
       setIsLoading(false);
       close();
-      form.reset();
+      reset();
     } catch (error) {
       handleErrorMessage(error);
       setIsLoading(false);
@@ -78,25 +78,33 @@ const ScheduleExamFormModal: React.FC<ScheduleExamFormModalProps> = ({
         <Text mb={20} fw={700} tt={"uppercase"} size="lg">
           Schedule Exam
         </Text>
-        <form onSubmit={form.onSubmit((values) => handleSubmit(values))}>
+        <Form control={control} onSubmit={onSubmit}>
           <SimpleGrid>
             <TextInput
               size={"md"}
               label="Title"
               placeholder="Enter a title"
-              {...form.getInputProps("title")}
+              control={control}
+              name="title"
+              error={errors.title?.message}
             />
+
             <Textarea
               size={"md"}
               label="Instructions"
               placeholder="Enter instructions"
-              {...form.getInputProps("description")}
+              control={control}
+              name="description"
+              error={errors.description?.message}
             />
+
             <DateInput
               minDate={new Date()}
               size="md"
               label="Date"
-              {...form.getInputProps("date")}
+              control={control}
+              name="date"
+              error={errors.date?.message}
             />
           </SimpleGrid>
 
@@ -113,7 +121,7 @@ const ScheduleExamFormModal: React.FC<ScheduleExamFormModalProps> = ({
               Schedule
             </Button>
           </Group>
-        </form>
+        </Form>
       </Box>
     </Modal>
   );
