@@ -1,7 +1,7 @@
 import { ActionIcon, Flex, Title } from "@mantine/core";
 import { IconSquareRoundedPlus } from "@tabler/icons-react";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { StudentHeadingAndAddButtonProps } from "./StudentHeadingAndAddButtonTypes";

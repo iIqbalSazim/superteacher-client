@@ -2,17 +2,20 @@ import { useState } from "react";
 import { Box, Modal, Text } from "@mantine/core";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { notifications } from "@mantine/notifications";
+
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+import {
+  useGenerateResetTokenMutation,
+  useResetForgotPasswordMutation,
+  useValidateResetTokenMutation,
+} from "@/Shared/Redux/Api/Password/password.api";
 
 import {
   ForgotPasswordEmailSchema,
   ForgotPasswordCodeSchema,
   ForgotPasswordResetSchema,
 } from "../../Validation/ForgotPasswordSchema";
-import {
-  GenerateResetToken,
-  ResetForgotPassword,
-  ValidateResetToken,
-} from "../../LoginHelpers";
 import CodeForm from "../CodeForm/CodeForm";
 import NewPasswordForm from "../NewPasswordForm/NewPasswordForm";
 import EmailForm from "../EmailForm/EmailForm";
@@ -46,24 +49,95 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     },
   });
 
+  const [generateResetToken] = useGenerateResetTokenMutation();
+  const [validateResetToken] = useValidateResetTokenMutation();
+  const [resetForgotPassword] = useResetForgotPasswordMutation();
+
   const handleSubmitEmail = async (data: { email: string }) => {
-    const params = { ...data };
-    await GenerateResetToken(params, setStep, setIsLoading);
+    try {
+      setIsLoading(true);
+
+      const response = await generateResetToken({
+        email: data.email,
+      }).unwrap();
+
+      if (response) {
+        notifications.show({
+          color: "sazim-green",
+          title: "Success",
+          message: `Email with a code was sent to ${data.email}`,
+        });
+
+        setStep("code");
+
+        setIsLoading(false);
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+
+      setIsLoading(false);
+    }
   };
 
   const handleSubmitCode = async (data: { code: string }) => {
-    const params = { code: data.code, email: emailForm.getValues("email") };
-    await ValidateResetToken(params, setStep, setIsLoading);
+    try {
+      setIsLoading(true);
+
+      const response = await validateResetToken({
+        token: data.code,
+        email: emailForm.getValues("email"),
+      });
+
+      if (response) {
+        notifications.show({
+          color: "sazim-green",
+          title: "Success",
+          message: "Code valid. Please reset your password.",
+          autoClose: 3000,
+        });
+
+        setStep("password");
+        setIsLoading(false);
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+
+      setIsLoading(false);
+    }
   };
 
-  const handleSubmitNewPassword = async () => {
-    const params = {
-      emailForm,
-      codeForm,
-      newPasswordForm,
-    };
+  const handleSubmitNewPassword = async (data: { new_password: string }) => {
+    try {
+      setIsLoading(true);
 
-    await ResetForgotPassword(params, setStep, setIsLoading, close);
+      const response = await resetForgotPassword({
+        password: {
+          email: emailForm.getValues("email"),
+          new_password: data.new_password,
+        },
+        token: codeForm.getValues("code"),
+      });
+
+      if (response) {
+        notifications.show({
+          color: "sazim-green",
+          title: "Success",
+          message: "Password was reset successfully",
+        });
+
+        emailForm.reset();
+        codeForm.reset();
+        newPasswordForm.reset();
+
+        setStep("email");
+        close();
+        setIsLoading(false);
+      }
+    } catch (error) {
+      handleErrorMessage(error);
+
+      setIsLoading(false);
+    }
   };
 
   const handleStepBack = () => {

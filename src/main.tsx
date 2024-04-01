@@ -10,7 +10,7 @@ import "@mantine/notifications/styles.css";
 
 import App from "./App";
 import "./index.css";
-import { persistor, store } from "./Stores/Store.ts";
+import { persistor, store } from "./Shared/Redux/Store.ts";
 import { darkTheme } from "./Shared/Constants/Themes.ts";
 
 const rootElement = document.getElementById("root");

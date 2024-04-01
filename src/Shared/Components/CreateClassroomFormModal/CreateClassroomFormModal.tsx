@@ -11,10 +11,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { createClassroom } from "@/Pages/Dashboard/Api/DashboardMethods";
-import { updateClassrooms } from "@/Stores/Slices/ClassroomSlice";
+import { updateClassrooms } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
 import { Subjects, DaysOfTheWeekOptions } from "@/Data/FormData";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { useAppDispatch, useAppSelector } from "@/Stores/Store";
+import { useAppDispatch, useAppSelector } from "@/Shared/Redux/Store";
 import { ClassroomFormValues, User } from "@/Types/SharedTypes";
 import { CreateClassroomFormModalProps } from "@/Shared/Components/CreateClassroomFormModal/CreateClassroomFormTypes";
 
@@ -48,9 +48,6 @@ const CreateClassroomFormModal: React.FC<CreateClassroomFormModalProps> = ({
   ) => {
     try {
       const values = formPayload.data;
-
-      console.log(values);
-      return;
 
       const response = await createClassroom({
         classroom: {

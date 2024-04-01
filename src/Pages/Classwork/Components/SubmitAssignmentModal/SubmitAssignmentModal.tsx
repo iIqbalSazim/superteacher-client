@@ -5,9 +5,9 @@ import { Form, FormSubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 
 import { createNewSubmission } from "../../Api/ClassworkMethods";
 import { formatDate, handleFileUpload } from "../../ClassworkHelpers";

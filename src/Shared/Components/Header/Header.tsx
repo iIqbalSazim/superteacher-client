@@ -3,12 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { ActionIcon, Anchor, Button, Group, Menu, Title } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 
-import { logoutUser } from "@/Pages/Login/Api/LoginMethods";
-import { resetClassroomState } from "@/Stores/Slices/ClassroomSlice";
-import { resetAuthState } from "@/Stores/Slices/AuthSlice";
+import { resetClassroomState } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
+import { resetAuthState } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { useAppDispatch, useAppSelector } from "@/Stores/Store";
+import { useAppDispatch, useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
+import { useLogoutMutation } from "@/Shared/Redux/Api/Auth/auth.api";
 
 import CreateClassroomFormModal from "../CreateClassroomFormModal/CreateClassroomFormModal";
 
@@ -18,6 +18,8 @@ const Header: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const [logout] = useLogoutMutation();
 
   const closeClassroomFormModal = () => {
     setIsClassroomFormModalOpen(false);
@@ -33,7 +35,7 @@ const Header: React.FC = () => {
     const token = localStorage.getItem("token") ?? "";
 
     try {
-      await logoutUser({ token: token });
+      await logout({ token: token }).unwrap();
 
       localStorage.removeItem("token");
 

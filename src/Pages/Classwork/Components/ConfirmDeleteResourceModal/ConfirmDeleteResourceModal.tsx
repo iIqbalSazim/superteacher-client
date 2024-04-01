@@ -3,7 +3,7 @@ import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 
 import { deleteResource } from "../../Api/ClassworkMethods";
 import { ConfirmDeleteResourceModal } from "./ConfirmDeleteResourceModalTypes";

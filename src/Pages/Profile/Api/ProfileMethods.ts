@@ -9,10 +9,3 @@ export const updateUserProfile = async (
 ) => {
   return await putRequest(`profiles/${id}`, userProfile);
 };
-
-export const resetPassword = async (passwords: {
-  old_password: string;
-  new_password: string;
-}) => {
-  return await putRequest("passwords/reset", passwords);
-};

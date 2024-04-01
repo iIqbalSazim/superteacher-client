@@ -1,7 +1,7 @@
 import { Box } from "@mantine/core";
 
 import { User } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 
 import CreateFileButtonGroup from "./Components/CreateFileButtonGroup/CreateFileButtonGroup";
 import ResourcesSection from "./Components/ResourcesSection/ResourcesSection";

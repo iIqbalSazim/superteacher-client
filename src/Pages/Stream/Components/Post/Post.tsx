@@ -2,7 +2,7 @@ import { Card, Flex, Paper, Text } from "@mantine/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { PostParams } from "./PostTypes";

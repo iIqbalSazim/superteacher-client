@@ -11,10 +11,10 @@ import {
 import { notifications } from "@mantine/notifications";
 import { useForm } from "react-hook-form";
 
-import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
+import { updateClassroom } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { ClassroomContext } from "@/Providers/ClassroomProvider/ClassroomProvider";
-import { useAppDispatch } from "@/Stores/Store";
+import { ClassroomContext } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
+import { useAppDispatch } from "@/Shared/Redux/Store";
 
 import { updateClassroomApi } from "../../Api/StreamMethods";
 import AddMeetLinkFormSchema from "../../Validation/AddMeetLinkFormSchema";

@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
-import { ClassroomContext } from "@/Providers/ClassroomProvider/ClassroomProvider";
-import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
-import { useAppDispatch } from "@/Stores/Store";
+import { ClassroomContext } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
+import { updateClassroom } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
+import { useAppDispatch } from "@/Shared/Redux/Store";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
 import { updateClassroomApi } from "../../Api/StreamMethods";

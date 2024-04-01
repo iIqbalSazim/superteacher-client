@@ -3,7 +3,7 @@ import { Button, Card, Flex, Group, Text } from "@mantine/core";
 import { IconFileDownload } from "@tabler/icons-react";
 
 import { User } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 
 import UpdateAssignmentFormModal from "../UpdateAssignmentFormModal/UpdateAssignmentFormModal";
 import UpdateMaterialFormModal from "../UpdateMaterialFormModal/UpdateMaterialFormModal";

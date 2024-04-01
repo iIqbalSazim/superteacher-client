@@ -1,9 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import { Divider, SimpleGrid, Title } from "@mantine/core";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 
 import ScheduledExam from "../ScheduledExam/ScheduledExam";
 import FinishedExam from "../FinishedExam/FinishedExam";

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BackgroundImage, Box, Flex, Title } from "@mantine/core";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import ConfirmDeleteClassroomModal from "../ConfirmDeleteClassroomModal/ConfirmDeleteClassroomModal";

@@ -1,4 +1,4 @@
-import { ClassroomProvider } from "@/Providers/ClassroomProvider/ClassroomProvider";
+import { ClassroomProvider } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
 
 import Classroom from "./Classroom";
 

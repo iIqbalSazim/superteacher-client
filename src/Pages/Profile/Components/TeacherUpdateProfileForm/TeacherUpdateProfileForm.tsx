@@ -5,9 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { Subjects } from "@/Data/FormData";
-import { updateUser } from "@/Stores/Slices/AuthSlice";
+import { updateUser } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
 import { User } from "@/Types/SharedTypes";
-import { useAppDispatch, useAppSelector } from "@/Stores/Store";
+import { useAppDispatch, useAppSelector } from "@/Shared/Redux/Store";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
 import { updateUserProfile } from "../../Api/ProfileMethods";

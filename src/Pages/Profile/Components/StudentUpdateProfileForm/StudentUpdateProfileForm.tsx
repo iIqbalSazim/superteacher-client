@@ -4,12 +4,9 @@ import { Form, FormSubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
-import { updateUser } from "@/Stores/Slices/AuthSlice";
-import {
-  handleEducationLevelChange,
-  handleErrorMessage,
-} from "@/Shared/SharedHelpers";
-import { useAppDispatch, useAppSelector } from "@/Stores/Store";
+import { updateUser } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
+import { useAppDispatch, useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { updateUserProfile } from "../../Api/ProfileMethods";
@@ -30,7 +27,6 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
   const {
     formState: { errors },
     control,
-    setValue,
     watch,
     reset,
   } = useForm<StudentProfileFormValues>({
@@ -78,102 +74,96 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
     }
   };
 
-  const renderAdditionalFields = () => {
-    const { level } = watch("education");
+  const renderUniversityFields = () => {
+    return (
+      <>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="Bachelors/Masters"
+            placeholder="Select degree level"
+            withAsterisk
+            data={["Bachelors", "Masters"]}
+            control={control}
+            name="education.degree_level"
+            error={errors.education?.degree_level?.message}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <TextInput
+            size={"md"}
+            label="Semester/Year"
+            placeholder="Enter semester or year"
+            withAsterisk
+            control={control}
+            name="education.semester_year"
+            error={errors.education?.semester_year?.message}
+          />
+        </Grid.Col>
+      </>
+    );
+  };
 
-    if (level === "School") {
-      return (
-        <>
-          <Grid.Col span={{ xs: 6 }}>
-            <Select
-              size="lg"
-              label="English/Bangla Medium"
-              placeholder="Select medium"
-              withAsterisk
-              data={["English", "Bangla"]}
-              control={control}
-              name="education.english_bangla_medium"
-              error={errors.education?.english_bangla_medium?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={{ xs: 6 }}>
-            <Select
-              size="lg"
-              label="Class"
-              placeholder="Select class"
-              withAsterisk
-              data={["Class 7", "Class 8", "Class 9", "Class 10"]}
-              control={control}
-              name="education.class_level"
-              error={errors.education?.class_level?.message}
-            />
-          </Grid.Col>
-        </>
-      );
-    }
+  const renderSchoolFields = () => {
+    return (
+      <>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="English/Bangla Medium"
+            placeholder="Select medium"
+            withAsterisk
+            data={["English", "Bangla"]}
+            control={control}
+            name="education.english_bangla_medium"
+            error={errors.education?.english_bangla_medium?.message}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="Class"
+            placeholder="Select class"
+            withAsterisk
+            data={["Class 7", "Class 8", "Class 9", "Class 10"]}
+            control={control}
+            name="education.class_level"
+            error={errors.education?.class_level?.message}
+          />
+        </Grid.Col>
+      </>
+    );
+  };
 
-    if (level === "College") {
-      return (
-        <>
-          <Grid.Col span={{ xs: 6 }}>
-            <Select
-              size="lg"
-              label="English/Bangla Medium"
-              placeholder="Select medium"
-              withAsterisk
-              data={["English", "Bangla"]}
-              control={control}
-              name="education.english_bangla_medium"
-              error={errors.education?.english_bangla_medium?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={{ xs: 6 }}>
-            <Select
-              size="lg"
-              label="Class"
-              placeholder="Select class"
-              withAsterisk
-              data={["Class 11", "Class 12"]}
-              control={control}
-              name="education.class_level"
-              error={errors.education?.class_level?.message}
-            />
-          </Grid.Col>
-        </>
-      );
-    }
-
-    if (level === "University") {
-      return (
-        <>
-          <Grid.Col span={{ xs: 6 }}>
-            <Select
-              size="lg"
-              label="Bachelors/Masters"
-              placeholder="Select degree level"
-              withAsterisk
-              data={["Bachelors", "Masters"]}
-              control={control}
-              name="education.degree_level"
-              error={errors.education?.degree_level?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={{ xs: 6 }}>
-            <TextInput
-              size={"lg"}
-              label="Semester/Year"
-              placeholder="Enter semester or year"
-              withAsterisk
-              control={control}
-              name="education.semester_year"
-              error={errors.education?.semester_year?.message}
-            />
-          </Grid.Col>
-        </>
-      );
-    }
-
-    return null;
+  const renderCollegeFields = () => {
+    return (
+      <>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="English/Bangla Medium"
+            placeholder="Select medium"
+            withAsterisk
+            data={["English", "Bangla"]}
+            control={control}
+            name="education.english_bangla_medium"
+            error={errors.education?.english_bangla_medium?.message}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="Class"
+            placeholder="Select class"
+            withAsterisk
+            data={["Class 11", "Class 12"]}
+            control={control}
+            name="education.class_level"
+            error={errors.education?.class_level?.message}
+          />
+        </Grid.Col>
+      </>
+    );
   };
 
   return (
@@ -251,10 +241,9 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             error={errors.phone_number?.message}
           />
         </Grid.Col>
-
-        <Grid.Col span={{ xs: 6 }}>
+        <Grid.Col span={{ base: 4 }}>
           <Select
-            size="lg"
+            size="md"
             placeholder="Select your education level"
             label="Education level"
             withAsterisk
@@ -262,15 +251,16 @@ const StudentUpdateProfileForm: React.FC<StudentProfileProps> = ({
             control={control}
             name="education.level"
             error={errors.education?.level?.message}
-            onOptionSubmit={(value) => {
-              const updates = handleEducationLevelChange(value);
-
-              setValue("education", updates);
-            }}
           />
         </Grid.Col>
 
-        {renderAdditionalFields()}
+        {watch("education.level") === "University"
+          ? renderUniversityFields()
+          : null}
+
+        {watch("education.level") === "School" ? renderSchoolFields() : null}
+
+        {watch("education.level") === "College" ? renderCollegeFields() : null}
       </Grid>
 
       <Group justify="space-evenly" mt="lg" pt={"sm"}>

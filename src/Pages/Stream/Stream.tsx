@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Box, Flex, Grid, Paper, Title } from "@mantine/core";
 
 import { User } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 
 import StreamHeader from "./Components/StreamHeader/StreamHeader";
 import StreamBody from "./Components/StreamBody/StreamBody";

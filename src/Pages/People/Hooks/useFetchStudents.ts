@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { getStudents } from "../Api/PeopleMethods";

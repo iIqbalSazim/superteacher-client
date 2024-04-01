@@ -3,7 +3,7 @@ import { ActionIcon, Flex, Group, SimpleGrid, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 

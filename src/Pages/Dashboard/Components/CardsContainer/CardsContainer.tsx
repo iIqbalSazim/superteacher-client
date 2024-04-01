@@ -1,6 +1,6 @@
 import { Flex, Group, Title } from "@mantine/core";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { CardsContainerProps } from "./CardsContainerTypes";

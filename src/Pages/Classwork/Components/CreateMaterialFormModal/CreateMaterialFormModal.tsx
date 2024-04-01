@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 
 import { createNewResource } from "../../Api/ClassworkMethods";
 import CreateMaterialFormSchema from "../../Validation/CreateMaterialFormSchema";

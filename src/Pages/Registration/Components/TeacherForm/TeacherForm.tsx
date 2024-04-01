@@ -13,11 +13,13 @@ import { Button, Group, Box, Flex, Text, Grid, Anchor } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { setUser } from "@/Stores/Slices/AuthSlice";
+import { setUser } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
 import { Subjects } from "@/Data/FormData";
+import {
+  useCreateNewUserMutation,
+  useGenerateTokenMutation,
+} from "@/Shared/Redux/Api/Auth/auth.api";
 
-import { generateToken } from "../../../Login/Api/LoginMethods";
-import { createNewUser } from "../../Api/RegistrationMethods";
 import TeacherFormSchema from "../../Validation/TeacherFormSchema";
 import { TeacherFormApiError, TeacherFormValues } from "./TeacherFormTypes";
 
@@ -28,6 +30,7 @@ const TeacherForm: React.FC = () => {
     formState: { errors },
     control,
     reset,
+    getValues,
   } = useForm<TeacherFormValues>({
     defaultValues: {
       code: "",
@@ -47,36 +50,38 @@ const TeacherForm: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [createNewUser] = useCreateNewUserMutation();
+  const [generateToken] = useGenerateTokenMutation();
+
   const onSubmit: FormSubmitHandler<TeacherFormValues> = async (
     formPayload
   ) => {
     try {
       const values = formPayload.data;
 
-      const response = await createNewUser({
-        user: {
-          email: values.email,
-          password: values.password,
-          code: values.code,
-          gender: values.gender,
-          first_name: values.first_name,
-          last_name: values.last_name,
-          major_subject: values.major_subject,
-          highest_education_level: values.highest_education_level,
-          subjects_to_teach: values.subjects_to_teach,
-          role: "teacher",
-        },
-      });
+      const newUserPayload = {
+        email: values.email,
+        password: values.password,
+        code: values.code,
+        gender: values.gender,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        major_subject: values.major_subject,
+        highest_education_level: values.highest_education_level,
+        subjects_to_teach: values.subjects_to_teach,
+        role: "teacher",
+      };
 
-      const newUser = response.data.user;
+      const response = await createNewUser({ user: newUserPayload }).unwrap();
+      const newUser = response.user;
 
-      const tokenRequest = await generateToken({
+      const tokenResult = await generateToken({
         grant_type: "password",
         email: values.email,
         password: values.password,
-      });
+      }).unwrap();
 
-      const token = tokenRequest.data.access_token;
+      const token = tokenResult.access_token;
 
       dispatch(setUser(newUser));
 

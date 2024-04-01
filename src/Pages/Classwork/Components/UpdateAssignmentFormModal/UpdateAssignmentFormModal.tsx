@@ -10,7 +10,7 @@ import { Form, FormSubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
 import UpdateAssignmentFormSchema from "../../Validation/UpdateAssignmentFormSchema";

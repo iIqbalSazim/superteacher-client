@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { User } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
 import {

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-import { setAllClassrooms } from "@/Stores/Slices/ClassroomSlice";
+import { setAllClassrooms } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { useAppDispatch } from "@/Stores/Store";
+import { useAppDispatch } from "@/Shared/Redux/Store";
 import { ClassroomType } from "@/Types/SharedTypes";
 
 import { fetchClassrooms } from "../Api/DashboardMethods";

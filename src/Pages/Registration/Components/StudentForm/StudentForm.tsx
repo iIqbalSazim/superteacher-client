@@ -6,22 +6,20 @@ import { Form, FormSubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
-import { setUser } from "@/Stores/Slices/AuthSlice";
-import {
-  handleEducationLevelChange,
-  handleErrorMessage,
-} from "@/Shared/SharedHelpers";
+import { setUser } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
-import { generateToken } from "../../../Login/Api/LoginMethods";
-import { createNewUser } from "../../Api/RegistrationMethods";
 import StudentFormSchema from "../../Validation/StudentFormSchema";
 import { StudentFormValues } from "./StudentFormTypes";
+import {
+  useCreateNewUserMutation,
+  useGenerateTokenMutation,
+} from "@/Shared/Redux/Api/Auth/auth.api";
 
 const StudentForm: React.FC = () => {
   const {
     formState: { errors },
     control,
-    setValue,
     watch,
     reset,
   } = useForm<StudentFormValues>({
@@ -48,35 +46,37 @@ const StudentForm: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [createNewUser] = useCreateNewUserMutation();
+  const [generateToken] = useGenerateTokenMutation();
+
   const onSubmit: FormSubmitHandler<StudentFormValues> = async (
     formPayload
   ) => {
     try {
       const values = formPayload.data;
 
-      const response = await createNewUser({
-        user: {
-          email: values.email,
-          password: values.password,
-          gender: values.gender,
-          first_name: values.first_name,
-          last_name: values.last_name,
-          address: values.address,
-          phone_number: values.phone_number,
-          education: values.education,
-          role: "student",
-        },
-      });
+      const newUserPayload = {
+        email: values.email,
+        password: values.password,
+        gender: values.gender,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        address: values.address,
+        phone_number: values.phone_number,
+        education: values.education,
+        role: "student",
+      };
 
-      const newUser = response.data.user;
+      const response = await createNewUser({ user: newUserPayload }).unwrap();
+      const newUser = response.user;
 
-      const tokenRequest = await generateToken({
+      const tokenResult = await generateToken({
         grant_type: "password",
         email: values.email,
         password: values.password,
-      });
+      }).unwrap();
 
-      const token = tokenRequest.data.access_token;
+      const token = tokenResult.access_token;
 
       dispatch(setUser(newUser));
 
@@ -97,102 +97,96 @@ const StudentForm: React.FC = () => {
     }
   };
 
-  const renderAdditionalFields = () => {
-    const { level } = watch("education");
+  const renderUniversityFields = () => {
+    return (
+      <>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="Bachelors/Masters"
+            placeholder="Select degree level"
+            withAsterisk
+            data={["Bachelors", "Masters"]}
+            control={control}
+            name="education.degree_level"
+            error={errors.education?.degree_level?.message}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <TextInput
+            size={"md"}
+            label="Semester/Year"
+            placeholder="Enter semester or year"
+            withAsterisk
+            control={control}
+            name="education.semester_year"
+            error={errors.education?.semester_year?.message}
+          />
+        </Grid.Col>
+      </>
+    );
+  };
 
-    if (level === "School") {
-      return (
-        <>
-          <Grid.Col span={6}>
-            <Select
-              size="md"
-              label="English/Bangla Medium"
-              placeholder="Select medium"
-              withAsterisk
-              data={["English", "Bangla"]}
-              control={control}
-              name="education.english_bangla_medium"
-              error={errors.education?.english_bangla_medium?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Select
-              size="md"
-              label="Class"
-              placeholder="Select class"
-              withAsterisk
-              data={["Class 7", "Class 8", "Class 9", "Class 10"]}
-              control={control}
-              name="education.class_level"
-              error={errors.education?.class_level?.message}
-            />
-          </Grid.Col>
-        </>
-      );
-    }
+  const renderSchoolFields = () => {
+    return (
+      <>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="English/Bangla Medium"
+            placeholder="Select medium"
+            withAsterisk
+            data={["English", "Bangla"]}
+            control={control}
+            name="education.english_bangla_medium"
+            error={errors.education?.english_bangla_medium?.message}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="Class"
+            placeholder="Select class"
+            withAsterisk
+            data={["Class 7", "Class 8", "Class 9", "Class 10"]}
+            control={control}
+            name="education.class_level"
+            error={errors.education?.class_level?.message}
+          />
+        </Grid.Col>
+      </>
+    );
+  };
 
-    if (level === "College") {
-      return (
-        <>
-          <Grid.Col span={6}>
-            <Select
-              size="md"
-              label="English/Bangla Medium"
-              placeholder="Select medium"
-              withAsterisk
-              data={["English", "Bangla"]}
-              control={control}
-              name="education.english_bangla_medium"
-              error={errors.education?.english_bangla_medium?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <Select
-              size="md"
-              label="Class"
-              placeholder="Select class"
-              withAsterisk
-              data={["Class 11", "Class 12"]}
-              control={control}
-              name="education.class_level"
-              error={errors.education?.class_level?.message}
-            />
-          </Grid.Col>
-        </>
-      );
-    }
-
-    if (level === "University") {
-      return (
-        <>
-          <Grid.Col span={6}>
-            <Select
-              size="md"
-              label="Bachelors/Masters"
-              placeholder="Select degree level"
-              withAsterisk
-              data={["Bachelors", "Masters"]}
-              control={control}
-              name="education.degree_level"
-              error={errors.education?.degree_level?.message}
-            />
-          </Grid.Col>
-          <Grid.Col span={6}>
-            <TextInput
-              size={"md"}
-              label="Semester/Year"
-              placeholder="Enter semester or year"
-              withAsterisk
-              control={control}
-              name="education.semester_year"
-              error={errors.education?.semester_year?.message}
-            />
-          </Grid.Col>
-        </>
-      );
-    }
-
-    return null;
+  const renderCollegeFields = () => {
+    return (
+      <>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="English/Bangla Medium"
+            placeholder="Select medium"
+            withAsterisk
+            data={["English", "Bangla"]}
+            control={control}
+            name="education.english_bangla_medium"
+            error={errors.education?.english_bangla_medium?.message}
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            size="md"
+            label="Class"
+            placeholder="Select class"
+            withAsterisk
+            data={["Class 11", "Class 12"]}
+            control={control}
+            name="education.class_level"
+            error={errors.education?.class_level?.message}
+          />
+        </Grid.Col>
+      </>
+    );
   };
 
   return (
@@ -220,7 +214,6 @@ const StudentForm: React.FC = () => {
                 error={errors.first_name?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ xs: 6, md: 4 }}>
               <TextInput
                 size={"md"}
@@ -232,7 +225,6 @@ const StudentForm: React.FC = () => {
                 error={errors.last_name?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ md: 4 }}>
               <Select
                 size="md"
@@ -245,7 +237,6 @@ const StudentForm: React.FC = () => {
                 error={errors.gender?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ xs: 7 }}>
               <TextInput
                 size={"md"}
@@ -257,7 +248,6 @@ const StudentForm: React.FC = () => {
                 error={errors.address?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ xs: 5 }}>
               <TextInput
                 size={"md"}
@@ -269,7 +259,6 @@ const StudentForm: React.FC = () => {
                 error={errors.phone_number?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ base: 4 }}>
               <Select
                 size="md"
@@ -280,15 +269,20 @@ const StudentForm: React.FC = () => {
                 control={control}
                 name="education.level"
                 error={errors.education?.level?.message}
-                onOptionSubmit={(value) => {
-                  const updates = handleEducationLevelChange(value);
-
-                  setValue("education", updates);
-                }}
               />
             </Grid.Col>
 
-            {renderAdditionalFields()}
+            {watch("education.level") === "University"
+              ? renderUniversityFields()
+              : null}
+
+            {watch("education.level") === "School"
+              ? renderSchoolFields()
+              : null}
+
+            {watch("education.level") === "College"
+              ? renderCollegeFields()
+              : null}
 
             <Grid.Col span={12}>
               <TextInput
@@ -301,7 +295,6 @@ const StudentForm: React.FC = () => {
                 error={errors.email?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ xs: 6 }}>
               <PasswordInput
                 size="md"
@@ -313,7 +306,6 @@ const StudentForm: React.FC = () => {
                 error={errors.password?.message}
               />
             </Grid.Col>
-
             <Grid.Col span={{ xs: 6 }}>
               <PasswordInput
                 size="md"

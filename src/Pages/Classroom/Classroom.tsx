@@ -4,7 +4,7 @@ import { Tabs, Title } from "@mantine/core";
 import ActionCable from "actioncable";
 
 import MyLoader from "@/Shared/Components/MyLoader/MyLoader";
-import { ClassroomContext } from "@/Providers/ClassroomProvider/ClassroomProvider";
+import { ClassroomContext } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
 
 import People from "../People/People";
 import Stream from "../Stream/Stream";

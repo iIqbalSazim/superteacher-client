@@ -1,5 +1,5 @@
 import Classwork from "@/Pages/Classwork/Classwork";
-import { ClassworkProvider } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkProvider } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 import { ClassroomType } from "@/Types/SharedTypes";
 
 const ClassworkWithProvider: React.FC<{ classroom: ClassroomType }> = ({

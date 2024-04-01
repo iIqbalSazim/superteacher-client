@@ -1,6 +1,6 @@
 import { Button, Group, Menu, Text } from "@mantine/core";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { formatDate } from "../../ClassworkHelpers";

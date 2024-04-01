@@ -2,17 +2,19 @@ import { notifications } from "@mantine/notifications";
 import { NavigateFunction } from "react-router-dom";
 import { UseFormReturn } from "react-hook-form";
 
-import { setUser } from "@/Stores/Slices/AuthSlice";
+import { setUser } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { AppDispatch } from "@/Stores/Types/StoreTypes";
+import { AppDispatch } from "@/Shared/Redux/StoreTypes";
+import {
+  useGenerateTokenMutation,
+  useLoginMutation,
+} from "@/Shared/Redux/Api/Auth/auth.api";
 
 import { LoginFormValues } from "./Components/LoginForm/LoginFormTypes";
 import {
   generateResetToken,
   resetForgotPassword,
   validateResetToken,
-  loginUser,
-  generateToken,
 } from "./Api/LoginMethods";
 
 export interface ResetTokenParams {
@@ -39,18 +41,19 @@ export const LoginUserAndGenerateToken = async (
   dispatch: AppDispatch,
   navigate: NavigateFunction
 ): Promise<void> => {
+  const [loginUser] = useLoginMutation();
+  const [generateToken] = useGenerateTokenMutation();
+
   try {
-    const response = await loginUser({ ...values });
+    const loginResult = await loginUser(values).unwrap();
+    const newUser = loginResult.user;
 
-    const newUser = response.data.user;
-
-    const tokenRequest = await generateToken({
+    const tokenResult = await generateToken({
       grant_type: "password",
       email: values.email,
       password: values.password,
-    });
-
-    const token = tokenRequest.data.access_token;
+    }).unwrap();
+    const token = tokenResult.access_token;
 
     dispatch(setUser(newUser));
 
@@ -68,34 +71,6 @@ export const LoginUserAndGenerateToken = async (
     reset();
   } catch (error) {
     handleErrorMessage(error);
-  }
-};
-
-export const GenerateResetToken = async (
-  params: ResetTokenParams,
-  setStep: (arg: "code") => void,
-  setIsLoading: (arg: boolean) => void
-): Promise<void> => {
-  try {
-    setIsLoading(true);
-
-    const response = await generateResetToken({ email: params.email });
-
-    if (response.status === 200) {
-      notifications.show({
-        color: "sazim-green",
-        title: "Success",
-        message: `Email with a code was sent to ${params.email}`,
-      });
-
-      setStep("code");
-    }
-
-    setIsLoading(false);
-  } catch (error) {
-    handleErrorMessage(error);
-
-    setIsLoading(false);
   }
 };
 

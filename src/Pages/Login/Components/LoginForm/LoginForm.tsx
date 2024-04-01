@@ -8,14 +8,20 @@ import {
   SimpleGrid,
   Text,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { TextInput, PasswordInput } from "react-hook-form-mantine";
 import { Form, FormSubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { useAppDispatch } from "@/Stores/Store";
+import { useAppDispatch } from "@/Shared/Redux/Store";
+import {
+  useGenerateTokenMutation,
+  useLoginMutation,
+} from "@/Shared/Redux/Api/Auth/auth.api";
+import { setUser } from "@/Shared/Redux/Slices/AuthSlice/AuthSlice";
+import { handleErrorMessage } from "@/Shared/SharedHelpers";
 
 import LoginFormSchema from "../../Validation/LoginFormSchema";
-import { LoginUserAndGenerateToken } from "../../LoginHelpers";
 import { LoginFormProps, LoginFormValues } from "./LoginFormTypes";
 
 const LoginForm: React.FC<LoginFormProps> = ({ openForgotPasswordModal }) => {
@@ -34,10 +40,42 @@ const LoginForm: React.FC<LoginFormProps> = ({ openForgotPasswordModal }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const onSubmit: FormSubmitHandler<LoginFormValues> = async (formPayload) => {
-    const values = formPayload.data;
+  const [login] = useLoginMutation();
+  const [generateToken] = useGenerateTokenMutation();
 
-    await LoginUserAndGenerateToken(values, reset, dispatch, navigate);
+  const onSubmit: FormSubmitHandler<LoginFormValues> = async (formPayload) => {
+    try {
+      const values = formPayload.data;
+
+      const loginResult = await login(values).unwrap();
+
+      const newUser = loginResult.user;
+
+      const tokenResult = await generateToken({
+        grant_type: "password",
+        email: values.email,
+        password: values.password,
+      }).unwrap();
+
+      const token = tokenResult.access_token;
+
+      dispatch(setUser(newUser));
+
+      localStorage.setItem("token", token);
+
+      navigate("/dashboard");
+
+      notifications.show({
+        color: "sazim-green",
+        title: "Success",
+        message: "Logged in successfully",
+        autoClose: 3000,
+      });
+
+      reset();
+    } catch (error) {
+      handleErrorMessage(error);
+    }
   };
 
   return (

@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
 import { ClassroomType } from "@/Types/SharedTypes";
-import { ClassroomContext } from "@/Providers/ClassroomProvider/ClassroomProvider";
+import { ClassroomContext } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
 
 import { fetchClassroom } from "../Api/ClassroomMethods";
 

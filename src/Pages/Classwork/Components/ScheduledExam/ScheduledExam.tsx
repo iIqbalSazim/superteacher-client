@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { IconClipboardText, IconDots } from "@tabler/icons-react";
 
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 import { User } from "@/Types/SharedTypes";
 
 import { formatDate } from "../../ClassworkHelpers";

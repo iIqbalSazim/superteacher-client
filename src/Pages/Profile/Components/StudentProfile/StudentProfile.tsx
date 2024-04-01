@@ -1,7 +1,7 @@
 import { Grid, Title } from "@mantine/core";
 
 import { User } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 
 import { StudentProfileProps } from "./StudentProfileTypes";
 

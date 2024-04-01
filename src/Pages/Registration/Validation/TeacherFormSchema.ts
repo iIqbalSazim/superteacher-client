@@ -6,6 +6,7 @@ const numberRegExp = /[0-9]/;
 
 const TeacherFormSchema = z
   .object({
+    code: z.string().min(1, "Code is required"),
     first_name: z
       .string()
       .max(255, { message: "First name must be at most 255 characters" })
@@ -74,7 +75,7 @@ const TeacherFormSchema = z
       data.confirm_password === data.password || data.confirm_password === "",
     {
       message: "Passwords must match",
-      path: ["confirm_new_password"],
+      path: ["confirm_password"],
     }
   );
 

@@ -6,7 +6,7 @@ import {
   TeacherProfileType,
   StudentProfileType,
 } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 
 import ResetPasswordFormModal from "./Components/ResetPasswordFormModal/ResetPasswordFormModal";
 import TeacherProfileContainer from "./Components/TeacherProfileContainer/TeacherProfileContainer";

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Button, Collapse, Flex, SimpleGrid, Title } from "@mantine/core";
 import { IconChevronDown, IconChevronRight } from "@tabler/icons-react";
 
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 
 import ResourceCard from "../ResourceCard/ResourceCard";
 

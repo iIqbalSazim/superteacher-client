@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { ClassworkContext } from "@/Providers/ClassworkProvider/ClassworkProvider";
+import { ClassworkContext } from "@/Shared/Providers/ClassworkProvider/ClassworkProvider";
 
 import { generateAssignments, generateMaterials } from "../ClassworkHelpers";
 import { getClassroomResources } from "../Api/ClassworkMethods";

@@ -3,7 +3,7 @@ import { ActionIcon, Anchor, Flex, Group, Paper, Title } from "@mantine/core";
 import { IconEditCircle, IconTrash } from "@tabler/icons-react";
 
 import { User } from "@/Types/SharedTypes";
-import { useAppSelector } from "@/Stores/Store";
+import { useAppSelector } from "@/Shared/Redux/Store";
 
 import ConfirmDeleteMeetLinkModal from "../ConfirmDeleteMeetLinkModal/ConfirmDeleteMeetLinkModal";
 import { MeetLinkProps } from "./ClassMeetLinkTypes";

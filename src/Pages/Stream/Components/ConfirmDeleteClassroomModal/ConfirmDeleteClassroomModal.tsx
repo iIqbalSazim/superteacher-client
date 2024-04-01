@@ -5,8 +5,8 @@ import { Box, Button, Group, Modal, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { removeClassroom } from "@/Stores/Slices/ClassroomSlice";
-import { ClassroomContext } from "@/Providers/ClassroomProvider/ClassroomProvider";
+import { removeClassroom } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
+import { ClassroomContext } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
 
 import { deleteClassroom } from "../../Api/StreamMethods";
 import { ConfirmDeleteClassroomParams } from "./ConfirmDeleteClassroomTypes";

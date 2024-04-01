@@ -11,12 +11,12 @@ import { Form, FormSubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Subjects, DaysOfTheWeek } from "@/Data/FormData";
-import { updateClassroom } from "@/Stores/Slices/ClassroomSlice";
-import { useAppDispatch } from "@/Stores/Store";
+import { updateClassroom } from "@/Shared/Redux/Slices/ClassroomSlice/ClassroomSlice";
+import { useAppDispatch } from "@/Shared/Redux/Store";
 import CreateClassroomFormSchema from "@/Shared/Validation/CreateClassroomFormSchema";
 import { ClassroomFormValues } from "@/Types/SharedTypes";
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
-import { ClassroomContext } from "@/Providers/ClassroomProvider/ClassroomProvider";
+import { ClassroomContext } from "@/Shared/Providers/ClassroomProvider/ClassroomProvider";
 
 import { updateClassroomApi } from "../../Api/StreamMethods";
 import { EditClassroomParams } from "./EditClassroomFormTypes";

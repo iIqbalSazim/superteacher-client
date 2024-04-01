@@ -6,9 +6,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { notifications } from "@mantine/notifications";
 
 import { handleErrorMessage } from "@/Shared/SharedHelpers";
+import { useResetPasswordMutation } from "@/Shared/Redux/Api/Password/password.api";
 
 import ResetPasswordFormSchema from "../../Validation/ResetPasswordFormSchema";
-import { resetPassword } from "../../Api/ProfileMethods";
 import {
   ResetPasswordFormValues,
   ResetPasswordModalProps,
@@ -33,6 +33,8 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
     resolver: zodResolver(ResetPasswordFormSchema),
   });
 
+  const [resetPassword] = useResetPasswordMutation();
+
   const onSubmit: FormSubmitHandler<ResetPasswordFormValues> = async (
     formPayload
   ) => {
@@ -46,9 +48,9 @@ const ResetPasswordFormModal: React.FC<ResetPasswordModalProps> = ({
         new_password: values.new_password,
       };
 
-      const response = await resetPassword(passwords);
+      const response = await resetPassword(passwords).unwrap();
 
-      if (response.status === 200) {
+      if (response) {
         notifications.show({
           color: "sazim-green",
           title: "Success",

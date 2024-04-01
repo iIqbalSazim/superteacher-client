@@ -41,62 +41,78 @@ const StudentUpdateProfileFormSchema = z
     education: z
       .object({
         level: z
-          .string()
-          .min(1, "Education level is required")
-          .nullish()
-          .transform((value, ctx): string => {
-            if (value == null)
-              ctx.addIssue({
-                code: "custom",
-                message: "Education level is required",
-              });
-
-            return value as string;
-          }),
+          .string({
+            invalid_type_error: "Education level is required",
+          })
+          .min(1, "Education level is required"),
         english_bangla_medium: z
           .string()
-          .optional()
-          .nullish()
-          .transform((value, ctx): string => {
-            if (value == null)
-              ctx.addIssue({
-                code: "custom",
-                message: "Medium is required",
-              });
-
-            return value as string;
-          }),
+          .catch((ctx) => {
+            ctx.error;
+            return "";
+          })
+          .optional(),
         class_level: z
-          .string()
-          .optional()
-          .nullish()
-          .transform((value, ctx): string => {
-            if (value == null) {
-              ctx.addIssue({
-                code: "custom",
-                message: "Class level is required",
-              });
-            }
-
-            return value as string;
-          }),
+          .string({
+            invalid_type_error: "Class level is required",
+          })
+          .catch((ctx) => {
+            ctx.error;
+            return "";
+          })
+          .optional(),
         degree_level: z
-          .string()
-          .optional()
-          .nullish()
-          .transform((value, ctx): string => {
-            if (value == null) {
-              ctx.addIssue({
-                code: "custom",
-                message: "Degree level is required",
-              });
-            }
-
-            return value as string;
-          }),
-        semester_year: z.string().min(1, "Semester/Year is required"),
+          .string({
+            invalid_type_error: "Degree level is required",
+          })
+          .optional(),
+        semester_year: z.string().optional(),
       })
-      .required(),
+      .superRefine((data, ctx) => {
+        const {
+          level,
+          class_level,
+          english_bangla_medium,
+          degree_level,
+          semester_year,
+        } = data;
+
+        if (level === "School" || "College") {
+          if (!english_bangla_medium || english_bangla_medium.length < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Medium is required",
+              path: ["english_bangla_medium"],
+            });
+          }
+
+          if (!class_level || class_level.length < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Class level is required",
+              path: ["class_level"],
+            });
+          }
+        }
+
+        if (level === "University") {
+          if (!degree_level || degree_level.length < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Degree is required",
+              path: ["degree_level"],
+            });
+          }
+
+          if (!semester_year || semester_year.length < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Semester/Year is required",
+              path: ["semester_year"],
+            });
+          }
+        }
+      }),
     email: z
       .string()
       .email("Invalid email")

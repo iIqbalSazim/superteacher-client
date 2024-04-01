@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { ClassroomType } from "@/Types/SharedTypes";
 
-import { ClassroomState } from "../Types/ClassroomSliceTypes";
+import { ClassroomState } from "./ClassroomSliceTypes";
 
 const initialState: ClassroomState = {
   classrooms: [],
