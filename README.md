@@ -1,5 +1,9 @@
 # Superteacher
 
+## Notice
+- Working Repository moved [here](https://github.com/SazimTech/2024-Md-Ishmam-Iqbal-superteacher-frontend)
+
+
 ## Table of Contents
 
 - [What is the project about](#what-is-the-project-about)
